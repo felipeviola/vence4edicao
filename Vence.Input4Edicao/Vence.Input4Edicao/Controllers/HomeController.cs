@@ -93,7 +93,6 @@ namespace Vence.Input4Edicao.Controllers
                                                 from   vw_mantida_curso_edicao 
                                                 where  Numero_AES = '" + filtros.NumeroAES + @"'
                                                 and    Item_AES = " + filtros.ItemAES + @"
-                                                and    Mes_ref = '" + filtros.MesReferencia + @"' 
                                                 group by turno,idCursoTurnoTurma", conn);
             cmd.Connection.Open();
             SqlDataReader reader = cmd.ExecuteReader();
