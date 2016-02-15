@@ -1,0 +1,272 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+    #tblAlunos th{
+        font-size:x-small;
+    }
+    #tblAlunos td{
+        font-size:x-small;
+    }
+</style>
+<div class="jumbotron">
+    <div id="FiltrosTurma" class="form-group row">
+        <div class="col-xs-2">
+            <label for="ex3">Chave</label>
+            <input class="form-control" id="txtToken" type="text">
+        </div>
+        <div class="col-xs-2">
+            <label for="ex1">Número AES</label>
+            <input class="form-control" id="txtNumeroAES" type="text" disabled="disabled">
+        </div>
+        <div class="col-xs-2">
+            <label for="ex2">Item AES</label>
+            <input class="form-control" id="txtItemAES" type="text">
+        </div>
+        <div class="col-xs-3">
+            <label for="ex3">Mês de Referência</label>
+            <input class="form-control" id="txtMesReferencia" type="text">
+        </div>
+        <div class="col-xs-2">
+            <label for="ex3">CPF</label>
+            <input class="form-control" id="txtCpfSup" type="text">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-xs-12">
+            <label for="ex3">Curso/Turno/Turma</label>
+            <select class="form-control" id="lstTurma" type="text">
+                <option value="0">Selecione...</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="table-responsive">
+    <table id="diasLetivos" class="table">
+        <thead>
+            <tr>
+                <th colspan="13">Dias Letivos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Data:</td>
+                <td><input id="addDataLetiva" type="text" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td>Minuto:</td>
+                <td><input id="addHoraLetiva" type="text" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center;"><input id="btnAddDiaLetivo" type="button" class="btn" value="Adicionar Dia Letivo" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <table id="tblAlunos" class="table-bordered" style="table-layout: fixed;">
+        <thead>
+            <tr>
+                <th style="width:500px;">Aluno</th>
+                <th>
+                    <div style="width:600px;overflow-x:scroll;">
+                        <table id="diasLetivosHeader" class="table-bordered">
+                            <thead>
+                                <tr></tr>
+                            </thead>
+                        </table>
+                    </div>
+                </th>
+                <th class="col-xs-1">Estágio</th>
+                <th class="col-xs-1">RA(GDAE)</th>
+                <th style="width:50px;">Aprovado</th>
+                <th style="width:50px;">Ignorar</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="form-group" style="padding-top:20px;">
+        <div style="width:100%;text-align:center;">
+            <input id="btnSalvar" type="button" class="btn-primary" value="Salvar" />
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function aplicarMascaras() {
+        $("#addDataLetiva").mask("99");
+        $("[data-type='Hora']").mask("999:99");
+        $("#mesReferencia").mask("99/9999");
+        $("#addHoraLetiva").mask("999");
+        $("#txtMesReferencia").mask("99/9999");
+        $("#txtCpfSup").mask("999.999.999-99");
+    }
+    function BuscarTurmas() {
+        if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
+            var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val() };
+            console.log(filtros);
+            $.ajax({
+                type: "POST",
+                url: "/Home/BuscarTurmas",
+                data: JSON.stringify(filtros),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    var retorno = JSON.parse(data);
+                    $("#lstTurma").html("");
+                    for (var item in retorno) {
+                        $("#lstTurma").append("<option value='" + retorno[item].Id + "'>" + retorno[item].Nome + "</option>")
+                    }
+                }
+            });
+        }
+    }
+    function PesquisarTurmas() {
+        $("#txtNumeroAES").focusout(function () {
+            BuscarTurmas();
+        });
+        $("#txtItemAES").focusout(function () {
+            BuscarTurmas();
+        });
+        $("#txtMesReferencia").focusout(function () {
+            BuscarTurmas();
+        });
+    }
+    window.onload = function () {
+        $("#txtToken").val('');
+        $("#txtNumeroAES").val('');
+        $("#txtItemAES").val('');
+        $("#txtMesReferencia").val('');
+        $("#txtCpfSup").val('');
+        var valido = true;
+        aplicarMascaras();
+        PesquisarTurmas();
+        $("#btnAddDiaLetivo").click(function () {
+
+            if ($("#addDataLetiva").val() && $("#addHoraLetiva").val()) {
+                $("#diasLetivosHeader thead tr").append("<td style='width:30px;text-align:center;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addDataLetiva").val() + "</td>");
+                $("#tblAlunos tbody tr").each(function () {
+                    var matricula = $(this).find("td:eq(0)").attr("data-matricula");
+                    $(this).find("td:eq(1)").append("<div style='width:30px;text-align:center;float:left;overflow-x: scroll;'><input type='checkbox' data-diaLetivo='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "' data-matricula='" + matricula + "'  /></div>");
+                });
+                $("#addDataLetiva").val('').focus();
+                $("#addHoraLetiva").val('');
+
+            }
+        });
+
+        $("#btnSalvar").click(function () {
+            var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
+            var i = 0;
+            var j = 0;
+            var presencas = [];
+            var diasCalendario = [];
+            var alunos = [];
+            $("#tblAlunos tbody tr").each(function () {
+                //console.log($(this).find("td:eq(4) input").is(":checked"));
+                alunos[j] = { Matricula: $(this).find("td:eq(0)").attr("data-matricula"), Estagio: $(this).find("td:eq(2) input").val(), RA: $(this).find("td:eq(3) input").val(), AprovadoVence: $(this).find("td:eq(4) input").is(":checked"), IgnorarAluno: $(this).find("td:eq(5) input").is(":checked") };
+                $(this).find("input:checked").each(function () {
+                    presencas[i] = {
+                        DiaLetivo: $(this).attr("data-diaLetivo"), Horas: $(this).attr("data-horaletiva")
+                    };
+                    i++;
+                });
+                alunos[j].Presenca = presencas;
+                j++;
+                presencas = [];
+                i = 0;
+            });
+            j = 0;
+            $("#diasLetivosHeader tr td").each(function () {
+                diasCalendario[j] = { Dia: $(this).attr("data-id"), CargaHoraria: $(this).attr("data-horaletiva") };
+                j++;
+            });
+            Formulario.Calendario = diasCalendario;
+            Formulario.Aluno = alunos;
+            Formulario.Cpf = $("#txtCpfSup").val();
+            Formulario.Token = $("#txtToken").val();
+
+            valido = true;
+            $("input[data-type='RA']").each(function () {
+                if (!$(this).val())
+                    valido = false;
+            });
+            if (valido)
+                valido = validation(Formulario);
+
+            if (valido) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/Salvar",
+                    data: JSON.stringify(Formulario),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        if (data) {
+                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
+                            location.reload();
+                        }
+                        else
+                            alert("Chave de acesso incorreto.");
+                    }
+                });
+            }
+            else
+                alert("Favor preencher corretamente todos os campos antes de efetuar o cadastro.")
+        });
+
+        $("#lstTurma").change(function () {
+            console.log($("#lstTurma option:selected").val());
+            if ($("#lstTurma option:selected").val()) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/BuscarAlunos",
+                    data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val() }),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        var retorno = JSON.parse(data);
+                        $("#tblAlunos tbody").html("");
+                        $("#diasLetivosHeader thead tr").html("");
+                        for (var item in retorno) {
+                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
+                        }
+                        $('input[data-tipo]').mask('999:99');
+                    }
+                });
+            }
+        });
+
+        $("#txtToken").focusout(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Home/Token",
+                data: JSON.stringify({token : $("#txtToken").val()}),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#txtNumeroAES").val(data);
+                }
+            });
+        });
+    };
+    function limparFormulario() {
+
+    }
+    function validation(formulario) {
+        if (!formulario.Calendario.length)
+            return false;
+        if (!formulario.NumeroAES)
+            return false;
+        if (!formulario.ItemAES)
+            return false;
+        if (!formulario.Cpf)
+            return false;
+        if (!formulario.Token)
+            return false;
+        if (!formulario.IdCursoTurnoTurma)
+            return false;
+
+        return true;
+    }
+</script>

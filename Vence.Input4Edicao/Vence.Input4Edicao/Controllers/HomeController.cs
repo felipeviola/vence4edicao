@@ -1,0 +1,171 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Data.SqlClient;
+using System.Web.Script.Serialization;
+using System.Text;
+
+namespace Vence.Input4Edicao.Controllers
+{
+    public class HomeController : Controller
+    {
+        public JsonResult Token(Formulario formulario)
+        {
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            string retorno = string.Empty;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand(@"select AES
+                                                from   token 
+                                                where  chave = '" + formulario.Token + "'", conn);
+            cmd.Connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                retorno = reader["AES"].ToString();
+            }
+            return Json(retorno, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Index()
+        {
+            return View();
+        }
+        public JsonResult Salvar(Formulario formulario)
+        {
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            StringBuilder sb = new StringBuilder();
+
+            SqlCommand cmdDelete = new SqlCommand(String.Format("delete Calendario4edicao where idcursoturnoturma = {0} and mesReferencia ='{1}'", formulario.IdCursoTurnoTurma.ToString(), formulario.MesReferencia), conn);
+            cmdDelete.Connection.Open();
+            cmdDelete.ExecuteNonQuery();
+            cmdDelete.Connection.Close();
+
+            foreach (var item in formulario.Calendario)
+            {
+                sb.Append("insert into Calendario4edicao values(").Append(formulario.IdCursoTurnoTurma.ToString()).Append(",'").Append(item.Dia).Append("','").Append(item.CargaHoraria).Append("','").Append(formulario.MesReferencia).Append("','").Append(formulario.Cpf).Append("')");
+                SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+                sb.Clear();
+            }
+            foreach (var item in formulario.Aluno)
+            {
+                if (item.Estagio == null)
+                    item.Estagio = "";
+                if (item.RA == null)
+                    item.RA = "";
+                sb.Append("insert into aluno4edicao values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",").Append(item.AprovadoVence).Append(",'").Append(item.RA).Append("','").Append(formulario.MesReferencia).Append("')");
+                SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+                cmdDelete.CommandText = String.Format("delete aluno4edicao where idMatricula = '{0}' and MesReferencia = '{1}'", item.Matricula, formulario.MesReferencia);
+                cmd.Connection.Open();
+                cmdDelete.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+                sb.Clear();
+
+                if (item.Presenca != null)
+                {
+                    foreach (var item2 in item.Presenca)
+                    {
+                        sb.Append("insert into Frequencia4Edicao values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','").Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma).Append(")");
+                        cmdDelete.CommandText = String.Format("delete Frequencia4Edicao where idMatricula='{0}' and MesReferencia ='{1}' and idCursoTurnoTurma={2}", item.Matricula, formulario.MesReferencia, formulario.IdCursoTurnoTurma.ToString());
+                        cmd = new SqlCommand(sb.ToString(), conn);
+                        cmd.Connection.Open();
+                        cmdDelete.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                        cmd.Connection.Close();
+                        sb.Clear();
+                    }
+                }
+            }
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult BuscarTurmas(Formulario filtros)
+        {
+            List<Turma> turmas = new List<Turma>();
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            turmas.Add(new Turma { Id = 0, Nome = "Selecione..." });
+            SqlCommand cmd = new SqlCommand(@"select Turno,idCursoTurnoTurma
+                                                from   vw_mantida_curso_edicao 
+                                                where  Numero_AES = '" + filtros.NumeroAES + @"'
+                                                and    Item_AES = " + filtros.ItemAES + @"
+                                                and    Mes_ref = '" + filtros.MesReferencia + @"' 
+                                                group by turno,idCursoTurnoTurma", conn);
+            cmd.Connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                turmas.Add(new Turma { Id = Convert.ToInt32(reader[1]), Nome = reader[0].ToString() });
+            }
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(turmas);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult BuscarAlunos(int IdTurma)
+        {
+            List<Aluno> lista = new List<Aluno>();
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand(@"select insc.NomeAluno,insc.NomeAluno,matr.idMatricula
+                                                from    Matricula matr
+                                                ,       inscricao insc
+                                                where  matr.idCursoTurnoTurma = " + IdTurma + @" 
+                                                and    matr.idinscricao = insc.idinscricao and matr.idstsaluno <> 2
+                                                order by insc.NomeAluno", conn);
+            cmd.Connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString() });
+            }
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(lista);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+    }
+    public class Formulario
+    {
+        public string Token { get; set; }
+        public int IdCursoTurnoTurma { get; set; }
+        public string NumeroAES { get; set; }
+        public string ItemAES { get; set; }
+        public string MesReferencia { get; set; }
+        public string Cpf { get; set; }
+        public List<Calendario> Calendario { get; set; }
+        public List<Aluno> Aluno { get; set; }
+    }
+    public class Calendario
+    {
+        public string CargaHoraria { get; set; }
+        public string Dia { get; set; }
+    }
+    public class Presenca
+    {
+        public string DiaLetivo { get; set; }
+        public string Horas { get; set; }
+    }
+    public class Aluno
+    {
+        public string Nome { get; set; }
+        public string RA { get; set; }
+        public string Matricula { get; set; }
+        public List<Presenca> Presenca { get; set; }
+        public string Estagio { get; set; }
+        public int IgnorarAluno { get; set; }
+        public int AprovadoVence { get; set; }
+    }
+    public class Turma
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+    }
+}
