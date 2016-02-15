@@ -89,16 +89,21 @@ namespace Vence.Input4Edicao.Controllers
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
             turmas.Add(new Turma { Id = 0, Nome = "Selecione..." });
-            SqlCommand cmd = new SqlCommand(@"select Turno,idCursoTurnoTurma
-                                                from   vw_mantida_curso_edicao 
-                                                where  Numero_AES = '" + filtros.NumeroAES + @"'
-                                                and    Item_AES = " + filtros.ItemAES + @"
-                                                group by turno,idCursoTurnoTurma", conn);
+            SqlCommand cmd = new SqlCommand(@"select distinct idCursoTurnoTurma,(select (curso + '/' +  b.DescTurno + '/' + nomeTurma) as turno from CursoTurnoTurma a join turno b on a.turno = b.turno 
+                                                join CursoMtdTurno c on a.idcursomtdturno = c.idcursomtdturno
+                                                join cursos d on d.codCurso = c.codCurso
+                                                    where idcursoturnoturma = vwmtd.idCursoTurnoTurma
+                                                    and statuscursoturma = 2) from   vw_mantida_curso_edicao as vwmtd
+                                                where numero_aes = '" + filtros.NumeroAES + @"'
+                                                and item_aes = " + filtros.ItemAES, conn);
+
+
+
             cmd.Connection.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                turmas.Add(new Turma { Id = Convert.ToInt32(reader[1]), Nome = reader[0].ToString() });
+                turmas.Add(new Turma { Id = Convert.ToInt32(reader[0]), Nome = reader[1].ToString() });
             }
 
             var jsonSerialiser = new JavaScriptSerializer();
