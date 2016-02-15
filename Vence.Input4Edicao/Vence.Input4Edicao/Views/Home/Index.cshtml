@@ -2,11 +2,12 @@
     ViewBag.Title = "Home Page";
 }
 <style>
-    #tblAlunos th{
-        font-size:x-small;
+    #tblAlunos th {
+        font-size: x-small;
     }
-    #tblAlunos td{
-        font-size:x-small;
+
+    #tblAlunos td {
+        font-size: x-small;
     }
 </style>
 <div class="jumbotron">
@@ -62,7 +63,7 @@
                 <td><input id="addHoraLetiva" type="text" class="form-control" /></td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align:center;"><input id="btnAddDiaLetivo" type="button" class="btn" value="Adicionar Dia Letivo" /></td>
+                <td colspan="2" style="text-align:center;"><input id="btnAddDiaLetivo" type="button" class="btn" value="Adicionar Dia Letivo" /> <input id="btnLimparDiaLetivo" type="button" class="btn" value="Limpar Dia Letivo" /></td>
             </tr>
         </tbody>
     </table>
@@ -158,7 +159,7 @@
             }
         });
 
-          $("#btnSalvar").click(function () {
+        $("#btnSalvar").click(function () {
             var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
             var i = 0;
             var j = 0;
@@ -276,12 +277,19 @@
             $.ajax({
                 type: "POST",
                 url: "/Home/Token",
-                data: JSON.stringify({token : $("#txtToken").val()}),
+                data: JSON.stringify({ token: $("#txtToken").val() }),
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     $("#txtNumeroAES").val(data);
                 }
             });
+        });
+        $("#btnLimparDiaLetivo").click(function () {
+            var r = confirm("Você realmente deseja limpar o calendário?");
+            if (r == true) {
+                $("#tblAlunos tbody").html('');
+                $("#diasLetivosHeader thead tr").html('');
+            }
         });
     };
     function limparFormulario() {
