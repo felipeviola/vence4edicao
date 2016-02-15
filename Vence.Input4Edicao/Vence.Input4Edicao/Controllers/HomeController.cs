@@ -92,8 +92,7 @@ namespace Vence.Input4Edicao.Controllers
             SqlCommand cmd = new SqlCommand(@"select distinct idCursoTurnoTurma,(select (curso + '/' +  b.DescTurno + '/' + nomeTurma) as turno from CursoTurnoTurma a join turno b on a.turno = b.turno 
                                                 join CursoMtdTurno c on a.idcursomtdturno = c.idcursomtdturno
                                                 join cursos d on d.codCurso = c.codCurso
-                                                    where idcursoturnoturma = vwmtd.idCursoTurnoTurma
-                                                    and statuscursoturma = 2) from   vw_mantida_curso_edicao as vwmtd
+                                                    where idcursoturnoturma = vwmtd.idCursoTurnoTurma) from   vw_mantida_curso_edicao as vwmtd
                                                 where numero_aes = '" + filtros.NumeroAES + @"'
                                                 and item_aes = " + filtros.ItemAES, conn);
 

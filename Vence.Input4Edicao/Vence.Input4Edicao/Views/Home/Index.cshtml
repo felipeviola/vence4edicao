@@ -158,7 +158,7 @@
             }
         });
 
-        $("#btnSalvar").click(function () {
+          $("#btnSalvar").click(function () {
             var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
             var i = 0;
             var j = 0;
@@ -200,18 +200,52 @@
             if (valido) {
                 $.ajax({
                     type: "POST",
-                    url: "/Home/Salvar",
+                    url: "/Home/VerificarCadastro",
                     data: JSON.stringify(Formulario),
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
                         if (data) {
-                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
-                            location.reload();
+                            var r = confirm("Já foram inserida as frequências desta turma. Deseja substituir as frequências?");
+                            if (r == true) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Home/Salvar",
+                                    data: JSON.stringify(Formulario),
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (data) {
+                                        if (data) {
+                                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
+                                            location.reload();
+                                        }
+                                        else
+                                            alert("Chave de acesso incorreto.");
+                                    }
+                                });
+                            }
                         }
-                        else
-                            alert("Chave de acesso incorreto.");
+                        else {
+                            var r = confirm("Você tem certeza que deseja lançar frequência para esta turma neste mês?");
+                            if (r == true) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Home/Salvar",
+                                    data: JSON.stringify(Formulario),
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (data) {
+                                        if (data) {
+                                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
+                                            location.reload();
+                                        }
+                                        else
+                                            alert("Chave de acesso incorreto.");
+                                    }
+                                });
+                            }
+                        }
+
                     }
                 });
+
             }
             else
                 alert("Favor preencher corretamente todos os campos antes de efetuar o cadastro.")
