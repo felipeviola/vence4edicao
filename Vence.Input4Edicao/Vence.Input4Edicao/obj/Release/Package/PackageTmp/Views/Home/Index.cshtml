@@ -2,11 +2,12 @@
     ViewBag.Title = "Home Page";
 }
 <style>
-    #tblAlunos th{
-        font-size:x-small;
+    #tblAlunos th {
+        font-size: x-small;
     }
-    #tblAlunos td{
-        font-size:x-small;
+
+    #tblAlunos td {
+        font-size: x-small;
     }
 </style>
 <div class="jumbotron">
@@ -62,7 +63,7 @@
                 <td><input id="addHoraLetiva" type="text" class="form-control" /></td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align:center;"><input id="btnAddDiaLetivo" type="button" class="btn" value="Adicionar Dia Letivo" /></td>
+                <td colspan="2" style="text-align:center;"><input id="btnAddDiaLetivo" type="button" class="btn" value="Adicionar Dia Letivo" /> <input id="btnLimparDiaLetivo" type="button" class="btn" value="Limpar Dia Letivo" /></td>
             </tr>
         </tbody>
     </table>
@@ -157,7 +158,15 @@
 
             }
         });
-
+        $("#tblAlunos").on("click", "input[type='checkbox']", function () {
+            var index = $(this).parent().index();
+            if ($(this).attr('data-type') == 'aprovado') {
+                $(this).parent().parent().find("input[data-type='ignorado']").attr('checked',false);
+            }
+            else if ($(this).attr('data-type') == 'ignorado') {
+                $(this).parent().parent().find("input[data-type='aprovado']").attr('checked', false);
+            }
+        });
         $("#btnSalvar").click(function () {
             var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
             var i = 0;
@@ -200,18 +209,52 @@
             if (valido) {
                 $.ajax({
                     type: "POST",
-                    url: "/Home/Salvar",
+                    url: "/Home/VerificarCadastro",
                     data: JSON.stringify(Formulario),
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
                         if (data) {
-                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
-                            location.reload();
+                            var r = confirm("Já foram inserida as frequências desta turma. Deseja substituir as frequências?");
+                            if (r == true) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Home/Salvar",
+                                    data: JSON.stringify(Formulario),
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (data) {
+                                        if (data) {
+                                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
+                                            location.reload();
+                                        }
+                                        else
+                                            alert("Chave de acesso incorreto.");
+                                    }
+                                });
+                            }
                         }
-                        else
-                            alert("Chave de acesso incorreto.");
+                        else {
+                            var r = confirm("Você tem certeza que deseja lançar frequência para esta turma neste mês?");
+                            if (r == true) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/Home/Salvar",
+                                    data: JSON.stringify(Formulario),
+                                    contentType: 'application/json; charset=utf-8',
+                                    success: function (data) {
+                                        if (data) {
+                                            alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
+                                            location.reload();
+                                        }
+                                        else
+                                            alert("Chave de acesso incorreto.");
+                                    }
+                                });
+                            }
+                        }
+
                     }
                 });
+
             }
             else
                 alert("Favor preencher corretamente todos os campos antes de efetuar o cadastro.")
@@ -242,12 +285,21 @@
             $.ajax({
                 type: "POST",
                 url: "/Home/Token",
-                data: JSON.stringify({token : $("#txtToken").val()}),
+                data: JSON.stringify({ token: $("#txtToken").val() }),
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     $("#txtNumeroAES").val(data);
                 }
             });
+        });
+        $("#btnLimparDiaLetivo").click(function () {
+            var r = confirm("Você realmente deseja limpar o calendário?");
+            if (r == true) {
+                $("#tblAlunos tbody tr").each(function () {
+                    $(this).find("td:eq(1)").html('');
+                });
+                $("#diasLetivosHeader thead tr").html('');
+            }
         });
     };
     function limparFormulario() {
