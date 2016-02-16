@@ -116,7 +116,7 @@ namespace Vence.Input4Edicao.Controllers
             List<Aluno> lista = new List<Aluno>();
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand(@"select insc.NomeAluno,insc.NomeAluno,matr.idMatricula
+            SqlCommand cmd = new SqlCommand(@"select insc.NomeAluno,insc.NomeAluno,matr.idMatricula,(select RAGDAE from aluno4edicao a where matr.idMatricula = a.idMatricula) as RA
                                                 from    Matricula matr
                                                 ,       inscricao insc
                                                 where  matr.idCursoTurnoTurma = " + IdTurma + @" 
@@ -126,7 +126,7 @@ namespace Vence.Input4Edicao.Controllers
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString() });
+                lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString(),RA = reader["RA"].ToString() });
             }
 
             var jsonSerialiser = new JavaScriptSerializer();
