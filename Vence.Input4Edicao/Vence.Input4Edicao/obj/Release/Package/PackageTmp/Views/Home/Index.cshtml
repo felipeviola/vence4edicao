@@ -70,7 +70,7 @@
     <table id="tblAlunos" class="table-bordered" style="table-layout: fixed;">
         <thead>
             <tr>
-                <th style="width:500px;">Aluno</th>
+                <th style="width:600px;">Aluno</th>
                 <th>
                     <div style="width:600px;overflow-x:scroll;">
                         <table id="diasLetivosHeader" class="table-bordered">
@@ -80,7 +80,7 @@
                         </table>
                     </div>
                 </th>
-                <th class="col-xs-1">Estágio</th>
+                <th style="width:120px;text-align:center;">Estágio</th>
                 <th class="col-xs-1">RA(GDAE)</th>
                 <th style="width:50px;">Aprovado</th>
                 <th style="width:50px;">Ignorar</th>
@@ -273,7 +273,7 @@
                         $("#tblAlunos tbody").html("");
                         $("#diasLetivosHeader thead tr").html("");
                         for (var item in retorno) {
-                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
+                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA +"' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
                         }
                         $('input[data-tipo]').mask('999:99');
                     }
