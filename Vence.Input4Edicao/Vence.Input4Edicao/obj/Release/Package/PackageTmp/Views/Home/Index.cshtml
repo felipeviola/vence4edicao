@@ -59,8 +59,8 @@
                 <td><input id="addDataLetiva" type="text" class="form-control" /></td>
             </tr>
             <tr>
-                <td>Minuto:</td>
-                <td><input id="addHoraLetiva" type="text" class="form-control" /></td>
+                <td>Duração em minutos:</td>
+                <td><input id="addHoraLetiva" type="text" class="form-control" maxlength="3" /></td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align:center;"><input id="btnAddDiaLetivo" type="button" class="btn" value="Adicionar Dia Letivo" /> <input id="btnLimparDiaLetivo" type="button" class="btn" value="Limpar Dia Letivo" /></td>
@@ -70,11 +70,12 @@
     <table id="tblAlunos" class="table-bordered" style="table-layout: fixed;">
         <thead>
             <tr>
-                <th style="width:600px;">Aluno</th>
+                <th style="width:400px;">Aluno</th>
                 <th>
                     <div style="width:600px;overflow-x:scroll;">
-                        <table id="diasLetivosHeader" class="table-bordered">
+                        <table id="diasLetivosHeader" class="table-bordered" style="border-left: none;">
                             <thead>
+                                <tr></tr>
                                 <tr></tr>
                             </thead>
                         </table>
@@ -102,7 +103,6 @@
         $("#addDataLetiva").mask("99");
         $("[data-type='Hora']").mask("999:99");
         $("#mesReferencia").mask("99/9999");
-        $("#addHoraLetiva").mask("999");
         $("#txtMesReferencia").mask("99/9999");
         $("#txtCpfSup").mask("999.999.999-99");
     }
@@ -136,6 +136,7 @@
             BuscarTurmas();
         });
     }
+    
     window.onload = function () {
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
@@ -145,10 +146,16 @@
         var valido = true;
         aplicarMascaras();
         PesquisarTurmas();
+        $("#addHoraLetiva").keyup(function () {
+            if ($(this).val().length == 3) {
+                $("#btnAddDiaLetivo").focus();
+            }
+        })
         $("#btnAddDiaLetivo").click(function () {
 
             if ($("#addDataLetiva").val() && $("#addHoraLetiva").val()) {
-                $("#diasLetivosHeader thead tr").append("<td style='width:30px;text-align:center;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addDataLetiva").val() + "</td>");
+                $("#diasLetivosHeader thead tr:eq(0)").append("<td style='width:30px;text-align:center;border-right:none;border-left:none;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addDataLetiva").val() + "</td>");
+                $("#diasLetivosHeader thead tr:eq(1)").append("<td style='width:30px;text-align:center;border-right:none;border-left:none;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addHoraLetiva").val() + "</td>");
                 $("#tblAlunos tbody tr").each(function () {
                     var matricula = $(this).find("td:eq(0)").attr("data-matricula");
                     $(this).find("td:eq(1)").append("<div style='width:30px;text-align:center;float:left;overflow-x: scroll;'><input type='checkbox' data-diaLetivo='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "' data-matricula='" + matricula + "'  /></div>");
@@ -306,8 +313,6 @@
 
     }
     function validation(formulario) {
-        if (!formulario.Calendario.length)
-            return false;
         if (!formulario.NumeroAES)
             return false;
         if (!formulario.ItemAES)

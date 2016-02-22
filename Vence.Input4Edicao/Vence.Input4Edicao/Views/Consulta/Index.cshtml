@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <div id="FiltrosTurma" class="form-group row">
+                <div class="col-xs-2">
+                    <label for="ex3">Chave</label>
+                    <input class="form-control" id="txtToken" type="text">
+                </div>
+                <div class="col-xs-2">
+                    <label for="ex1">Número AES</label>
+                    <input class="form-control" id="txtNumeroAES" type="text" disabled="disabled">
+                </div>
+                <div class="col-xs-2">
+                    <label for="ex2">Item AES</label>
+                    <input class="form-control" id="txtItemAES" type="text">
+                </div>
+                <div class="col-xs-3">
+                    <label for="ex3">Mês de Referência</label>
+                    <input class="form-control" id="txtMesReferencia" type="text">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <label for="ex3">Curso/Turno/Turma</label>
+                    <select class="form-control" id="lstTurma" type="text">
+                        <option value="0">Selecione...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div>
+            <table id="tblAlunos" class="table">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Aluno</th>
+                        <th></th>
+                        <th></th>
+                        <th>RA</th>
+                        <th>Aprovado</th>
+                        <th>Ignorado</th>
+                        <th>Status</th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function BuscarTurmas() {
+            if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
+                var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val() };
+                console.log(filtros);
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/BuscarTurmas",
+                    data: JSON.stringify(filtros),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        var retorno = JSON.parse(data);
+                        $("#lstTurma").html("");
+                        for (var item in retorno) {
+                            $("#lstTurma").append("<option value='" + retorno[item].Id + "'>" + retorno[item].Nome + "</option>")
+                        }
+                    }
+                });
+            }
+        }
+        function PesquisarTurmas() {
+            $("#txtNumeroAES").focusout(function () {
+                BuscarTurmas();
+            });
+            $("#txtItemAES").focusout(function () {
+                BuscarTurmas();
+            });
+            $("#txtMesReferencia").focusout(function () {
+                BuscarTurmas();
+            });
+        }
+        window.onload = function () {
+            $("#txtMesReferencia").mask("99/9999");
+            PesquisarTurmas();
+            $("#txtToken").focusout(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/Token",
+                    data: JSON.stringify({ token: $("#txtToken").val() }),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        $("#txtNumeroAES").val(data);
+                    }
+                });
+            });
+
+            $("#lstTurma").change(function () {
+                console.log($("#lstTurma option:selected").val());
+                if ($("#lstTurma option:selected").val()) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Consulta/BuscarAlunos",
+                        data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val(), mesReferencia : $("#txtMesReferencia").val() }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            var retorno = JSON.parse(data);
+                            $("#tblAlunos tbody").html("");
+
+                            for (var item in retorno) {
+                                var statusAluno;
+                                if (retorno[item].StatusAluno == 2){
+                                    statusAluno = 'Desistente';
+                                    $("#tblAlunos tbody").append("<tr style='background-color:#FF6347;'><td>" + retorno[item].Matricula + "</td><td>" + retorno[item].Nome + "</td><td></td><td data='Estagio'>" +
+                                        retorno[item].Estagio + "</td><td data='RA'>" + retorno[item].RA + "</td><td data='Aprovado'>" + retorno[item].AprovadoVence +
+                                        "</td><td data='Ignorado'>" + retorno[item].IgnorarAluno + "</td><td>" + statusAluno + "</td></tr>");
+                                }
+                                else{
+                                    statusAluno = 'Ok';
+                                    $("#tblAlunos tbody").append("<tr><td>" + retorno[item].Matricula + "</td><td>" + retorno[item].Nome + "</td><td></td><td data='Estagio'>" + 
+                                        retorno[item].Estagio + "</td><td data='RA'>" + retorno[item].RA + "</td><td data='Aprovado'>" + retorno[item].AprovadoVence +
+                                        "</td><td data='Ignorado'>" + retorno[item].IgnorarAluno + "</td><td>" + statusAluno + "</td></tr>");
+                                }
+                                
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

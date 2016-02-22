@@ -103,7 +103,6 @@
         $("#addDataLetiva").mask("99");
         $("[data-type='Hora']").mask("999:99");
         $("#mesReferencia").mask("99/9999");
-        $("#addHoraLetiva").mask("999");
         $("#txtMesReferencia").mask("99/9999");
         $("#txtCpfSup").mask("999.999.999-99");
     }
@@ -137,6 +136,7 @@
             BuscarTurmas();
         });
     }
+    
     window.onload = function () {
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
@@ -146,6 +146,11 @@
         var valido = true;
         aplicarMascaras();
         PesquisarTurmas();
+        $("#addHoraLetiva").keyup(function () {
+            if ($(this).val().length == 3) {
+                $("#btnAddDiaLetivo").focus();
+            }
+        })
         $("#btnAddDiaLetivo").click(function () {
 
             if ($("#addDataLetiva").val() && $("#addHoraLetiva").val()) {
