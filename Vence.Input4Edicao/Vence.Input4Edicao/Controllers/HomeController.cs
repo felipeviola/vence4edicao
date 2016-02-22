@@ -62,7 +62,9 @@ namespace Vence.Input4Edicao.Controllers
                         item.Estagio = "";
                     if (item.RA == null)
                         item.RA = "";
-                    sb.Append("insert into aluno4edicao values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",").Append(item.AprovadoVence).Append(",'").Append(item.RA).Append("','").Append(formulario.MesReferencia).Append("')");
+                    sb.Append("insert into aluno4edicao values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",")
+                        .Append(item.AprovadoVence).Append(",'").Append(item.RA).Append("','").Append(formulario.MesReferencia).Append("',")
+                        .Append(formulario.IdCursoTurnoTurma).Append(",").Append(item.Inscricao).Append(")");
                     SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
                     cmdDelete.CommandText = String.Format("delete aluno4edicao where idMatricula = '{0}' and MesReferencia = '{1}'", item.Matricula, formulario.MesReferencia);
                     SqlCommand cmdUpdate = new SqlCommand(string.Format("update aluno4edicao set RAGDAE = '{1}' where idMatricula = '{0}'", item.Matricula, item.RA),conn);
@@ -77,7 +79,9 @@ namespace Vence.Input4Edicao.Controllers
                     {
                         foreach (var item2 in item.Presenca)
                         {
-                            sb.Append("insert into Frequencia4Edicao values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','").Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma).Append(")");
+                            sb.Append("insert into Frequencia4Edicao values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
+                                .Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma)
+                                .Append(",").Append(item.Inscricao).Append(")");
                             cmdDelete.CommandText = String.Format("delete Frequencia4Edicao where idMatricula='{0}' and MesReferencia ='{1}' and idCursoTurnoTurma={2}", item.Matricula, formulario.MesReferencia, formulario.IdCursoTurnoTurma.ToString());
                             cmd = new SqlCommand(sb.ToString(), conn);
                             cmd.Connection.Open();
@@ -124,7 +128,8 @@ namespace Vence.Input4Edicao.Controllers
             List<Aluno> lista = new List<Aluno>();
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand(@"select insc.NomeAluno,insc.NomeAluno,matr.idMatricula,(select top 1 RAGDAE from aluno4edicao a where matr.idMatricula = a.idMatricula) as RA
+            SqlCommand cmd = new SqlCommand(@"select insc.NomeAluno,insc.NomeAluno,matr.idMatricula,(select top 1 RAGDAE from aluno4edicao a where matr.idMatricula = a.idMatricula) as RA,
+                                                insc.idInscricao
                                                 from    Matricula matr
                                                 ,       inscricao insc
                                                 where  matr.idCursoTurnoTurma = " + IdTurma + @" 
@@ -134,7 +139,7 @@ namespace Vence.Input4Edicao.Controllers
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString(), RA = reader["RA"].ToString() });
+                lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString(), RA = reader["RA"].ToString(), Inscricao = Convert.ToInt32(reader["idInscricao"]) });
             }
 
             var jsonSerialiser = new JavaScriptSerializer();
@@ -192,6 +197,7 @@ namespace Vence.Input4Edicao.Controllers
         public int IgnorarAluno { get; set; }
         public int AprovadoVence { get; set; }
         public string StatusAluno { get; set; }
+        public int Inscricao { get; set; }
     }
     public class Turma
     {
