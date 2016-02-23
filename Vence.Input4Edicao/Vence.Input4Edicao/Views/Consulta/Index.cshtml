@@ -16,8 +16,9 @@
         #tblCalendario td {
             width: 35px;
         }
-        #tblCalendario tr:first-child td{
-            border-top:none;
+
+        #tblCalendario tr:first-child td {
+            border-top: none;
         }
     </style>
 </head>
@@ -106,6 +107,7 @@
                 autoOpen: false,
                 width: 1200
             });
+
             $("#btnFecharCalendario").click(function () {
                 $("#ModalCalendario").dialog('close');
             });
@@ -168,6 +170,28 @@
                 }
             });
             $("#tblAlunos").on("click", "img", function () {
+                $("#tblCalendario tr:first-child").html('<td style="width:35px;"><label class="control-label">Dia:</label></td>');
+                $("#tblCalendario tr:eq(1)").html('<td style="width:35px;"><label class="control-label">Minutos:</label></td>');
+                $("#TotalDiasLetivos").text('');
+                $("#TotalPresenca").text('');
+                $.ajax({
+                    type: "POST",
+                    url: "/Consulta/DetalheAluno",
+                    data: JSON.stringify({ Matricula: $(this).attr('data-matricula'), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() }),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        var retorno = JSON.parse(data);
+                        $("#TotalPresenca").text(retorno.length);
+                        if (retorno.length == 1 && retorno[0].DiaLetivo == '')
+                            $("#TotalPresenca").text('0');
+                        for (var item in retorno) {
+                            $("#tblCalendario tr:first-child").append("<td style='text-align:center;'>" + retorno[item].DiaLetivo + "</td>");
+                            $("#tblCalendario tr:eq(1)").append("<td style='text-align:center;'>" + retorno[item].Horas + "</td>");
+                            $("#TotalDiasLetivos").text(retorno[item].TotalDiasLetivos);
+                        }
+
+                    }
+                });
                 $("#nomeAluno").text($(this).attr('data-aluno'));
                 $("#calAES").text($("#txtNumeroAES").val());
                 $("#calNumeroAES").text($("#txtItemAES").val());
@@ -176,17 +200,21 @@
             });
         }
     </script>
-    <div id="ModalCalendario" title="Presenças" style="width:80%;display:block;">
-        <div class="form-group">
-            <div><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Nome Aluno:</label><span id="nomeAluno"></span></div>
-            <div><label class="control-label" style="padding-right:30px;padding-bottom:20px;">AES:</label><span id="calAES" style="padding-right:30px;"></span> <label style="padding-right:30px;" class=" control-label">Número AES:</label><span id="calNumeroAES" style="padding-right:30px;"></span> <label style="padding-right:30px;" class="control-label">Mês Referência:</label><span id="calMesRef"></span></div>
-            
-            <table id="tblCalendario" class="table">
-                <tr><td><label class="control-label">Dia:</label></td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td>
-                <tr><td><label class="control-label">Minutos:</label></td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td></tr>
+    <div id="ModalCalendario" title="Presenças" style="width:80%;display:none;">
+        <fieldset>
+            <div class="form-group">
+                <div><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Nome Aluno:</label><span id="nomeAluno" style="padding-right:30px;"></span><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Dias Letivos:</label><span id="TotalDiasLetivos" style="padding-right:30px;"></span><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Total de Presenças:</label><span id="TotalPresenca" style="padding-right:30px;"></span></div>
+                <div><label class="control-label" style="padding-right:30px;padding-bottom:20px;">AES:</label><span id="calAES" style="padding-right:30px;"></span> <label style="padding-right:30px;" class=" control-label">Número AES:</label><span id="calNumeroAES" style="padding-right:30px;"></span> <label style="padding-right:30px;" class="control-label">Mês Referência:</label><span id="calMesRef"></span></div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <table id="tblCalendario">
+                <tr style="border-bottom:solid;"><td><label class="control-label">Dia:</label></td></tr>
+                <tr><td><label class="control-label">Minutos:</label></td></tr>
             </table>
-            <div style="width : 100%; text-align:center;"> <input id="btnFecharCalendario" type="button" class="btn" value="Fechar" /></div>
-        </div>
+        </fieldset>
+        <div style="width : 100%; text-align:center;"> <input id="btnFecharCalendario" type="button" class="btn" value="Fechar" /></div>
+
     </div>
 </body>
 </html>

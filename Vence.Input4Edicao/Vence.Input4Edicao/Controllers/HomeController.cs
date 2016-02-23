@@ -75,6 +75,11 @@ namespace Vence.Input4Edicao.Controllers
                     cmd.Connection.Close();
                     sb.Clear();
 
+                    cmdDelete.Connection.Open();
+                    cmdDelete.CommandText = String.Format("delete Frequencia4Edicao where idMatricula='{0}' and MesReferencia ='{1}' and idCursoTurnoTurma={2}", item.Matricula, formulario.MesReferencia, formulario.IdCursoTurnoTurma.ToString());
+                    cmdDelete.ExecuteNonQuery();
+                    cmdDelete.Connection.Close();
+
                     if (item.Presenca != null)
                     {
                         foreach (var item2 in item.Presenca)
@@ -82,10 +87,8 @@ namespace Vence.Input4Edicao.Controllers
                             sb.Append("insert into Frequencia4Edicao values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
                                 .Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma)
                                 .Append(",").Append(item.Inscricao).Append(")");
-                            cmdDelete.CommandText = String.Format("delete Frequencia4Edicao where idMatricula='{0}' and MesReferencia ='{1}' and idCursoTurnoTurma={2}", item.Matricula, formulario.MesReferencia, formulario.IdCursoTurnoTurma.ToString());
-                            cmd = new SqlCommand(sb.ToString(), conn);
                             cmd.Connection.Open();
-                            cmdDelete.ExecuteNonQuery();
+                            cmd = new SqlCommand(sb.ToString(), conn);
                             cmd.ExecuteNonQuery();
                             cmd.Connection.Close();
                             sb.Clear();
@@ -186,6 +189,7 @@ namespace Vence.Input4Edicao.Controllers
     {
         public string DiaLetivo { get; set; }
         public string Horas { get; set; }
+        public int TotalDiasLetivos { get; set; }
     }
     public class Aluno
     {
@@ -198,6 +202,7 @@ namespace Vence.Input4Edicao.Controllers
         public int AprovadoVence { get; set; }
         public string StatusAluno { get; set; }
         public int Inscricao { get; set; }
+      
     }
     public class Turma
     {

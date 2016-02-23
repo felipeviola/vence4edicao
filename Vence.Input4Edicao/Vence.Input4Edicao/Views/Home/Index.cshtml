@@ -196,7 +196,7 @@
                 i = 0;
             });
             j = 0;
-            $("#diasLetivosHeader tr td").each(function () {
+            $("#diasLetivosHeader tr:first-child td").each(function () {
                 diasCalendario[j] = { Dia: $(this).attr("data-id"), CargaHoraria: $(this).attr("data-horaletiva") };
                 j++;
             });

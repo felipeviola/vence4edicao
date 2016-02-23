@@ -15,8 +15,8 @@ namespace Vence.Input4Edicao.Controllers
         {
             return View();
         }
-      
-        public JsonResult BuscarAlunos(int IdTurma,string mesReferencia)
+
+        public JsonResult BuscarAlunos(int IdTurma, string mesReferencia)
         {
             List<Aluno> lista = new List<Aluno>();
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
@@ -34,11 +34,52 @@ namespace Vence.Input4Edicao.Controllers
             SqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString(), RA = reader["RA"].ToString(),StatusAluno = reader["idstsaluno"].ToString(),
-                 AprovadoVence = (reader["Aprovado"] == DBNull.Value) ? 0 : Convert.ToInt32(reader["Aprovado"]), Estagio = reader["Estagio"].ToString(),
-                 IgnorarAluno = (reader["Ignorar"] == DBNull.Value) ? 0 : Convert.ToInt32(reader["Ignorar"])});
+                lista.Add(new Aluno
+                {
+                    Matricula = reader["idMatricula"].ToString(),
+                    Nome = reader["NomeAluno"].ToString(),
+                    RA = reader["RA"].ToString(),
+                    StatusAluno = reader["idstsaluno"].ToString(),
+                    AprovadoVence = (reader["Aprovado"] == DBNull.Value) ? 0 : Convert.ToInt32(reader["Aprovado"]),
+                    Estagio = reader["Estagio"].ToString(),
+                    IgnorarAluno = (reader["Ignorar"] == DBNull.Value) ? 0 : Convert.ToInt32(reader["Ignorar"])
+                });
             }
 
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(lista);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult DetalheAluno(string Matricula, string MesReferencia, string IdCursoTurnoTurma)
+        {
+            List<Presenca> lista = new List<Presenca>();
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            string cmdText = string.Format(@"select distinct  DiaPresenca,a.MesReferencia,CargaHoraria,(select count(*) from Calendario4edicao where MesReferencia = '{1}' and idcursoturnoturma = {2}) as DiasLetivos
+                                                from Frequencia4Edicao a , Calendario4edicao b
+                                                where a.DiaPresenca = b.DiaLetivo and a.MesReferencia = b.MesReferencia and idMatricula = '{0}' and a.MesReferencia = '{1}'", Matricula, MesReferencia, IdCursoTurnoTurma);
+
+            SqlCommand cmd = new SqlCommand(cmdText, conn);
+            cmd.Connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new Presenca { DiaLetivo = reader["DiaPresenca"].ToString(), Horas = reader["CargaHoraria"].ToString(), TotalDiasLetivos = Convert.ToInt32(reader["DiasLetivos"]) });
+            }
+            cmd.Connection.Close();
+            if (lista.Count() == 0)
+            {
+                cmdText = string.Format("select count(*) as DiasLetivos from Calendario4edicao where MesReferencia = '{1}' and idcursoturnoturma = {2}", Matricula, MesReferencia, IdCursoTurnoTurma);
+                cmd = new SqlCommand(cmdText, conn);
+                cmd.Connection.Open();
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    lista.Add(new Presenca { DiaLetivo = "", Horas = "", TotalDiasLetivos = Convert.ToInt32(reader["DiasLetivos"]) });
+                }
+                cmd.Connection.Close();
+            }
             var jsonSerialiser = new JavaScriptSerializer();
             var json = jsonSerialiser.Serialize(lista);
 
