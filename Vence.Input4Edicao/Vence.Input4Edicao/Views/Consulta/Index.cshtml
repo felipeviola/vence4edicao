@@ -168,15 +168,18 @@
                 }
             });
             $("#tblAlunos").on("click", "img", function () {
+                $("#nomeAluno").text($(this).attr('data-aluno'));
+                $("#calAES").text($("#txtNumeroAES").val());
+                $("#calNumeroAES").text($("#txtItemAES").val());
+                $("#calMesRef").text($("#txtMesReferencia").val());
                 $("#ModalCalendario").dialog("open");
             });
         }
-
     </script>
     <div id="ModalCalendario" title="Presenças" style="width:80%;display:block;">
         <div class="form-group">
-            <div><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Nome Aluno:</label>Felipe Couto Pereira Viola</div>
-            <div><label class="control-label" style="padding-right:30px;padding-bottom:20px;">AES:</label><span style="padding-right:30px;">10201/2000</span> <label style="padding-right:30px;" class=" control-label">Número AES:</label><span style="padding-right:30px;">1</span> <label style="padding-right:30px;" class="control-label">Mês Referência:</label>07/2015</div>
+            <div><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Nome Aluno:</label><span id="nomeAluno"></span></div>
+            <div><label class="control-label" style="padding-right:30px;padding-bottom:20px;">AES:</label><span id="calAES" style="padding-right:30px;"></span> <label style="padding-right:30px;" class=" control-label">Número AES:</label><span id="calNumeroAES" style="padding-right:30px;"></span> <label style="padding-right:30px;" class="control-label">Mês Referência:</label><span id="calMesRef"></span></div>
             
             <table id="tblCalendario" class="table">
                 <tr><td><label class="control-label">Dia:</label></td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td>
