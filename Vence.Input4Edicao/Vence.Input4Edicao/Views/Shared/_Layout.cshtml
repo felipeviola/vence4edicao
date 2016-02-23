@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Vence 4ª Edição</title>
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/jquery-ui.css")
+    @Styles.Render("~/Content/jquery-ui.theme.css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
@@ -19,7 +21,9 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/scripts/mask.js")
+    @Scripts.Render("~/Content/jquery-ui.min.js")
     @Scripts.Render("~/bundles/bootstrap")
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

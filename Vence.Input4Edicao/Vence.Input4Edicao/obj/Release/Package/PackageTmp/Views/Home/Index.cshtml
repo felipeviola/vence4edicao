@@ -183,7 +183,7 @@
             var alunos = [];
             $("#tblAlunos tbody tr").each(function () {
                 //console.log($(this).find("td:eq(4) input").is(":checked"));
-                alunos[j] = { Matricula: $(this).find("td:eq(0)").attr("data-matricula"), Estagio: $(this).find("td:eq(2) input").val(), RA: $(this).find("td:eq(3) input").val(), AprovadoVence: $(this).find("td:eq(4) input").is(":checked"), IgnorarAluno: $(this).find("td:eq(5) input").is(":checked") };
+                alunos[j] = { Matricula: $(this).find("td:eq(0)").attr("data-matricula"), Estagio: $(this).find("td:eq(2) input").val(), RA: $(this).find("td:eq(3) input").val(), AprovadoVence: $(this).find("td:eq(4) input").is(":checked"), IgnorarAluno: $(this).find("td:eq(5) input").is(":checked"), Inscricao: $(this).find("td:eq(0)").attr("data-inscricao") };
                 $(this).find("input:checked").each(function () {
                     presencas[i] = {
                         DiaLetivo: $(this).attr("data-diaLetivo"), Horas: $(this).attr("data-horaletiva")
@@ -280,7 +280,7 @@
                         $("#tblAlunos tbody").html("");
                         $("#diasLetivosHeader thead tr").html("");
                         for (var item in retorno) {
-                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA +"' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
+                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA +"' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
                         }
                         $('input[data-tipo]').mask('999:99');
                     }

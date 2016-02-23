@@ -4,22 +4,6 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title></title>
-    <style>
-        img {
-            cursor: pointer;
-        }
-
-        .ui-dialog-titlebar-close {
-            visibility: hidden;
-        }
-
-        #tblCalendario td {
-            width: 35px;
-        }
-        #tblCalendario tr:first-child td{
-            border-top:none;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -58,12 +42,13 @@
                     <tr>
                         <th>Matrícula</th>
                         <th>Aluno</th>
-                        <th style="text-align:center;">Calendário</th>
-                        <th>Estágio</th>
+                        <th></th>
+                        <th></th>
                         <th>RA</th>
                         <th>Aprovado</th>
                         <th>Ignorado</th>
-                        <th></th>
+                        <th>Status</th>
+
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -102,13 +87,6 @@
             });
         }
         window.onload = function () {
-            $("#ModalCalendario").dialog({
-                autoOpen: false,
-                width: 1200
-            });
-            $("#btnFecharCalendario").click(function () {
-                $("#ModalCalendario").dialog('close');
-            });
             $("#txtMesReferencia").mask("99/9999");
             PesquisarTurmas();
             $("#txtToken").focusout(function () {
@@ -129,7 +107,7 @@
                     $.ajax({
                         type: "POST",
                         url: "/Consulta/BuscarAlunos",
-                        data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val(), mesReferencia: $("#txtMesReferencia").val() }),
+                        data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val(), mesReferencia : $("#txtMesReferencia").val() }),
                         contentType: 'application/json; charset=utf-8',
                         success: function (data) {
                             var retorno = JSON.parse(data);
@@ -137,53 +115,26 @@
 
                             for (var item in retorno) {
                                 var statusAluno;
-                                var aprovado;
-                                var ignorado;
-                                if (retorno[item].AprovadoVence)
-                                    aprovado = "Aprovado";
-                                else
-                                    aprovado = "Não Aprovado";
-                                if (retorno[item].IgnorarAluno)
-                                    ignorado = "Ignorar";
-                                else
-                                    ignorado = "Não Ignorar";
-
-                                if (retorno[item].StatusAluno == 2) {
+                                if (retorno[item].StatusAluno == 2){
                                     statusAluno = 'Desistente';
-
                                     $("#tblAlunos tbody").append("<tr style='background-color:#FF6347;'><td>" + retorno[item].Matricula + "</td><td>" + retorno[item].Nome + "</td><td></td><td data='Estagio'>" +
-                                        retorno[item].Estagio + "</td><td data='RA'>" + retorno[item].RA + "</td><td data='Aprovado'>" +
-                                        "</td><td data='Ignorado'>" + "</td><td>" + statusAluno + "</td></tr>");
+                                        retorno[item].Estagio + "</td><td data='RA'>" + retorno[item].RA + "</td><td data='Aprovado'>" + retorno[item].AprovadoVence +
+                                        "</td><td data='Ignorado'>" + retorno[item].IgnorarAluno + "</td><td>" + statusAluno + "</td></tr>");
                                 }
-                                else {
-                                    statusAluno = '';
-                                    $("#tblAlunos tbody").append("<tr><td>" + retorno[item].Matricula + "</td><td>" + retorno[item].Nome + "</td><td style='text-align:center'><img src='../Content/calendar.png' data-matricula='" + retorno[item].Matricula + "' data-aluno='" + retorno[item].Nome + "' /></td><td data='Estagio'>" +
-                                        retorno[item].Estagio + "</td><td data='RA'>" + retorno[item].RA + "</td><td data='Aprovado'>" + aprovado +
-                                        "</td><td data='Ignorado'>" + ignorado + "</td><td>" + statusAluno + "</td></tr>");
+                                else{
+                                    statusAluno = 'Ok';
+                                    $("#tblAlunos tbody").append("<tr><td>" + retorno[item].Matricula + "</td><td>" + retorno[item].Nome + "</td><td></td><td data='Estagio'>" + 
+                                        retorno[item].Estagio + "</td><td data='RA'>" + retorno[item].RA + "</td><td data='Aprovado'>" + retorno[item].AprovadoVence +
+                                        "</td><td data='Ignorado'>" + retorno[item].IgnorarAluno + "</td><td>" + statusAluno + "</td></tr>");
                                 }
-
+                                
                             }
                         }
                     });
                 }
             });
-            $("#tblAlunos").on("click", "img", function () {
-                $("#ModalCalendario").dialog("open");
-            });
         }
 
     </script>
-    <div id="ModalCalendario" title="Presenças" style="width:80%;display:block;">
-        <div class="form-group">
-            <div><label class="control-label" style="padding-right:30px;padding-bottom:15px;">Nome Aluno:</label>Felipe Couto Pereira Viola</div>
-            <div><label class="control-label" style="padding-right:30px;padding-bottom:20px;">AES:</label><span style="padding-right:30px;">10201/2000</span> <label style="padding-right:30px;" class=" control-label">Número AES:</label><span style="padding-right:30px;">1</span> <label style="padding-right:30px;" class="control-label">Mês Referência:</label>07/2015</div>
-            
-            <table id="tblCalendario" class="table">
-                <tr><td><label class="control-label">Dia:</label></td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td><td style="text-align:center;">11</td>
-                <tr><td><label class="control-label">Minutos:</label></td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td><td>240</td></tr>
-            </table>
-            <div style="width : 100%; text-align:center;"> <input id="btnFecharCalendario" type="button" class="btn" value="Fechar" /></div>
-        </div>
-    </div>
 </body>
 </html>
