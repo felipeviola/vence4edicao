@@ -73,6 +73,7 @@
     </div>
     <script>
         function BuscarTurmas() {
+            $("#tblAlunos tbody").html('');
             if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
                 var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val() };
                 console.log(filtros);
@@ -92,6 +93,7 @@
             }
         }
         function PesquisarTurmas() {
+            
             $("#txtNumeroAES").focusout(function () {
                 BuscarTurmas();
             });
