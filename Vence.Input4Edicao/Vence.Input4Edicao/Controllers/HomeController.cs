@@ -104,11 +104,12 @@ namespace Vence.Input4Edicao.Controllers
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
             turmas.Add(new Turma { Id = 0, Nome = "Selecione..." });
-            SqlCommand cmd = new SqlCommand(@"select distinct idCursoTurnoTurma,(select (curso + '/' +  b.DescTurno + '/' + nomeTurma) as turno from CursoTurnoTurma a join turno b on a.turno = b.turno 
+            SqlCommand cmd = new SqlCommand(@"select distinct a.idCursoTurnoTurma,(select (curso + '/' +  b.DescTurno + '/' + nomeTurma) as turno from CursoTurnoTurma a join turno b on a.turno = b.turno 
                                                 join CursoMtdTurno c on a.idcursomtdturno = c.idcursomtdturno
                                                 join cursos d on d.codCurso = c.codCurso
                                                     where idcursoturnoturma = vwmtd.idCursoTurnoTurma) from   vw_mantida_curso_edicao as vwmtd
-                                                where numero_aes = '" + filtros.NumeroAES + @"'
+                                                join Cursoturnoturma a on a.idcursoTurnoTurma = vwmtd.idcursoturnoturma
+                                                where numero_aes = '" + filtros.NumeroAES + @"' and a.StatusCursoTurma <> 3
                                                 and item_aes = " + filtros.ItemAES, conn);
 
 
