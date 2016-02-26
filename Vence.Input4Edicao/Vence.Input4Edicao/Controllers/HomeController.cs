@@ -67,7 +67,7 @@ namespace Vence.Input4Edicao.Controllers
                         .Append(formulario.IdCursoTurnoTurma).Append(",").Append(item.Inscricao).Append(")");
                     SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
                     cmdDelete.CommandText = String.Format("delete aluno4edicao where idMatricula = '{0}' and MesReferencia = '{1}'", item.Matricula, formulario.MesReferencia);
-                    SqlCommand cmdUpdate = new SqlCommand(string.Format("update aluno4edicao set RAGDAE = '{1}' where idMatricula = '{0}'", item.Matricula, item.RA),conn);
+                    SqlCommand cmdUpdate = new SqlCommand(string.Format("update aluno4edicao set RAGDAE = '{1}' where idMatricula = '{0}'", item.Matricula, item.RA), conn);
                     cmd.Connection.Open();
                     cmdDelete.ExecuteNonQuery();
                     cmd.ExecuteNonQuery();
@@ -86,7 +86,7 @@ namespace Vence.Input4Edicao.Controllers
                         {
                             sb.Append("insert into Frequencia4Edicao values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
                                 .Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma)
-                                .Append(",").Append(item.Inscricao).Append(")");
+                                .Append(",").Append(item.Inscricao).Append(",0").Append(")");
                             cmd.Connection.Open();
                             cmd = new SqlCommand(sb.ToString(), conn);
                             cmd.ExecuteNonQuery();
@@ -111,8 +111,6 @@ namespace Vence.Input4Edicao.Controllers
                                                 join Cursoturnoturma a on a.idcursoTurnoTurma = vwmtd.idcursoturnoturma
                                                 where numero_aes = '" + filtros.NumeroAES + @"' and a.StatusCursoTurma <> 3
                                                 and item_aes = " + filtros.ItemAES, conn);
-
-
 
             cmd.Connection.Open();
             SqlDataReader reader = cmd.ExecuteReader();
@@ -191,6 +189,7 @@ namespace Vence.Input4Edicao.Controllers
         public string DiaLetivo { get; set; }
         public string Horas { get; set; }
         public int TotalDiasLetivos { get; set; }
+        public bool StatusPresenca { get; set; }
     }
     public class Aluno
     {
@@ -203,7 +202,7 @@ namespace Vence.Input4Edicao.Controllers
         public int AprovadoVence { get; set; }
         public string StatusAluno { get; set; }
         public int Inscricao { get; set; }
-      
+
     }
     public class Turma
     {
