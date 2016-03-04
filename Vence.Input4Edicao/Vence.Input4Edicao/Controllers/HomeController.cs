@@ -46,7 +46,7 @@ namespace Vence.Input4Edicao.Controllers
             {
                 foreach (var item in formulario.Calendario)
                 {
-                    sb.Append("insert into Calendario4edicao values(").Append(formulario.IdCursoTurnoTurma.ToString()).Append(",'").Append(item.Dia).Append("','").Append(item.CargaHoraria).Append("','").Append(formulario.MesReferencia).Append("','").Append(formulario.Cpf).Append("')");
+                    sb.Append("insert into Calendario4edicao(IdCursoTurnoTurma,DiaLetivo,CargaHoraria,MesReferencia,CpfSupervisor) values(").Append(formulario.IdCursoTurnoTurma.ToString()).Append(",'").Append(item.Dia).Append("','").Append(item.CargaHoraria).Append("','").Append(formulario.MesReferencia).Append("','").Append(formulario.Cpf).Append("')");
                     SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
                     cmd.Connection.Open();
                     cmd.ExecuteNonQuery();
@@ -62,7 +62,7 @@ namespace Vence.Input4Edicao.Controllers
                         item.Estagio = "";
                     if (item.RA == null)
                         item.RA = "";
-                    sb.Append("insert into aluno4edicao values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",")
+                    sb.Append("insert into aluno4edicao(IdMatricula,HorasEstagio,IgnorarAluno,AprovadoVence,RAGDAE,MesReferencia,IdCursoTurnoTurma,IdInscricao) values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",")
                         .Append(item.AprovadoVence).Append(",'").Append(item.RA).Append("','").Append(formulario.MesReferencia).Append("',")
                         .Append(formulario.IdCursoTurnoTurma).Append(",").Append(item.Inscricao).Append(")");
                     SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
@@ -84,9 +84,9 @@ namespace Vence.Input4Edicao.Controllers
                     {
                         foreach (var item2 in item.Presenca)
                         {
-                            sb.Append("insert into Frequencia4Edicao values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
+                            sb.Append("insert into Frequencia4Edicao(IdMatricula,DiaPresenca,MesReferencia,IdCursoTurnoTurma,IdInscricao) values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
                                 .Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma)
-                                .Append(",").Append(item.Inscricao).Append(",0").Append(")");
+                                .Append(",").Append(item.Inscricao).Append(")");
                             cmd.Connection.Open();
                             cmd = new SqlCommand(sb.ToString(), conn);
                             cmd.ExecuteNonQuery();

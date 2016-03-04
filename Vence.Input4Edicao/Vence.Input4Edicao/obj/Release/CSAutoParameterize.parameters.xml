@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="conn-Web.config Connection String" description="conn A Cadeia de Conexão usada em web.config pelo aplicativo para acessar o banco de dados." defaultValue="server=bdsql-prod.cloudapp.net;Database=Vence;User id=admin; password=admin;" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='conn']/@connectionString" />
-  </parameter>
-</parameters>

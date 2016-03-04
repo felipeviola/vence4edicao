@@ -23,4 +23,3 @@ C:\Vence4Edicao\Vence.Input4Edicao\Vence.Input4Edicao\bin\Antlr3.Runtime.pdb
 C:\Vence4Edicao\Vence.Input4Edicao\Vence.Input4Edicao\bin\Newtonsoft.Json.xml
 C:\Vence4Edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.dll
 C:\Vence4Edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.pdb
-C:\Vence4Edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache

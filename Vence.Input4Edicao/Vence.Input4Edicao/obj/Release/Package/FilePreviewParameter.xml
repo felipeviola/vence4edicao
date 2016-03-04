@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="vence4edicao" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+  <parameter name="conn-Web.config Connection String" description="" value="server=bdsql-prod.cloudapp.net;Database=Vence;User id=admin; password=admin;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='conn']/@connectionString" />
+  </parameter>
+</parameters>
