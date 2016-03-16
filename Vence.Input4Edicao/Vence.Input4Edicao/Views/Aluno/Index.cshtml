@@ -2,12 +2,77 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .isa_info, .isa_success, .isa_warning, .isa_error {
+        margin: 10px 0px;
+        padding: 12px;
+    }
 
+    .isa_info {
+        color: #00529B;
+        background-color: #BDE5F8;
+    }
+
+    .isa_success {
+        color: #4F8A10;
+        background-color: #DFF2BF;
+    }
+
+    .isa_warning {
+        color: #D8000C;
+        background-color: #FEEFB3;
+    }
+
+    .isa_error {
+        color: #D8000C;
+        background-color: #FFBABA;
+    }
+
+        .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+            margin: 10px 22px;
+            font-size: 2em;
+            vertical-align: middle;
+        }
+
+    table {
+        width: 100%;
+    }
+
+    thead, tbody, tr, td, th {
+        display: block;
+        font-size: 11px;
+    }
+
+        tr:after {
+            content: ' ';
+            display: block;
+            visibility: hidden;
+            clear: both;
+        }
+
+        thead th {
+            height: 30px;
+            /*text-align: left;*/
+        }
+
+    tbody {
+        height: 300px;
+        overflow-y: auto;
+    }
+
+    thead {
+        /* fallback */
+    }
+
+        tbody td, thead th {
+            width: 16.6%;
+            float: left;
+        }
+</style>
 
 <div class="container">
 
     <div class="jumbotron">
-        <label for="ex3"> Alunos Ativos  </label>
         <div id="FiltrosTurma" class="form-group row">
             <div class="col-xs-2">
                 <label for="ex3">Chave</label>
@@ -15,41 +80,9 @@
             </div>
 
             <div class="col-xs-2">
-                <label for="ex1">Mês</label>
-                <select class="form-control" id="codMes" type="text">
-                    <option value="0">Selecione...</option>
-                    <option value="12">12</option>
-                    <option value="11">11</option>
-                    <option value="10">10</option>
-                    <option value="09">09</option>
-                    <option value="08">08</option>
-                    <option value="07">07</option>
-                    <option value="06">06</option>
-                    <option value="05">05</option>
-                    <option value="04">04</option>
-                    <option value="03">03</option>
-                    <option value="02">02</option>
-                    <option value="01">01</option>
-                </select>
-                
-            </div>
-            <div class="col-xs-2">
-                <label for="ex1">Ano</label>
-                <select class="form-control" id="codAno" type="text">
-                    <option value="0">Selecione...</option>
-                    <option value="2016">2016</option>
-                    <option value="2015">2015</option>
-                    <option value="2014">2014</option>
-                    <option value="2013">2013</option>
-                    <option value="2012">2012</option>
-                    <option value="2011">2011</option>
-                </select>
-            </div>
-            <div class="col-xs-2">
                 <label for="ex1">Edição</label>
                 <select class="form-control" id="codEdicao" type="text">
                     <option value="0">Selecione...</option>
-                    <option value="5">5</option>
                     <option value="4">4</option>
                     <option value="3">3</option>
                     <option value="2">2</option>
@@ -58,17 +91,13 @@
 
             </div>
             <div class="form-group" style="padding-top:42px;">
-
                 <input id="btnPesquisar" type="button" class="btn" value="Pesquisar" />
-
             </div>
         </div>
-        <label style="font-size:small; color:red;"> * Chave, Mês/Ano são obrigatórios! </label>
     </div>
-    <div id="alunos">
-    </div>
-
-
+    <div id="divAes"></div>
+    <div id="divAlunos"></div>
+    <div id="divAtivos"></div>
 
 </div>
 
@@ -76,25 +105,28 @@
     window.onload = function () {
 
         $("#btnPesquisar").click(function (e) {
+            var codEdicao = $("#codEdicao").val()
+            var token = $("#txtToken").val();
 
             e.preventDefault();
             if (vaidarInputs()) {
-           
+
                 $.ajax({
                     type: "POST",
                     async: true,
                     dataType: "html",
                     url: "/Aluno/ValidarToken",
-                    data: { token: $("#txtToken").val() },
+                    data: { token: token, codEdicao: codEdicao },
                     success: function (data) {
-                        debugger;
-                      
-                        $('#alunos').html(data);
+
+                        $('#divAes').html(data);
+                        $('#divAtivos').html("");
+
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
 
                         $(document).ajaxStop(function () {
-                            debugger;
+
                         });
 
                     }
@@ -107,9 +139,8 @@
     };
 
     function vaidarInputs() {
-     
-        if ($("#codAno").val() == 0 || $("#codMes").val() == 0 || $("#txtToken").val() == "") {
-            alert("Os campos com * são obrigatórios!");
+        if ($("#txtToken").val() == "") {
+            alert("Informe a chave de acesso!");
             return false;
         }
         return true;

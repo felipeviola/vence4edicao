@@ -124,6 +124,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\calendar.png" />
     <Content Include="Content\external\jquery\jquery.js" />
+    <Content Include="Content\glyphicons-halflings_140_BCK.png" />
     <Content Include="Content\images\ui-icons_444444_256x240.png" />
     <Content Include="Content\images\ui-icons_555555_256x240.png" />
     <Content Include="Content\images\ui-icons_777620_256x240.png" />
@@ -139,6 +140,8 @@
     <Content Include="Content\jquery-ui.structure.min.css" />
     <Content Include="Content\jquery-ui.theme.css" />
     <Content Include="Content\jquery-ui.theme.min.css" />
+    <Content Include="Content\mensagensbootstrap.css" />
+    <Content Include="Content\passo_check.png" />
     <Content Include="Content\Videos\scripts\config_xml.js" />
     <Content Include="Content\Videos\scripts\techsmith-smart-player.min.js" />
     <Content Include="Content\Videos\skins\overlay\spritesheet.min.css" />
@@ -192,7 +195,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Consulta\Index.cshtml" />
     <Content Include="Views\Aluno\Index.cshtml" />
+    <Content Include="Views\Aluno\partialAES.cshtml" />
+    <Content Include="Views\Aluno\partialViewError.cshtml" />
     <Content Include="Views\Aluno\partialAlunos.cshtml" />
+    <Content Include="Views\Aluno\partialAtivos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

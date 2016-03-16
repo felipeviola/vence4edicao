@@ -1,0 +1,50 @@
+﻿
+@model List<Vence.Input4Edicao.Controllers.Alunos>
+
+
+
+@if (Model != null)
+{
+
+
+
+    <div class="container">
+
+        <div class="isa_success">
+            
+            <strong>Acompanhe abaixo os registros lançados. </strong>
+
+        </div>
+
+        <table id="tblAlunos" class="table">
+            <thead>
+                <tr>
+                    <th>Mantida</th>
+                    <th>Curso</th>
+                    <th>Item Aes</th>
+                    <th>Alunos Ativos</th>
+                    <th>Mës/Ano</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Mantida</td>
+                        <td>@item.Curso</td>
+                        <td>@item.ItemAes</td>
+                        <td>@item.TotalAtivos</td>
+                        <td>@item.MesAno</td>
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+    
+    
+    </div>
+
+
+}
