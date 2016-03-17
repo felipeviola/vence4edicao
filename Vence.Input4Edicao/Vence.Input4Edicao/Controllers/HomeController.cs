@@ -112,7 +112,9 @@ namespace Vence.Input4Edicao.Controllers
 
         private List<Aluno> ValidarAlunosGDAE(Formulario formulario)
         {
+        
             var listaAlunosRaInvalidos = new List<Aluno>();
+            var rasDuplicados = new List<Aluno>();
 
             foreach (var item in formulario.Aluno)
             {
@@ -124,14 +126,41 @@ namespace Vence.Input4Edicao.Controllers
                     alunoRaInvalido.RA = item.RA;
                     alunoRaInvalido.Nome = item.Nome;
                     listaAlunosRaInvalidos.Add(alunoRaInvalido);
+
+             
                 }
+
             }
+
+            var listaAgrupada = formulario.Aluno.GroupBy(_ => _.RA);
+
+            if (listaAgrupada.Count() < formulario.Aluno.Count())
+            {
+                foreach (var item in formulario.Aluno)
+                {
+                    var alunoDuplicado = new Aluno();
+                    var alunos = formulario.Aluno.Where(_ => _.RA == item.RA);
+                    if(alunos.Count() > 1)
+                    {
+                        alunoDuplicado.RA = item.RA;
+                        alunoDuplicado.Nome = item.Nome;
+                        listaAlunosRaInvalidos.Add(alunoDuplicado);
+                       
+                    }
+                }
+
+            }
+
+ 
+
+       
+
             return listaAlunosRaInvalidos;
         }
 
         private bool ValidarRaAlunoGDAE(string ra)
         {
-
+         
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionStringSql"].ConnectionString;
             string retorno = string.Empty;
             var conn = new SqlConnection(_connectionString);
@@ -142,6 +171,7 @@ namespace Vence.Input4Edicao.Controllers
             {
                 retorno = reader["nr_ra"].ToString();
             }
+           
             return string.IsNullOrEmpty(retorno) ? false : true;
 
         }
