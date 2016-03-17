@@ -18,24 +18,99 @@ namespace Vence.Input4Edicao.Controllers
 
         public PartialViewResult ValidarToken(string token = "", int codEdicao = 0)
         {
-
             var listaAes = new List<AES>();
             int codDe = 0;
 
-            codDe = ObterDeApartirDoToken(token);
-
-            if (codDe > 0)
+            try
             {
-                listaAes = ObterAES(codDe, codEdicao);
-                return PartialView("partialAES", listaAes);
+                codDe = ObterDeApartirDoToken(token);
+
+                if (codDe > 0)
+                {
+                    listaAes = ObterAES(codDe, codEdicao);
+                    return PartialView("partialAES", listaAes);
+                }
+                else
+                {
+                    ViewBag.ErroPesquisaToken = true;
+                    return PartialView("partialViewError");
+                }
             }
-            else
+            catch (Exception)
             {
                 ViewBag.ErroPesquisaToken = true;
-                return PartialView("partialViewError");
+                return PartialView("partialViewError");  
+              
             }
+        }    
+
+        public PartialViewResult ObterTotalAlunos(string AES)
+        {
+            try
+            {
+                var alunosAtivos = ObterAlunos(AES);
+
+                return PartialView("partialAlunos", alunosAtivos);
+            }
+            catch (Exception)
+            {
+                ViewBag.ErroPesquisaToken = true;
+                return PartialView("partialViewError");  
+            }
+         
         }
 
+        public PartialViewResult AtualizarAtivos(Alunos alunos)
+        {
+            try
+            {
+
+                if (ValidarAlunos(alunos))
+                {
+
+                    if (AtualiarAlunos(alunos))
+                    {
+
+                        var alunosAtualizados = ObterAlunoAtualizados(alunos.NumeroAes);
+
+                        return PartialView("partialAtivos", alunosAtualizados);
+                    }
+                    else
+                    {
+                        ViewBag.ErroPesquisaToken = false;
+                        return PartialView("partialViewError");
+
+                    }
+                }
+                else
+                {
+                    ViewBag.ErroPesquisaToken = false;
+                    return PartialView("partialViewError");
+                }
+            }
+            catch (Exception)
+            {
+                ViewBag.ErroPesquisaToken = true;
+                return PartialView("partialViewError"); 
+            }
+   
+        }
+
+        public PartialViewResult AtualizarGrid(string AES)
+        {
+            try
+            {
+                var alunosAtualizados = ObterAlunoAtualizados(AES);
+
+                return PartialView("partialAtivos", alunosAtualizados);
+            }
+            catch (Exception)
+            {
+                ViewBag.ErroPesquisaToken = true;
+                return PartialView("partialViewError");  
+            }
+           
+        }
         private List<AES> ObterAES(int codDe, int codEdicao)
         {
 
@@ -69,49 +144,11 @@ namespace Vence.Input4Edicao.Controllers
                 listaAES.Add(aes);
             }
 
-            return listaAES.Count() > 0 ? listaAES.Where(_ => _.CodEdicao < 5).ToList() : listaAES;
+            return listaAES.Count() > 0 ? listaAES.Where(_ => _.CodEdicao ==4).ToList() : listaAES;
 
 
         }
-        public PartialViewResult ObterTotalAlunos(string AES)
-        {
-            var alunosAtivos = ObterAlunos(AES);
 
-            return PartialView("partialAlunos", alunosAtivos);
-        }
-
-        public PartialViewResult AtualizarAtivos(Alunos alunos)
-        {
-            if (ValidarAlunos(alunos))
-            {
-
-                if (AtualiarAlunos(alunos))
-                {
-
-                    var alunosAtualizados = ObterAlunoAtualizados(alunos.NumeroAes);
-
-                    return PartialView("partialAtivos", alunosAtualizados);
-                }
-                else
-                {
-                    ViewBag.ErroPesquisaToken = false;
-                    return PartialView("partialViewError");
-
-                }
-            }
-            else
-            {
-                ViewBag.ErroPesquisaToken = false;
-                return PartialView("partialViewError");
-            }
-        }
-
-        public PartialViewResult AtualizarGrid(string AES)
-        {
-            var alunosAtualizados = ObterAlunoAtualizados(AES);
-
-            return PartialView("partialAtivos", alunosAtualizados);
-        }
         private List<Alunos> ObterAlunoAtualizados(string numeroAes)
         {
             var listaAlunos = new List<Alunos>();
@@ -141,13 +178,11 @@ namespace Vence.Input4Edicao.Controllers
                 if (reader["data_referencia"] != DBNull.Value)
                 {
                     dt = Convert.ToDateTime(reader["data_referencia"]);
-
                     string mesAno = dt.Month < 10 ? string.Format("0{0}/{1}", dt.Month, dt.Year) : string.Format("{0}/{1}", dt.Month, dt.Year);
                     aluno.MesAno = mesAno;
                 }
                 listaAlunos.Add(aluno);
             }
-
             return listaAlunos;
 
         }
@@ -205,7 +240,6 @@ namespace Vence.Input4Edicao.Controllers
 	                             order by Mantida, Item_AES ", AES);
 
             var cmd = new SqlCommand(comando, conn);
-
             cmd.Connection.Open();
             var reader = cmd.ExecuteReader();
 
@@ -311,9 +345,6 @@ namespace Vence.Input4Edicao.Controllers
 
         }
     }
-
-
-
 
     public class Alunos
     {
