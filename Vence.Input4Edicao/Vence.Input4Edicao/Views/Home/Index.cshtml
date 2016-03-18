@@ -19,6 +19,37 @@
     strong {
         font-weight: 900;
     }
+
+    .isa_info, .isa_success, .isa_warning, .isa_error {
+        margin: 10px 0px;
+        padding: 12px;
+    }
+
+    .isa_info {
+        color: #000;
+        background-color: #BDE5F8;
+    }
+
+    .isa_success {
+        color: #4F8A10;
+        background-color: #DFF2BF;
+    }
+
+    .isa_warning {
+        color: #D8000C;
+        background-color: #FEEFB3;
+    }
+
+    .isa_error {
+        color: #D8000C;
+        background-color: #FFBABA;
+    }
+
+        .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+            margin: 10px 22px;
+            font-size: 2em;
+            vertical-align: middle;
+        }
 </style>
 
 
@@ -55,6 +86,20 @@
         </div>
     </div>
 </div>
+
+@*<div class="isa_info">
+
+        <strong>Finalizar lançamentos. </strong>
+        <p>Caso tenha finalizado todos os lançamentos, click na opção abaixo. Desmarque para cancelar a finalização.</p>
+
+        <div>
+            <label>
+                <input id="chkFinalizar" type="checkbox" style="width:22px; height:22px;" />
+            </label>
+        </div>
+
+
+    </div>*@
 
 
 
@@ -173,6 +218,7 @@
     }
 
     window.onload = function () {
+
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
         $("#txtItemAES").val('');
@@ -189,7 +235,7 @@
         $("#btnAddDiaLetivo").click(function () {
 
             diaLancado = $("#addDataLetiva").val();
-            var jaAdicionado =( $.inArray(diaLancado, diasLancados) > -1);
+            var jaAdicionado = ($.inArray(diaLancado, diasLancados) > -1);
             if (jaAdicionado) {
                 alert("Dia já adicionado!");
             }
@@ -380,8 +426,8 @@
                     $(this).find("td:eq(1)").html('');
                 });
                 $("#diasLetivosHeader thead tr").html('');
-               
-                 diasLancados = new Array();
+
+                diasLancados = new Array();
             }
         });
     };
