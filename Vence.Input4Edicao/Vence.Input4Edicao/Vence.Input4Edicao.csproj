@@ -142,6 +142,7 @@
     <Content Include="Content\jquery-ui.structure.min.css" />
     <Content Include="Content\jquery-ui.theme.css" />
     <Content Include="Content\jquery-ui.theme.min.css" />
+    <Content Include="Content\mensagemvence4edicao.jpg" />
     <Content Include="Content\mensagensbootstrap.css" />
     <Content Include="Content\passo_check.png" />
     <Content Include="Content\Videos\scripts\config_xml.js" />

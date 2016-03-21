@@ -87,21 +87,6 @@
     </div>
 </div>
 
-@*<div class="isa_info">
-
-        <strong>Finalizar lançamentos. </strong>
-        <p>Caso tenha finalizado todos os lançamentos, click na opção abaixo. Desmarque para cancelar a finalização.</p>
-
-        <div>
-            <label>
-                <input id="chkFinalizar" type="checkbox" style="width:22px; height:22px;" />
-            </label>
-        </div>
-
-
-    </div>*@
-
-
 
 <div class="table-responsive">
     <table id="diasLetivos" class="table">
@@ -173,7 +158,11 @@
     </div>
 </div>
 
+<div id="ModalHome" title="Lembrete" style="display:none;">
+    <h3 style="color:red;">* Regra de formação do RA: 12 caracteres sendo que o número do RA não possui o dígito do RG.</h3>
+    <img id="msg" src="/Content/mensagemvence4edicao.jpg" />
 
+</div>
 
 <script>
     var diasLancados = new Array();
@@ -185,6 +174,8 @@
         $("#mesReferencia").mask("99/9999");
         $("#txtMesReferencia").mask("99/9999");
         $("#txtCpfSup").mask("999.999.999-99");
+
+        $("#ModalHome").dialog({ width: 'auto', modal: true });
     }
     function BuscarTurmas() {
         if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
