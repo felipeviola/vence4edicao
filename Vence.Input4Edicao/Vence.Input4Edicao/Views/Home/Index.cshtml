@@ -36,7 +36,7 @@
     }
 
     .isa_warning {
-        color: #D8000C;
+        color: #000;
         background-color: #FEEFB3;
     }
 
@@ -50,6 +50,13 @@
             font-size: 2em;
             vertical-align: middle;
         }
+    .show {
+     display:block;
+    }
+    .hide {
+     display:none;
+    }
+
 </style>
 
 
@@ -87,6 +94,14 @@
     </div>
 </div>
 
+<div class="isa_warning hide" id="divFinalizar">
+    <label> Caso já tenha finalizado todos os lançamentos. Click no botão Finalizar Lançamento para encerrar.</label><br />
+    <input id="btnFinalizar" type="button" class="btn" value="Finalizar Lançamento" title="Finalizar Lançamento!" />
+</div>
+
+<div class="isa_success hide" id="divFinalizado">
+   <strong> Lançamento Finalizado </strong>
+</div>
 
 <div class="table-responsive">
     <table id="diasLetivos" class="table">
@@ -163,6 +178,10 @@
     <img id="msg" src="/Content/mensagemvence4edicao.jpg" />
 
 </div>
+<div id="modalMsg" title="Mensagem" style="display:none;">
+   <h5>Finalizado com sucesso!</h5>
+
+</div>
 
 <script>
     var diasLancados = new Array();
@@ -223,6 +242,39 @@
                 $("#btnAddDiaLetivo").focus();
             }
         })
+
+        $("#btnFinalizar").click(function (e) {       
+            var r = confirm("Deseja Finalizar os lançamentos?");
+            if (r) {
+                e.preventDefault();
+                var token = $("#txtToken").val();
+                var aes = aes = $("#txtNumeroAES").val();
+          
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/FinalizarLancamentos",
+                    data: {token: token, numeroAes: aes},                
+                    success: function (data) {
+        
+                        if (Boolean(data)) {
+                            $("#btnFinalizar").attr('disabled', 'disabled');
+                            $("#btnSalvar").attr('disabled', 'disabled');
+                            $("#modalMsg").dialog({ width: 400, modal: true });
+
+
+                            $("#divFinalizar").removeClass("isa_warning show");
+                            $("#divFinalizar").addClass("isa_warning hide");
+
+                            $("#divFinalizado").removeClass("isa_success hide");
+                            $("#divFinalizado").addClass("isa_success show");
+
+                        } 
+                    }
+                });
+
+            }
+        });
+
         $("#btnAddDiaLetivo").click(function () {
 
             diaLancado = $("#addDataLetiva").val();
@@ -390,6 +442,32 @@
                         var retorno = JSON.parse(data);
                         $("#tblAlunos tbody").html("");
                         $("#diasLetivosHeader thead tr").html("");
+
+                        $("#divFinalizar").removeClass("isa_warning hide");
+                        $("#divFinalizar").addClass("isa_warning show");
+                 
+                        var token = $("#txtToken").val();
+                        var aes =  $("#txtNumeroAES").val();
+                  
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/ValidarLancamentos",
+                            data: { token: token, aes: aes },
+                            success: function (data) {
+
+                                if (Boolean(data)) {
+                                    //$("#btnFinalizar").attr('disabled', 'disabled');
+                                    //$("#btnSalvar").attr('disabled', 'disabled');
+                                    $("#btnSalvar").hide();
+                                    $("#divFinalizar").removeClass("isa_warning show");
+                                    $("#divFinalizar").addClass("isa_warning hide");
+
+                                    $("#divFinalizado").removeClass("isa_success hide");
+                                    $("#divFinalizado").addClass("isa_success show");
+                                }
+                            }
+                        });
+
                         for (var item in retorno) {
                             $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA + "' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
                         }

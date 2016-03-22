@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+
+
 <style>
     #tblAlunos th {
         font-size: x-small;
@@ -9,7 +11,48 @@
     #tblAlunos td {
         font-size: x-small;
     }
+
+    p {
+        margin: 1em 0;
+    }
+
+    strong {
+        font-weight: 900;
+    }
+
+    .isa_info, .isa_success, .isa_warning, .isa_error {
+        margin: 10px 0px;
+        padding: 12px;
+    }
+
+    .isa_info {
+        color: #000;
+        background-color: #BDE5F8;
+    }
+
+    .isa_success {
+        color: #4F8A10;
+        background-color: #DFF2BF;
+    }
+
+    .isa_warning {
+        color: #D8000C;
+        background-color: #FEEFB3;
+    }
+
+    .isa_error {
+        color: #D8000C;
+        background-color: #FFBABA;
+    }
+
+        .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+            margin: 10px 22px;
+            font-size: 2em;
+            vertical-align: middle;
+        }
 </style>
+
+
 <div class="jumbotron">
     <div id="FiltrosTurma" class="form-group row">
         <div class="col-xs-2">
@@ -45,7 +88,6 @@
 </div>
 
 
-
 <div class="table-responsive">
     <table id="diasLetivos" class="table">
         <thead>
@@ -67,6 +109,25 @@
             </tr>
         </tbody>
     </table>
+
+
+
+    <div id="divMessage" class="ui-widget" style="display:none">
+        <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+            <p>
+                <span class="ui-icon ui-icon-alert"
+                      style="float: left; margin-right: .3em;"></span>
+                <strong> Verifique os RA´s antes de enviar os dados!</strong>
+
+                <table id="tbAlunosRaInvalido">
+                    <thead>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </p>
+        </div>
+    </div>
+    <br />
     <table id="tblAlunos" class="table-bordered" style="table-layout: fixed;">
         <thead>
             <tr>
@@ -85,26 +146,36 @@
                 <th class="col-xs-1">RA(GDAE)</th>
                 <th style="width:50px;">Aprovado</th>
                 <th style="width:50px;">Ignorar</th>
+
             </tr>
         </thead>
         <tbody></tbody>
     </table>
     <div class="form-group" style="padding-top:20px;">
         <div style="width:100%;text-align:center;">
-            <input id="btnSalvar" type="button" class="btn-primary" value="Salvar" />
+            <input id="btnSalvar" type="button" class="btn" value="Salvar" />
         </div>
     </div>
 </div>
 
+<div id="ModalHome" title="Lembrete" style="display:none;">
+    <h3 style="color:red;">* Regra de formação do RA: 12 caracteres sendo que o número do RA não possui o dígito do RG.</h3>
+    <img id="msg" src="/Content/mensagemvence4edicao.jpg" />
 
+</div>
 
 <script>
+    var diasLancados = new Array();
+    var contador = 0;
+    var diaLancado = "";
     function aplicarMascaras() {
         $("#addDataLetiva").mask("99");
         $("[data-type='Hora']").mask("999:99");
         $("#mesReferencia").mask("99/9999");
         $("#txtMesReferencia").mask("99/9999");
         $("#txtCpfSup").mask("999.999.999-99");
+
+        $("#ModalHome").dialog({ width: 'auto', modal: true });
     }
     function BuscarTurmas() {
         if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
@@ -136,8 +207,9 @@
             BuscarTurmas();
         });
     }
-    
+
     window.onload = function () {
+
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
         $("#txtItemAES").val('');
@@ -153,36 +225,52 @@
         })
         $("#btnAddDiaLetivo").click(function () {
 
-            if ($("#addDataLetiva").val() && $("#addHoraLetiva").val()) {
-                $("#diasLetivosHeader thead tr:eq(0)").append("<td style='width:30px;text-align:center;border-right:none;border-left:none;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addDataLetiva").val() + "</td>");
-                $("#diasLetivosHeader thead tr:eq(1)").append("<td style='width:30px;text-align:center;border-right:none;border-left:none;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addHoraLetiva").val() + "</td>");
-                $("#tblAlunos tbody tr").each(function () {
-                    var matricula = $(this).find("td:eq(0)").attr("data-matricula");
-                    $(this).find("td:eq(1)").append("<div style='width:30px;text-align:center;float:left;overflow-x: scroll;'><input type='checkbox' data-diaLetivo='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "' data-matricula='" + matricula + "'  /></div>");
-                });
-                $("#addDataLetiva").val('').focus();
-                $("#addHoraLetiva").val('');
-
+            diaLancado = $("#addDataLetiva").val();
+            var jaAdicionado = ($.inArray(diaLancado, diasLancados) > -1);
+            if (jaAdicionado) {
+                alert("Dia já adicionado!");
             }
+            else {
+
+                if ($("#addDataLetiva").val() && $("#addHoraLetiva").val()) {
+
+                    $("#diasLetivosHeader thead tr:eq(0)").append("<td style='width:30px;text-align:center;border-right:none;border-left:none;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addDataLetiva").val() + "</td>");
+                    $("#diasLetivosHeader thead tr:eq(1)").append("<td style='width:30px;text-align:center;border-right:none;border-left:none;' data-id='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "'>" + $("#addHoraLetiva").val() + "</td>");
+
+                    $("#tblAlunos tbody tr").each(function () {
+                        var matricula = $(this).find("td:eq(0)").attr("data-matricula");
+                        $(this).find("td:eq(1)").append("<div style='width:30px;text-align:center;float:left;overflow-x: scroll;'><input type='checkbox' data-diaLetivo='" + $("#addDataLetiva").val() + "' data-horaLetiva='" + $("#addHoraLetiva").val() + "' data-matricula='" + matricula + "'  /></div>");
+                    });
+
+                    $("#addDataLetiva").val('').focus();
+                    $("#addHoraLetiva").val('');
+
+                }
+
+                diasLancados[contador] = diaLancado;
+                contador += 1;
+            }
+
         });
         $("#tblAlunos").on("click", "input[type='checkbox']", function () {
             var index = $(this).parent().index();
             if ($(this).attr('data-type') == 'aprovado') {
-                $(this).parent().parent().find("input[data-type='ignorado']").attr('checked',false);
+                $(this).parent().parent().find("input[data-type='ignorado']").attr('checked', false);
             }
             else if ($(this).attr('data-type') == 'ignorado') {
                 $(this).parent().parent().find("input[data-type='aprovado']").attr('checked', false);
             }
         });
         $("#btnSalvar").click(function () {
+            var existeRaInvalido = false;
             var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
+
             var i = 0;
             var j = 0;
             var presencas = [];
             var diasCalendario = [];
             var alunos = [];
             $("#tblAlunos tbody tr").each(function () {
-                //console.log($(this).find("td:eq(4) input").is(":checked"));
                 alunos[j] = { Matricula: $(this).find("td:eq(0)").attr("data-matricula"), Estagio: $(this).find("td:eq(2) input").val(), RA: $(this).find("td:eq(3) input").val(), AprovadoVence: $(this).find("td:eq(4) input").is(":checked"), IgnorarAluno: $(this).find("td:eq(5) input").is(":checked"), Inscricao: $(this).find("td:eq(0)").attr("data-inscricao") };
                 $(this).find("input:checked").each(function () {
                     presencas[i] = {
@@ -229,12 +317,24 @@
                                     data: JSON.stringify(Formulario),
                                     contentType: 'application/json; charset=utf-8',
                                     success: function (data) {
-                                        if (data) {
+
+                                        $("#tbAlunosRaInvalido tbody").html("");
+                                        $.each(data, function (i, item) {
+
+                                            $("#tbAlunosRaInvalido tbody").append("<tr> <td> " + item.RA + " </td></tr>");
+
+                                            existeRaInvalido = true;
+
+                                        });
+
+                                        if (!existeRaInvalido) {
                                             alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
                                             location.reload();
                                         }
-                                        else
-                                            alert("Chave de acesso incorreto.");
+                                        else {
+                                            alert("Não foi possível concluir o lançamento.Existe(m) número(s) de RA que não conferem com a base de dados GDAE!");
+                                            $("#divMessage").css("display", "block");
+                                        }
                                     }
                                 });
                             }
@@ -248,12 +348,23 @@
                                     data: JSON.stringify(Formulario),
                                     contentType: 'application/json; charset=utf-8',
                                     success: function (data) {
-                                        if (data) {
+
+                                        $("#tbAlunosRaInvalido tbody").html("");
+                                        $.each(data, function (i, item) {
+
+                                            $("#tbAlunosRaInvalido tbody").append("<tr> <td> " + item.RA + " </td></tr>");
+                                            existeRaInvalido = true;
+
+                                        });
+
+                                        if (!existeRaInvalido) {
                                             alert("Lançamento de frequência efetuado com sucesso. Os dados serão processados e reenviados a DE em 20 dias uteis.");
                                             location.reload();
                                         }
-                                        else
-                                            alert("Chave de acesso incorreto.");
+                                        else {
+                                            alert("Não foi possível concluir o lançamento.Existe(m) número(s) de RA que não conferem com a base de dados GDAE! ou RA´s duplicados.");
+                                            $("#divMessage").css("display", "block");
+                                        }
                                     }
                                 });
                             }
@@ -280,7 +391,7 @@
                         $("#tblAlunos tbody").html("");
                         $("#diasLetivosHeader thead tr").html("");
                         for (var item in retorno) {
-                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA +"' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
+                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA + "' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
                         }
                         $('input[data-tipo]').mask('999:99');
                     }
@@ -306,6 +417,8 @@
                     $(this).find("td:eq(1)").html('');
                 });
                 $("#diasLetivosHeader thead tr").html('');
+
+                diasLancados = new Array();
             }
         });
     };

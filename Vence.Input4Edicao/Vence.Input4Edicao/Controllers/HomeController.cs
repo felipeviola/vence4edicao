@@ -110,6 +110,49 @@ namespace Vence.Input4Edicao.Controllers
 
         }
 
+        public JsonResult ValidarLancamentos(string token, string aes)
+        {
+            DateTime? dt =null;
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+     
+            var conn = new SqlConnection(_connectionString);
+            var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}' and AES = '{1}'  ", token, aes), conn);
+            cmd.Connection.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dt = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
+            }
+            if(dt.HasValue && dt.Value != DateTime.MinValue)            
+                return Json(true, JsonRequestBehavior.AllowGet);
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult FinalizarLancamentos(string token, string numeroAes)
+        {
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            string comando = "";
+            if (!(string.IsNullOrEmpty(token)) && !(string.IsNullOrEmpty(numeroAes)))
+            {
+                comando = string.Format(@" update [dbo].[Token]
+                                            set DataFinalizado = getdate()
+                                            where Chave= '{0}'
+                                            and AES = '{1}'", token, numeroAes);
+
+               
+                var  cmd = new SqlCommand(comando, conn);
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
         private List<Aluno> ValidarAlunosGDAE(Formulario formulario)
         {
         
