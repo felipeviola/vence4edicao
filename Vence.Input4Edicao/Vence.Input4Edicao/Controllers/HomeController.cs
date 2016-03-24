@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Data.SqlClient;
 using System.Web.Script.Serialization;
 using System.Text;
+using System.IO;
 
 namespace Vence.Input4Edicao.Controllers
 {
@@ -25,9 +26,58 @@ namespace Vence.Input4Edicao.Controllers
             {
                 retorno = reader["AES"].ToString();
             }
+            conn.Close();
             return Json(retorno, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Help()
+        {
+            return View();
+        }
+
+        public void DownloadPPT()
+        {
+            System.IO.FileInfo file = new System.IO.FileInfo(HttpContext.Server.MapPath("~/Content/Arquivos/Tutorial.pptx"));
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + "Tutorial.pptx");
+            Response.ContentType = "application/vnd.ms-powerpoint";
+            Response.Buffer = true;
+
+            using (FileStream fileStream = file.Open(FileMode.Open))
+            {
+                fileStream.CopyTo(Response.OutputStream);
+            }
+
+            Response.End();
+
+        }
+
+        public void DownloadWord()
+        {
+            System.IO.FileInfo file = new System.IO.FileInfo(HttpContext.Server.MapPath("~/Content/Arquivos/EvidênciaModelo.doc"));
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + "ModeloEvidencia.doc");
+            Response.ContentType = "application/vnd.ms-word";
+            Response.Buffer = true;
+
+            using (FileStream fileStream = file.Open(FileMode.Open))
+            {
+                fileStream.CopyTo(Response.OutputStream);
+            }
+
+            Response.End();
+
+        }
         public ActionResult Index()
+        {
+            return View();
+            // return  RedirectToAction("Manutencao", "Home");
+        }
+        public ActionResult Manutencao()
+        {
+            return View();
+        }
+        public ActionResult Finalizar()
         {
             return View();
         }
@@ -112,37 +162,80 @@ namespace Vence.Input4Edicao.Controllers
 
         public JsonResult ValidarLancamentos(string token, string aes)
         {
-            DateTime? dt =null;
+            //DateTime? dt = null;
+            //string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+
+            //var conn = new SqlConnection(_connectionString);
+            //var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}' and AES = '{1}'  ", token, aes), conn);
+            //cmd.Connection.Open();
+            //var reader = cmd.ExecuteReader();
+            //while (reader.Read())
+            //{
+            //    dt = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
+            //}
+
+            if (ValidarAESFinalizada(token))
+                return Json(true, JsonRequestBehavior.AllowGet);
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public bool ValidarAESFinalizada(string token)
+        {
+            DateTime? dt = null;
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
-     
+
             var conn = new SqlConnection(_connectionString);
-            var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}' and AES = '{1}'  ", token, aes), conn);
+            var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}'  ", token), conn);
             cmd.Connection.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 dt = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
             }
-            if(dt.HasValue && dt.Value != DateTime.MinValue)            
-                return Json(true, JsonRequestBehavior.AllowGet);
+            conn.Close();
+            if (dt.HasValue && dt.Value != DateTime.MinValue)
+                return true;
             else
-                return Json(false, JsonRequestBehavior.AllowGet);
+                return false;
+
         }
 
-        public JsonResult FinalizarLancamentos(string token, string numeroAes)
+        private bool ValidarTokenAcesso(string token)
+        {
+            string _token = string.Empty;
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+
+            var conn = new SqlConnection(_connectionString);
+            var cmd = new SqlCommand(string.Format(@" select chave from [dbo].[Token] where Chave= '{0}' ", token), conn);
+            cmd.Connection.Open();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                _token = reader["chave"].ToString();
+            }
+            conn.Close();
+            if (string.IsNullOrEmpty(_token))
+                return false;
+            else
+                return true;
+        }
+
+        public JsonResult FinalizarLancamentos(string token)
         {
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
             string comando = "";
-            if (!(string.IsNullOrEmpty(token)) && !(string.IsNullOrEmpty(numeroAes)))
+
+            if (ValidarTokenAcesso(token))
             {
                 comando = string.Format(@" update [dbo].[Token]
                                             set DataFinalizado = getdate()
-                                            where Chave= '{0}'
-                                            and AES = '{1}'", token, numeroAes);
+                                            where Chave= '{0}' ", token);
 
-               
-                var  cmd = new SqlCommand(comando, conn);
+
+                var cmd = new SqlCommand(comando, conn);
                 cmd.Connection.Open();
                 cmd.ExecuteNonQuery();
                 cmd.Connection.Close();
@@ -155,7 +248,7 @@ namespace Vence.Input4Edicao.Controllers
 
         private List<Aluno> ValidarAlunosGDAE(Formulario formulario)
         {
-        
+
             var listaAlunosRaInvalidos = new List<Aluno>();
             var rasDuplicados = new List<Aluno>();
 
@@ -170,7 +263,7 @@ namespace Vence.Input4Edicao.Controllers
                     alunoRaInvalido.Nome = item.Nome;
                     listaAlunosRaInvalidos.Add(alunoRaInvalido);
 
-             
+
                 }
 
             }
@@ -183,27 +276,27 @@ namespace Vence.Input4Edicao.Controllers
                 {
                     var alunoDuplicado = new Aluno();
                     var alunos = formulario.Aluno.Where(_ => _.RA == item.RA);
-                    if(alunos.Count() > 1)
+                    if (alunos.Count() > 1)
                     {
                         alunoDuplicado.RA = item.RA;
                         alunoDuplicado.Nome = item.Nome;
                         listaAlunosRaInvalidos.Add(alunoDuplicado);
-                       
+
                     }
                 }
 
             }
 
- 
 
-       
+
+
 
             return listaAlunosRaInvalidos;
         }
 
         private bool ValidarRaAlunoGDAE(string ra)
         {
-         
+
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionStringSql"].ConnectionString;
             string retorno = string.Empty;
             var conn = new SqlConnection(_connectionString);
@@ -214,7 +307,8 @@ namespace Vence.Input4Edicao.Controllers
             {
                 retorno = reader["nr_ra"].ToString();
             }
-           
+            conn.Close();
+
             return string.IsNullOrEmpty(retorno) ? false : true;
 
         }
@@ -240,11 +334,37 @@ namespace Vence.Input4Edicao.Controllers
             {
                 turmas.Add(new Turma { Id = Convert.ToInt32(reader[0]), Nome = reader[1].ToString() });
             }
+            conn.Close();
 
             var jsonSerialiser = new JavaScriptSerializer();
             var json = jsonSerialiser.Serialize(turmas);
 
             return Json(json, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult VerificarMesAnoLancados(int idTurma = 0, string mesAno = "")
+        {
+            int _mesLancado = 0;
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            if (idTurma == 0 && mesAno == "")
+            {
+                return Json(false);
+            }
+            else
+            {
+                SqlCommand cmd = new SqlCommand(string.Format(@" select count(*) as TotalLancadas from frequencia4edicao where idcursoturnoturma = {0} and mesreferencia ='{1}' ", idTurma, mesAno), conn);
+                cmd.Connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    _mesLancado = reader["TotalLancadas"] != DBNull.Value ? Convert.ToInt32(reader["TotalLancadas"]) : 0;
+                }
+
+                conn.Close();
+                return Json((_mesLancado > 0), JsonRequestBehavior.AllowGet);   
+            }
         }
 
         public JsonResult BuscarAlunos(int IdTurma, string mesReferencia)
@@ -265,7 +385,7 @@ namespace Vence.Input4Edicao.Controllers
             {
                 lista.Add(new Aluno { Matricula = reader["idMatricula"].ToString(), Nome = reader["NomeAluno"].ToString(), RA = reader["RA"].ToString(), Inscricao = Convert.ToInt32(reader["idInscricao"]) });
             }
-
+            conn.Close();
             var jsonSerialiser = new JavaScriptSerializer();
             var json = jsonSerialiser.Serialize(lista);
 

@@ -142,9 +142,11 @@
     <Content Include="Content\jquery-ui.structure.min.css" />
     <Content Include="Content\jquery-ui.theme.css" />
     <Content Include="Content\jquery-ui.theme.min.css" />
+    <Content Include="Content\mensage4edicaoFInal.jpg" />
     <Content Include="Content\mensagemvence4edicao.jpg" />
     <Content Include="Content\mensagensbootstrap.css" />
     <Content Include="Content\passo_check.png" />
+    <Content Include="Content\ppt.jpg" />
     <Content Include="Content\Videos\scripts\config_xml.js" />
     <Content Include="Content\Videos\scripts\techsmith-smart-player.min.js" />
     <Content Include="Content\Videos\skins\overlay\spritesheet.min.css" />
@@ -158,19 +160,25 @@
     <Content Include="Content\Videos\VideoAulaCadastro_First_Frame.png" />
     <Content Include="Content\Videos\VideoAulaCadastro_player.html" />
     <Content Include="Content\Videos\VideoAulaCadastro_Thumbnails.png" />
+    <Content Include="Content\word.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\blockui.js" />
     <Content Include="Scripts\bootstrap-checkbox.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
+    <Content Include="Content\Arquivos\PlanodeContingência.pptx" />
+    <Content Include="Content\Arquivos\EvidênciaModelo.doc" />
+    <Content Include="Content\Arquivos\Tutorial.pptx" />
+    <None Include="Properties\PublishProfiles\venceprod - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\venceprod - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.blockUI.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -203,6 +211,9 @@
     <Content Include="Views\Aluno\partialViewError.cshtml" />
     <Content Include="Views\Aluno\partialAlunos.cshtml" />
     <Content Include="Views\Aluno\partialAtivos.cshtml" />
+    <Content Include="Views\Home\Finalizar.cshtml" />
+    <Content Include="Views\Home\Manutencao.cshtml" />
+    <Content Include="Views\Home\Help.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

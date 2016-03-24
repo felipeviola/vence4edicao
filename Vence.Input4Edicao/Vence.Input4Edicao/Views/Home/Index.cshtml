@@ -36,7 +36,7 @@
     }
 
     .isa_warning {
-        color: #000;
+        color:  #D8000C;
         background-color: #FEEFB3;
     }
 
@@ -50,13 +50,14 @@
             font-size: 2em;
             vertical-align: middle;
         }
+
     .show {
-     display:block;
-    }
-    .hide {
-     display:none;
+        display: block;
     }
 
+    .hide {
+        display: none;
+    }
 </style>
 
 
@@ -70,13 +71,40 @@
             <label for="ex1">Número AES</label>
             <input class="form-control" id="txtNumeroAES" type="text" disabled="disabled">
         </div>
+
+        <div class="col-xs-2">
+            <label for="ex3">Mês</label>
+
+            @*<input class="form-control" id="txtMesReferencia" type="text">*@
+            <select class="form-control" id="idMes">
+                <option value="0">Selecione...</option>
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
+        </div>
+        <div  class="col-xs-2">
+            <label for="ex3">Ano</label>
+            <select class="form-control" id="idAno">
+                <option value="0">Selecione...</option>
+                <option value="2013">2013</option>
+                <option value="2014">2014</option>
+                <option value="2015">2015</option>
+
+            </select>
+        </div>
         <div class="col-xs-2">
             <label for="ex2">Item AES</label>
             <input class="form-control" id="txtItemAES" type="text">
-        </div>
-        <div class="col-xs-3">
-            <label for="ex3">Mês de Referência</label>
-            <input class="form-control" id="txtMesReferencia" type="text">
         </div>
         <div class="col-xs-2">
             <label for="ex3">CPF</label>
@@ -92,16 +120,24 @@
             </select>
         </div>
     </div>
+
+</div>
+<div class="isa_error hide" id="divMensagemERR">
+    <label> Token inválido ou não encontrado!. Tente novamente ou contate o administrador do sistema.</label><br />
+
 </div>
 
-<div class="isa_warning hide" id="divFinalizar">
-    <label> Caso já tenha finalizado todos os lançamentos. Click no botão Finalizar Lançamento para encerrar.</label><br />
-    <input id="btnFinalizar" type="button" class="btn" value="Finalizar Lançamento" title="Finalizar Lançamento!" />
+<div class="isa_warning hide" id="divMensagemData">
+    <strong> * Para a turma escolhida já foi lançado no mês/ano informado.Você pode sobreescrever os registros novante se necessário.</strong><br />
+
 </div>
+
 
 <div class="isa_success hide" id="divFinalizado">
-   <strong> Lançamento Finalizado </strong>
+    <strong>Você já finalizou essa AES.Aguardando processamento da Prodesp/CIMA. </strong>
 </div>
+
+
 
 <div class="table-responsive">
     <table id="diasLetivos" class="table">
@@ -174,12 +210,14 @@
 </div>
 
 <div id="ModalHome" title="Lembrete" style="display:none;">
-    <h3 style="color:red;">* Regra de formação do RA: 12 caracteres sendo que o número do RA não possui o dígito do RG.</h3>
-    <img id="msg" src="/Content/mensagemvence4edicao.jpg" />
+    <h4 style="color:red;">* Regra de formação do RA: 12 caracteres sendo que o número do RA não possui o dígito do RG.</h4>
+    <img id="msg" src="/Content/mensage4edicaoFInal.jpg" />
 
 </div>
 <div id="modalMsg" title="Mensagem" style="display:none;">
-   <h5>Finalizado com sucesso!</h5>
+    <h5>
+        Finalizado com sucesso.Aguardando processamento da Prodesp/CIMA.
+    </h5>
 
 </div>
 
@@ -191,14 +229,47 @@
         $("#addDataLetiva").mask("99");
         $("[data-type='Hora']").mask("999:99");
         $("#mesReferencia").mask("99/9999");
-        $("#txtMesReferencia").mask("99/9999");
         $("#txtCpfSup").mask("999.999.999-99");
 
-        $("#ModalHome").dialog({ width: 'auto', modal: true });
+        $("#ModalHome").dialog({
+
+            dialogClass: "no-close",
+            buttons: [
+              {
+                  text: "Fechar",
+                  click: function () {
+                      $(this).dialog("close");
+                  }
+              }
+            ],
+            width: 'auto',
+            modal: true
+        });
+
+        $("span.fecharDialog").click(function () {
+            $("#ModalHome").dialog("close");
+        });
+
+
+
     }
     function BuscarTurmas() {
-        if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
-            var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val() };
+        var _mesAno = "";
+        var _mes = $("#idMes").val();
+        var _ano = $("#idAno").val();
+        
+         _mesAno = _mes + '/' + _ano;
+        console.log(_mesAno);
+        if (_mes == "0" || _ano == "0") {
+
+            alert("Mês Ano é obrigatório pra buscar as turmas.");
+            $("#txtItemAES").val('');
+            return false;
+        }
+
+        if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && _mesAno) {
+
+            var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: _mesAno };
             console.log(filtros);
             $.ajax({
                 type: "POST",
@@ -222,9 +293,7 @@
         $("#txtItemAES").focusout(function () {
             BuscarTurmas();
         });
-        $("#txtMesReferencia").focusout(function () {
-            BuscarTurmas();
-        });
+
     }
 
     window.onload = function () {
@@ -232,7 +301,6 @@
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
         $("#txtItemAES").val('');
-        $("#txtMesReferencia").val('');
         $("#txtCpfSup").val('');
         var valido = true;
         aplicarMascaras();
@@ -242,38 +310,6 @@
                 $("#btnAddDiaLetivo").focus();
             }
         })
-
-        $("#btnFinalizar").click(function (e) {       
-            var r = confirm("Deseja Finalizar os lançamentos?");
-            if (r) {
-                e.preventDefault();
-                var token = $("#txtToken").val();
-                var aes = aes = $("#txtNumeroAES").val();
-          
-                $.ajax({
-                    type: "POST",
-                    url: "/Home/FinalizarLancamentos",
-                    data: {token: token, numeroAes: aes},                
-                    success: function (data) {
-        
-                        if (Boolean(data)) {
-                            $("#btnFinalizar").attr('disabled', 'disabled');
-                            $("#btnSalvar").attr('disabled', 'disabled');
-                            $("#modalMsg").dialog({ width: 400, modal: true });
-
-
-                            $("#divFinalizar").removeClass("isa_warning show");
-                            $("#divFinalizar").addClass("isa_warning hide");
-
-                            $("#divFinalizado").removeClass("isa_success hide");
-                            $("#divFinalizado").addClass("isa_success show");
-
-                        } 
-                    }
-                });
-
-            }
-        });
 
         $("#btnAddDiaLetivo").click(function () {
 
@@ -313,9 +349,39 @@
                 $(this).parent().parent().find("input[data-type='aprovado']").attr('checked', false);
             }
         });
+
         $("#btnSalvar").click(function () {
+      
+            $.blockUI({
+                message: "Enviando dados...",
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+
+                }
+            });
+
+
+            var _mesAno = "";
+            var _mes = $("#idMes").val();
+            var _ano = $("#idAno").val();
+
+            _mesAno = _mes + '/' + _ano;
+            console.log(_mesAno);
+            if (_mes == "0" || _ano == "0") {
+
+                alert("Mês Ano é obrigatório pra buscar as turmas.");
+                $("#txtItemAES").val('');
+                return false;
+            }
+
             var existeRaInvalido = false;
-            var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
+            var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: _mesAno, IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
 
             var i = 0;
             var j = 0;
@@ -354,6 +420,7 @@
                 valido = validation(Formulario);
 
             if (valido) {
+
                 $.ajax({
                     type: "POST",
                     url: "/Home/VerificarCadastro",
@@ -372,11 +439,8 @@
 
                                         $("#tbAlunosRaInvalido tbody").html("");
                                         $.each(data, function (i, item) {
-
                                             $("#tbAlunosRaInvalido tbody").append("<tr> <td> " + item.RA + " </td></tr>");
-
                                             existeRaInvalido = true;
-
                                         });
 
                                         if (!existeRaInvalido) {
@@ -387,6 +451,7 @@
                                             alert("Não foi possível concluir o lançamento.Existe(m) número(s) de RA que não conferem com a base de dados GDAE!");
                                             $("#divMessage").css("display", "block");
                                         }
+                                        $.unblockUI();
                                     }
                                 });
                             }
@@ -417,6 +482,8 @@
                                             alert("Não foi possível concluir o lançamento.Existe(m) número(s) de RA que não conferem com a base de dados GDAE! ou RA´s duplicados.");
                                             $("#divMessage").css("display", "block");
                                         }
+
+                                        $.unblockUI();
                                     }
                                 });
                             }
@@ -426,11 +493,117 @@
                 });
 
             }
-            else
+            else {
                 alert("Favor preencher corretamente todos os campos antes de efetuar o cadastro.")
+                $.unblockUI();
+            }
         });
 
+        $("#idMes").change(function () {
+          
+            var _idTurma = $("#lstTurma").val();
+            var _mesAno = "";
+            var _mes = $("#idMes").val();
+            var _ano = $("#idAno").val();
+
+            _mesAno = _mes + '/' + _ano;
+
+
+            if (_idTurma > 0 &&  parseInt(_mes) > 0 && parseInt(_ano) > 0 ) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/VerificarMesAnoLancados",
+                    data: { idTurma: _idTurma, mesAno: _mesAno },
+                    success: function (data) {
+               
+                        if (Boolean(data)) {
+                            $("#divMensagemData").removeClass("isa_warning hide");
+                            $("#divMensagemData").addClass("isa_warning show");
+                        } else {
+
+                            $("#divMensagemData").removeClass("isa_warning show");
+                            $("#divMensagemData").addClass("isa_warning hide");
+                        }
+
+                    }
+                });
+            } else {
+                $("#divMensagemData").removeClass("isa_warning show");
+                $("#divMensagemData").addClass("isa_warning hide");
+            }
+
+        });
+
+        $("#idAno").change(function () {
+       
+            var _idTurma = $("#lstTurma").val();
+            var _mesAno = "";
+            var _mes = $("#idMes").val();
+            var _ano = $("#idAno").val();
+
+            _mesAno = _mes + '/' + _ano;
+
+
+            if (_idTurma > 0 && parseInt(_mes) > 0 && parseInt(_ano) > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/VerificarMesAnoLancados",
+                    data: { idTurma: _idTurma, mesAno: _mesAno },
+                    success: function (data) {
+                       
+                        if (Boolean(data)) {
+                            $("#divMensagemData").removeClass("isa_warning hide");
+                            $("#divMensagemData").addClass("isa_warning show");
+                        } else {
+
+                            $("#divMensagemData").removeClass("isa_warning show");
+                            $("#divMensagemData").addClass("isa_warning hide");
+                        }
+
+                    }
+                });
+            } else {
+                $("#divMensagemData").removeClass("isa_warning show");
+                $("#divMensagemData").addClass("isa_warning hide");
+            }
+
+        });
         $("#lstTurma").change(function () {
+      
+            var _idTurma = $(this).val();
+            var _mesAno = "";
+            var _mes = $("#idMes").val();
+            var _ano = $("#idAno").val();
+
+            _mesAno = _mes + '/' + _ano;
+
+            if (_mes == "0" || _ano == "0") {
+                alert("Mês Ano é obrigatório pra buscar as turmas.");
+                return false;
+            }
+            if (_idTurma > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/VerificarMesAnoLancados",
+                    data: { idTurma: _idTurma, mesAno: _mesAno },
+                    success: function (data) {
+                      
+                        if (Boolean(data)) {
+                            $("#divMensagemData").removeClass("isa_warning hide");
+                            $("#divMensagemData").addClass("isa_warning show");
+                        } else {
+
+                            $("#divMensagemData").removeClass("isa_warning show");
+                            $("#divMensagemData").addClass("isa_warning hide");
+                        }
+
+                    }
+                });
+            } else {
+                $("#divMensagemData").removeClass("isa_warning show");
+                $("#divMensagemData").addClass("isa_warning hide");
+            }
+
             console.log($("#lstTurma option:selected").val());
             if ($("#lstTurma option:selected").val()) {
                 $.ajax({
@@ -443,30 +616,24 @@
                         $("#tblAlunos tbody").html("");
                         $("#diasLetivosHeader thead tr").html("");
 
-                        $("#divFinalizar").removeClass("isa_warning hide");
-                        $("#divFinalizar").addClass("isa_warning show");
-                 
-                        var token = $("#txtToken").val();
-                        var aes =  $("#txtNumeroAES").val();
-                  
-                        $.ajax({
-                            type: "POST",
-                            url: "/Home/ValidarLancamentos",
-                            data: { token: token, aes: aes },
-                            success: function (data) {
+                        //var token = $("#txtToken").val();
+                        //var aes = $("#txtNumeroAES").val();
 
-                                if (Boolean(data)) {
-                                    //$("#btnFinalizar").attr('disabled', 'disabled');
-                                    //$("#btnSalvar").attr('disabled', 'disabled');
-                                    $("#btnSalvar").hide();
-                                    $("#divFinalizar").removeClass("isa_warning show");
-                                    $("#divFinalizar").addClass("isa_warning hide");
+                        //$.ajax({
+                        //    type: "POST",
+                        //    url: "/Home/ValidarLancamentos",
+                        //    data: { token: token, aes: aes },
+                        //    success: function (data) {
 
-                                    $("#divFinalizado").removeClass("isa_success hide");
-                                    $("#divFinalizado").addClass("isa_success show");
-                                }
-                            }
-                        });
+                        //        if (Boolean(data)) {
+                        //            $("#btnSalvar").hide();
+
+                        //            $("#divFinalizado").removeClass("isa_success hide");
+                        //            $("#divFinalizado").addClass("isa_success show");
+
+                        //        }
+                        //    }
+                        //});
 
                         for (var item in retorno) {
                             $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA + "' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
@@ -484,7 +651,41 @@
                 data: JSON.stringify({ token: $("#txtToken").val() }),
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
-                    $("#txtNumeroAES").val(data);
+                    if (data == "") {
+                        $("#divMensagemERR").removeClass("isa_error hide");
+                        $("#divMensagemERR").addClass("isa_error show");
+                    } else {
+                        $("#txtNumeroAES").val(data);
+                        $("#divMensagemERR").removeClass("isa_error show");
+                        $("#divMensagemERR").addClass("isa_error hide");
+
+
+
+                        var token = $("#txtToken").val();
+                        var aes = data;
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Home/ValidarLancamentos",
+                            data: { token: token, aes: aes },
+                            success: function (data) {
+
+                                if (Boolean(data)) {
+                                    $("#btnSalvar").hide();
+
+                                    $("#divFinalizado").removeClass("isa_success hide");
+                                    $("#divFinalizado").addClass("isa_success show");
+
+                                }
+                            }
+                        });
+
+
+                    }
+
+
+
+
                 }
             });
         });
@@ -517,4 +718,5 @@
 
         return true;
     }
+
 </script>
