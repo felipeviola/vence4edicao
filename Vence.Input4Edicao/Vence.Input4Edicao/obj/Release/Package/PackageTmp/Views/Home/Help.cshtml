@@ -1,0 +1,20 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+
+    <h3>Arquivos de ajuda</h3><br />
+
+     <p>
+         <span style="font-size:16px;">  Caso necessite de ajuda, utilize o arquivo "Tutorial" para auxilia-lo no entendimento do sistema.</span><br />
+         <img src="/Content/ppt.jpg" style="width:20px; height:20px;"/>
+         @Html.ActionLink("Tutorial", "DownloadPPT")
+     </p>
+    <br />
+    <p>
+        <span style="font-size:16px;">Caso você tenha encontrado algum erro ou sugestão durante o processo, utilize o doc "Modelo de evidência" para agilizar seu atendimento.</span><br />
+        <img src="/Content/word.jpg" style="width:20px; height:20px;" />
+        @Html.ActionLink("Modelo de evidência", "DownloadWord")
+    </p>
+</div>

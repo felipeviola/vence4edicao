@@ -1,0 +1,143 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .isa_info, .isa_success, .isa_warning, .isa_error {
+        margin: 10px 0px;
+        padding: 12px;
+    }
+
+    .isa_info {
+        color: #00529B;
+        background-color: #BDE5F8;
+    }
+
+    .isa_success {
+        color: #4F8A10;
+        background-color: #DFF2BF;
+    }
+
+    .isa_warning {
+        color: #D8000C;
+        background-color: #FEEFB3;
+    }
+
+    .isa_error {
+        color: #D8000C;
+        background-color: #FFBABA;
+    }
+
+        .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+            margin: 10px 22px;
+            font-size: 2em;
+            vertical-align: middle;
+        }
+
+    table {
+        width: 100%;
+    }
+
+    thead, tbody, tr, td, th {
+        display: block;
+        font-size: 11px;
+    }
+
+        tr:after {
+            content: ' ';
+            display: block;
+            visibility: hidden;
+            clear: both;
+        }
+
+        thead th {
+            height: 30px;
+            /*text-align: left;*/
+        }
+
+    tbody {
+        height: 300px;
+        overflow-y: auto;
+    }
+
+    thead {
+        /* fallback */
+    }
+
+        tbody td, thead th {
+            width: 16.6%;
+            float: left;
+        }
+</style>
+<div class="container">
+    <div class="jumbotron">
+        <div id="FiltrosTurma" class="form-group row">
+            <div class="col-xs-2">
+                <label for="ex3">Chave</label>
+                <input class="form-control" id="txtToken" type="text">
+            </div>
+            @*<div class="col-xs-2">
+                <label for="ex1">Edição</label>
+                <select class="form-control" id="codEdicao" type="text">
+                    <option value="0">Selecione...</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                </select>
+            </div>*@
+            <div class="form-group" style="padding-top:42px;">
+                <input id="btnPesquisar" type="button" class="btn" value="Pesquisar" />
+            </div>
+        </div>
+    </div>
+    <div id="divAes"></div>
+    <div id="divAlunos"></div>
+    <div id="divAtivos"></div>
+</div>
+
+<script>
+    window.onload = function () {
+
+        $("#btnPesquisar").click(function (e) {
+            var codEdicao = $("#codEdicao").val()
+            var token = $("#txtToken").val();
+
+            e.preventDefault();
+            if (vaidarInputs()) {
+
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    dataType: "html",
+                    url: "/Aluno/ValidarToken",
+                    data: { token: token, codEdicao: codEdicao },
+                    success: function (data) {
+
+                        $('#divAes').html(data);
+                        $('#divAtivos').html("");
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+
+                        $(document).ajaxStop(function () {
+
+                        });
+
+                    }
+                });
+
+            }
+
+
+        });
+    };
+
+    function vaidarInputs() {
+        if ($("#txtToken").val() == "") {
+            alert("Informe a chave de acesso!");
+            return false;
+        }
+        return true;
+    }
+</script>

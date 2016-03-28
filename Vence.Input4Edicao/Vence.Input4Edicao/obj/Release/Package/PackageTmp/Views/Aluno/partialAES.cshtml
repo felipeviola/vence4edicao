@@ -1,0 +1,88 @@
+﻿@model List<Vence.Input4Edicao.Controllers.AES>
+
+
+<style>
+         tbody td, thead th {
+            width: 19.2%;
+            float: left;
+        }
+</style>
+
+@if (Model != null)
+{
+    <table id="tblAes" class="table">
+        <thead>
+            <tr>
+                <th>AES</th>
+                <th>Mantenedora</th>
+                @*<th>Edição</th>*@
+                <th>Lançar registros</th>
+            </tr>
+        </thead>
+        <tbody >
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NumeroAes </td>
+                    <td>@item.Mantenedora</td>
+                    @*<td>@item.CodEdicao</td>*@
+                    <td>
+                        <img src="/Content/glyphicons-halflings_140_BCK.png" style="cursor:pointer" id="imgAes" data-aes="@item.NumeroAes">
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<script>
+    $("#tblAes").on("click", "img", function () {
+        var aes = $(this).attr('data-aes')
+        $.ajax({
+            type: "POST",
+            async: true,
+            dataType: "html",
+            url: "/Aluno/ObterTotalAlunos",
+            data: { AES: aes },
+            success: function (data) {
+                $('#divAluno').html("");           
+                $('#divAes').html(data);
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/Aluno/AtualizarGrid",
+                    data: { AES: aes },
+                    success: function (data) {
+                        $("#divAtivos").html(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $(document).ajaxStop(function () {
+                        });
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $(document).ajaxStop(function () {
+                });
+            }
+        });
+    });
+
+    function atualizar(aes) {
+        debugger;
+        $.ajax({
+            type: "POST",
+            async: true,
+            url: "/Aluno/AtualizarGrid",
+            data: { AES: aes },
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $("#divAtivos").html(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $(document).ajaxStop(function () {
+                });
+            }
+        });
+    };
+
+</script>

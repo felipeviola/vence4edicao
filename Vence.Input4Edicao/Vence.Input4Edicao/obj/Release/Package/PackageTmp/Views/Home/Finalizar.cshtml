@@ -1,0 +1,177 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<style>
+   
+    strong {
+        font-weight: 900;
+    }
+
+    .isa_info, .isa_success, .isa_warning, .isa_error {
+        margin: 10px 0px;
+        padding: 12px;
+    }
+
+    .isa_info {
+        color: #000;
+        background-color: #BDE5F8;
+    }
+
+    .isa_success {
+        color: #4F8A10;
+        background-color: #DFF2BF;
+    }
+
+    .isa_warning {
+        color: #000;
+        background-color: #FEEFB3;
+    }
+
+    .isa_error {
+        color: #D8000C;
+        background-color: #FFBABA;
+    }
+
+        .isa_info i, .isa_success i, .isa_warning i, .isa_error i {
+            margin: 10px 22px;
+            font-size: 2em;
+            vertical-align: middle;
+        }
+
+
+</style>
+
+
+
+<div class="jumbotron">
+
+    <p>
+        <span style="font-size:16px;">Caso você já tenha efetuado todos os lançamentos para a AES, informe a chave de acesso e finalize a mesma.</span><br />
+        <span style="font-size:16px; color:red;">*Após finalizar, os lançamentos ficarão disponíveis apenas para visualização.</span><br />
+
+    </p>
+    <table>
+        <tr>
+            <td>
+                Chave
+            </td>
+            <td style="padding-top:6px;">
+                <input class="form-control" id="txtToken" style="width:100px;" type="text">
+
+            </td>
+            <td>
+                <input type="button" id="btnFinalizar" class="btn" value="Finalizar AES" />
+            </td>
+        </tr>
+
+    </table>
+
+</div>
+
+<div class="isa_success hide" id="divFinalizado">
+    <strong>  AES finalizada.Aguardando processamento da Prodesp/CIMA. </strong>
+</div>
+
+<div id="modalMsg" title="Mensagem" style="display:none;">
+    <h5>
+       Finalizado com sucesso!
+    </h5>
+
+</div>
+
+<div id="modalMsgErr" title="Mensagem" style="display:none;">
+    <h5>
+        Token inválido!
+    </h5>
+
+</div>
+
+
+<script>
+
+
+    $("#txtToken").blur(function (e) {
+        var token = $(this).val();
+        if (token == "") {
+            alert("Informe a chave"); return false;
+        }
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/Home/ValidarLancamentos",
+            data: { token: token, aes: "" },
+            success: function (data) {
+           
+                if (Boolean(data)) {
+                    $("#btnFinalizar").attr('disabled', 'disabled');
+                    $("#divFinalizado").addClass("isa_success show");
+
+                }
+            }
+        });
+    });
+
+    $("#btnFinalizar").click(function (e) {
+        var token = $("#txtToken").val();
+        if (token == "") {
+            alert("Informe a chave"); return false;
+        }
+        var r = confirm("Deseja Finalizar a AES?");
+
+        if (r) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/FinalizarLancamentos",
+                data: { token: token },
+                success: function (data) {
+
+                    if (Boolean(data)) {
+                        $("#btnFinalizar").attr('disabled', 'disabled');
+                        $("#divFinalizado").addClass("isa_success show");
+                        $("#modalMsg").dialog({
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+                            ],
+
+                            width: 400,
+                            modal: true
+                        });
+
+
+                    } else {
+                        $("#modalMsgErr").dialog({
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+                            ],
+
+                            width: 400,
+                            modal: true
+                        });
+
+                    }
+                }
+
+            });
+
+        }
+
+
+    });
+
+</script>

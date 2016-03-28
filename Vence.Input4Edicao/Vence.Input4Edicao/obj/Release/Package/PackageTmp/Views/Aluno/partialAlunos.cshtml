@@ -1,0 +1,197 @@
+﻿@model Vence.Input4Edicao.Controllers.AlunosAtivosViewModel
+
+
+<SCRIPT>
+    window.onload = function () {
+        $("#txtMesAno").mask("99/9999");
+    };
+
+</SCRIPT>
+<style>
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: block;
+    }
+</style>
+@if (Model != null)
+{
+
+    <div class="container">
+
+
+        <input type="hidden" id="numeroAes" value="@Model.AES.NumeroAes" />
+        <input type="hidden" id="codDe" value="@Model.AES.CodDE" />
+        <input type="hidden" id="codMantenedora" value="@Model.AES.CodMantenedora" />
+
+        <div>
+            <label for="ex3">AES:@Model.AES.NumeroAes</label> <br />
+            <label for="ex3">Mantenedora: @Model.AES.Mantenedora</label>
+        </div>
+
+        <div id="Msg" class="hide">
+            <div id="divMessage" class="ui-widget">
+                <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                    <p>
+                        <span class="ui-icon ui-icon-alert"
+                              style="float: left; margin-right: .3em;"></span>
+                        <strong>
+                            <label id="lblMensagem"> </label>
+                            <label id="lblTotalAtivos"> </label>
+                        </strong>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <table id="tblAlunos" class="table">
+            <thead>
+                <tr>
+                    <th>Mantida</th>
+                    <th>Curso</th>
+                    <th>Item Aes</th>
+                    <th>Matriculados</th>
+                    <th>Mês/Ano</th>
+                    <th>Ativos</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.ListarAlunos)
+                {
+                    <tr>
+                        <td>@item.Mantida</td>
+                        <td>@item.Curso</td>
+                        <td>@item.ItemAes</td>
+                        <td>@item.TotalMatriculados</td>
+                        <td>
+                            <input style="width:100px; text-align:center; height:25px;" type="text" id="txtMesAno" />
+                        </td>
+                        <td>
+                            <input style="width:60px;text-align:center; height:25px;" type="text" id="txtAtivos" data-idmantida="@item.CodMantida" data-idcurso="@item.CodCurso" data-matriculados="@item.TotalMatriculados" data-itemaes="@item.ItemAes" />
+
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+}
+<script>
+  
+
+        var objAlunosAtivos = { NumeroAes: "", CodDe: 0, CodMantenedora: 0, CodCurso: 0, ItemAes: 0, TotalAtivos: 0, DataReferencia: "", TotalMatriculados: 0, CodMantida: 0 };
+        var _totalAlunosAtivos = 0;
+        var mesAno = "";
+        $("#tblAlunos").on("blur", "input[id=txtAtivos]", function () {
+
+            mesAno = $(this).parent().parent().find('input')[0].value;
+
+            objAlunosAtivos.CodMantida = $(this).attr("data-idMantida");
+            objAlunosAtivos.CodDe = $("#codDe").val();
+            objAlunosAtivos.CodMantenedora = $("#codMantenedora").val();
+            objAlunosAtivos.NumeroAes = $("#numeroAes").val();
+            objAlunosAtivos.CodCurso = $(this).attr('data-idcurso');
+            objAlunosAtivos.ItemAes = $(this).attr('data-itemAes');
+            objAlunosAtivos.TotalAtivos = parseInt($(this).val());
+            objAlunosAtivos.TotalMatriculados = $(this).attr('data-matriculados');
+
+            var input = $(this).parent().parent().find('input');
+
+            if (validarMesAno(mesAno) && validarTotalAlunosAtivos(this)) {
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/Aluno/AtualizarAtivos",
+                    data: JSON.stringify(objAlunosAtivos),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                        $("#divAtivos").html(data);
+                        input.val("");
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+
+                        $(document).ajaxStop(function () {
+
+                        });
+
+                    }
+                });
+
+
+            }
+            else {
+                $(this).val("");
+            }
+
+        });
+
+
+        function validarTotalAlunosAtivos(input) {
+
+            var totalMatriculados = $(input).attr('data-matriculados');
+            totalMatriculados = parseInt(totalMatriculados);
+            var totalAtivos = $(input).val();
+            totalAtivos = parseInt(totalAtivos);
+            if (totalAtivos > 0 && totalAtivos <= totalMatriculados) {
+
+                $("#lblTotalAtivos").empty();
+                $("#Msg").removeClass('show');
+                $("#Msg").addClass('hide');
+
+                return true;
+            }
+            else {
+
+                $("#lblTotalAtivos").empty();
+                $("#lblTotalAtivos").append("Total de alunos ativos deve ser maior que 0 e não pode ser maior que o total de alunos matriculados!");
+                $("#Msg").addClass('show');
+
+
+                return false;
+            }
+
+        }
+
+        function validarMesAno(mesAno) {
+
+            if (mesAno == "") {
+                $("#lblMensagem").empty();
+                $("#lblMensagem").append("Mês e Ano são obrigatórios!");
+                $("#Msg").addClass('show');
+                return false;
+            }
+
+            var data = '01' + '/' + mesAno;
+            var result = new Date(data);
+            if (!data.match(/^(0[1-9]|[12][0-9]|3[01])[\- \/.](?:(0[1-9]|1[012])[\- \/.](19|20)[0-9]{2})$/)) {
+
+
+                $("#lblMensagem").empty();
+                $("#lblMensagem").append("Mês e Ano inválidos");
+                $("#Msg").addClass('show');
+
+                return false;
+            } else {
+                objAlunosAtivos.DataReferencia = data;
+                $("#lblMensagem").empty();
+                $("#Msg").removeClass('show');
+                $("#Msg").addClass('hide');
+                return true;
+            }
+
+        }
+
+        $("#tblAlunos").on("click", "input[id=txtMesAno]", function () {
+
+            $(this).mask("99/9999");
+        });
+</script>
