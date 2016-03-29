@@ -83,6 +83,7 @@ namespace Vence.Input4Edicao.Controllers
         }
         public JsonResult Salvar(Formulario formulario)
         {
+
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
             StringBuilder sb = new StringBuilder();
@@ -91,70 +92,81 @@ namespace Vence.Input4Edicao.Controllers
 
             var alunosInvalidos = ValidarAlunosGDAE(formulario);
 
-            if (alunosInvalidos.Count() == 0)
+            try
             {
-                SqlCommand cmdDelete = new SqlCommand(String.Format("delete Calendario4edicao where idcursoturnoturma = {0} and mesReferencia ='{1}'", formulario.IdCursoTurnoTurma.ToString(), formulario.MesReferencia), conn);
-                cmdDelete.Connection.Open();
-                cmdDelete.ExecuteNonQuery();
-                cmdDelete.Connection.Close();
+             
 
-                if (formulario.Calendario != null && formulario.Calendario.Count > 0)
+                if (alunosInvalidos.Count() == 0)
                 {
-                    foreach (var item in formulario.Calendario)
-                    {
-                        sb.Append("insert into Calendario4edicao(IdCursoTurnoTurma,DiaLetivo,CargaHoraria,MesReferencia,CpfSupervisor) values(").Append(formulario.IdCursoTurnoTurma.ToString()).Append(",'").Append(item.Dia).Append("','").Append(item.CargaHoraria).Append("','").Append(formulario.MesReferencia).Append("','").Append(formulario.Cpf).Append("')");
-                        SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
-                        cmd.Connection.Open();
-                        cmd.ExecuteNonQuery();
-                        cmd.Connection.Close();
-                        sb.Clear();
-                    }
-                }
-                if (formulario.Aluno != null & formulario.Aluno.Count > 0)
-                {
-                    foreach (var item in formulario.Aluno)
-                    {
-                        if (item.Estagio == null)
-                            item.Estagio = "";
-                        if (item.RA == null)
-                            item.RA = "";
-                        sb.Append("insert into aluno4edicao(IdMatricula,HorasEstagio,IgnorarAluno,AprovadoVence,RAGDAE,MesReferencia,IdCursoTurnoTurma,IdInscricao) values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",")
-                            .Append(item.AprovadoVence).Append(",'").Append(item.RA).Append("','").Append(formulario.MesReferencia).Append("',")
-                            .Append(formulario.IdCursoTurnoTurma).Append(",").Append(item.Inscricao).Append(")");
-                        SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
-                        cmdDelete.CommandText = String.Format("delete aluno4edicao where idMatricula = '{0}' and MesReferencia = '{1}'", item.Matricula, formulario.MesReferencia);
-                        SqlCommand cmdUpdate = new SqlCommand(string.Format("update aluno4edicao set RAGDAE = '{1}' where idMatricula = '{0}'", item.Matricula, item.RA), conn);
-                        cmd.Connection.Open();
-                        cmdDelete.ExecuteNonQuery();
-                        cmd.ExecuteNonQuery();
-                        cmdUpdate.ExecuteNonQuery();
-                        cmd.Connection.Close();
-                        sb.Clear();
+                    SqlCommand cmdDelete = new SqlCommand(String.Format("delete Calendario4edicao where idcursoturnoturma = {0} and mesReferencia ='{1}'", formulario.IdCursoTurnoTurma.ToString(), formulario.MesReferencia), conn);
+                    cmdDelete.Connection.Open();
+                    cmdDelete.ExecuteNonQuery();
+                    cmdDelete.Connection.Close();
 
-                        cmdDelete.Connection.Open();
-                        cmdDelete.CommandText = String.Format("delete Frequencia4Edicao where idMatricula='{0}' and MesReferencia ='{1}' and idCursoTurnoTurma={2}", item.Matricula, formulario.MesReferencia, formulario.IdCursoTurnoTurma.ToString());
-                        cmdDelete.ExecuteNonQuery();
-                        cmdDelete.Connection.Close();
-
-                        if (item.Presenca != null)
+                    if (formulario.Calendario != null && formulario.Calendario.Count > 0)
+                    {
+                        foreach (var item in formulario.Calendario)
                         {
-                            foreach (var item2 in item.Presenca)
-                            {
-                                sb.Append("insert into Frequencia4Edicao(IdMatricula,DiaPresenca,MesReferencia,IdCursoTurnoTurma,IdInscricao) values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
-                                    .Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma)
-                                    .Append(",").Append(item.Inscricao).Append(")");
-                                cmd.Connection.Open();
-                                cmd = new SqlCommand(sb.ToString(), conn);
-                                cmd.ExecuteNonQuery();
-                                cmd.Connection.Close();
-                                sb.Clear();
-                            }
+                            sb.Append("insert into Calendario4edicao(IdCursoTurnoTurma,DiaLetivo,CargaHoraria,MesReferencia,CpfSupervisor) values(").Append(formulario.IdCursoTurnoTurma.ToString()).Append(",'").Append(item.Dia).Append("','").Append(item.CargaHoraria).Append("','").Append(formulario.MesReferencia).Append("','").Append(formulario.Cpf).Append("')");
+                            SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+                            cmd.Connection.Open();
+                            cmd.ExecuteNonQuery();
+                            cmd.Connection.Close();
+                            sb.Clear();
                         }
-
                     }
-                }
+                    if (formulario.Aluno != null & formulario.Aluno.Count > 0)
+                    {
+                        foreach (var item in formulario.Aluno)
+                        {
+                            if (item.Estagio == null)
+                                item.Estagio = "";
+                            if (item.RA == null)
+                                item.RA = "";
+                            sb.Append("insert into aluno4edicao(IdMatricula,HorasEstagio,IgnorarAluno,AprovadoVence,RAGDAE,MesReferencia,IdCursoTurnoTurma,IdInscricao) values(").Append(item.Matricula).Append(",'").Append(item.Estagio).Append("',").Append(item.IgnorarAluno.ToString()).Append(",")
+                                .Append(item.AprovadoVence).Append(",'").Append(item.RA).Append("','").Append(formulario.MesReferencia).Append("',")
+                                .Append(formulario.IdCursoTurnoTurma).Append(",").Append(item.Inscricao).Append(")");
+                            SqlCommand cmd = new SqlCommand(sb.ToString(), conn);
+                            cmdDelete.CommandText = String.Format("delete aluno4edicao where idMatricula = '{0}' and MesReferencia = '{1}'", item.Matricula, formulario.MesReferencia);
+                            SqlCommand cmdUpdate = new SqlCommand(string.Format("update aluno4edicao set RAGDAE = '{1}' where idMatricula = '{0}'", item.Matricula, item.RA), conn);
+                            cmd.Connection.Open();
+                            cmdDelete.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
+                            cmdUpdate.ExecuteNonQuery();
+                            cmd.Connection.Close();
+                            sb.Clear();
 
+                            cmdDelete.Connection.Open();
+                            cmdDelete.CommandText = String.Format("delete Frequencia4Edicao where idMatricula='{0}' and MesReferencia ='{1}' and idCursoTurnoTurma={2}", item.Matricula, formulario.MesReferencia, formulario.IdCursoTurnoTurma.ToString());
+                            cmdDelete.ExecuteNonQuery();
+                            cmdDelete.Connection.Close();
+
+                            if (item.Presenca != null)
+                            {
+                                foreach (var item2 in item.Presenca)
+                                {
+                                    sb.Append("insert into Frequencia4Edicao(IdMatricula,DiaPresenca,MesReferencia,IdCursoTurnoTurma,IdInscricao) values(").Append(item.Matricula).Append(",'").Append(item2.DiaLetivo).Append("','")
+                                        .Append(formulario.MesReferencia.ToString()).Append("',").Append(formulario.IdCursoTurnoTurma)
+                                        .Append(",").Append(item.Inscricao).Append(")");
+                                    cmd.Connection.Open();
+                                    cmd = new SqlCommand(sb.ToString(), conn);
+                                    cmd.ExecuteNonQuery();
+                                    cmd.Connection.Close();
+                                    sb.Clear();
+                                }
+                            }
+
+                        }
+                    }
+
+                }
             }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+            
+    
 
             return Json(alunosInvalidos, JsonRequestBehavior.AllowGet);
 
@@ -341,7 +353,29 @@ namespace Vence.Input4Edicao.Controllers
 
             return Json(json, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult BuscarDatasReferencia(string numeroAes, string itemAes)
+        {
+            List<Turma> turmas = new List<Turma>();
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            turmas.Add(new Turma { Id = 0, Nome = "Selecione..." });
 
+            SqlCommand cmd = new SqlCommand(@" ",conn);
+
+            cmd.Connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                turmas.Add(new Turma { Id = Convert.ToInt32(reader[0]), Nome = reader[1].ToString() });
+            }
+            conn.Close();
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(turmas);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+        
         public JsonResult VerificarMesAnoLancados(int idTurma = 0, string mesAno = "")
         {
             int _mesLancado = 0;

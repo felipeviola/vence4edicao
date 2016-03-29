@@ -143,6 +143,7 @@
     <Content Include="Content\jquery-ui.theme.css" />
     <Content Include="Content\jquery-ui.theme.min.css" />
     <Content Include="Content\mensage4edicaoFInal.jpg" />
+    <Content Include="Content\mensage4edicaoHelp.jpg" />
     <Content Include="Content\mensagemvence4edicao.jpg" />
     <Content Include="Content\mensagensbootstrap.css" />
     <Content Include="Content\passo_check.png" />
@@ -172,8 +173,8 @@
     <Content Include="Content\Arquivos\PlanodeContingência.pptx" />
     <Content Include="Content\Arquivos\EvidênciaModelo.doc" />
     <Content Include="Content\Arquivos\Tutorial.pptx" />
-    <None Include="Properties\PublishProfiles\venceprod - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\venceprod - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

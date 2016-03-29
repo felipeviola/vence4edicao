@@ -16,6 +16,30 @@ namespace Vence.Input4Edicao.Controllers
             return View();
         }
 
+        public JsonResult BuscarDatasReferencia(int idTurma)
+        {
+            List<MesesReferencia> lista = new List<MesesReferencia>();
+            string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+            SqlConnection conn = new SqlConnection(_connectionString);
+            lista.Add(new MesesReferencia { value = "", text = "Selecione..." });
+            SqlCommand cmd = new SqlCommand(string.Format(@" select MesReferencia  from frequencia4edicao where idcursoturnoturma = {0} group by MesReferencia ", idTurma), conn);
+            cmd.Connection.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                lista.Add(new MesesReferencia
+                {
+                    text = reader["MesReferencia"].ToString(),
+                    value = reader["MesReferencia"].ToString()
+                });
+            }
+
+            var jsonSerialiser = new JavaScriptSerializer();
+            var json = jsonSerialiser.Serialize(lista);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
+
+        }
         public JsonResult BuscarAlunos(int IdTurma, string mesReferencia)
         {
             List<Aluno> lista = new List<Aluno>();
@@ -87,5 +111,11 @@ namespace Vence.Input4Edicao.Controllers
         }
 
 
+    }
+
+    public class MesesReferencia
+    {
+        public string value { get; set; }
+        public string text { get; set; }
     }
 }

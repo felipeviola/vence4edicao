@@ -36,7 +36,7 @@
     }
 
     .isa_warning {
-        color:  #D8000C;
+        color: #D8000C;
         background-color: #FEEFB3;
     }
 
@@ -92,7 +92,7 @@
                 <option value="12">Dezembro</option>
             </select>
         </div>
-        <div  class="col-xs-2">
+        <div class="col-xs-2">
             <label for="ex3">Ano</label>
             <select class="form-control" id="idAno">
                 <option value="0">Selecione...</option>
@@ -221,6 +221,11 @@
 
 </div>
 
+<div id="ModalHelp" title="Lembrete" style="display:none;">
+    <h4 style="color:red;">* Acesse o menu "Help" para ter acesso aos arquivos de ajuda do sistema.</h4>
+    <img id="msg" src="/Content/mensage4edicaoHelp.jpg" />
+
+</div>
 <script>
     var diasLancados = new Array();
     var contador = 0;
@@ -240,6 +245,23 @@
                   click: function () {
                       $(this).dialog("close");
 
+                      $("#ModalHelp").dialog({
+
+                          dialogClass: "no-close",
+                          buttons: [
+                            {
+                                text: "Fechar",
+                                click: function () {
+                                    $(this).dialog("close");
+
+                                }
+                            }
+                          ],
+                          width: 'auto',
+                          modal: true
+                      });
+
+
                   }
               }
             ],
@@ -247,9 +269,6 @@
             modal: true
         });
 
-        $("span.fecharDialog").click(function () {
-            $("#ModalHome").dialog("close");
-        });
 
 
 
@@ -258,8 +277,8 @@
         var _mesAno = "";
         var _mes = $("#idMes").val();
         var _ano = $("#idAno").val();
-        
-         _mesAno = _mes + '/' + _ano;
+
+        _mesAno = _mes + '/' + _ano;
         console.log(_mesAno);
         if (_mes == "0" || _ano == "0") {
 
@@ -352,7 +371,7 @@
         });
 
         $("#btnSalvar").click(function () {
-      
+
             $.blockUI({
                 message: "Enviando dados...",
                 css: {
@@ -453,6 +472,13 @@
                                             $("#divMessage").css("display", "block");
                                         }
                                         $.unblockUI();
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        $(document).ajaxStop(function () {
+                                            $.unblockUI();
+                                            alert("Não foi possível salvar os dados!");
+
+                                        });
                                     }
                                 });
                             }
@@ -485,11 +511,26 @@
                                         }
 
                                         $.unblockUI();
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        $(document).ajaxStop(function () {
+                                            $.unblockUI();
+                                            alert("Não foi possível salvar os dados!");
+
+                                        });
                                     }
+
                                 });
                             }
                         }
 
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $(document).ajaxStop(function () {
+                            $.unblockUI();
+                            alert("Não foi possível salvar os dados!");
+
+                        });
                     }
                 });
 
@@ -501,7 +542,7 @@
         });
 
         $("#idMes").change(function () {
-          
+
             var _idTurma = $("#lstTurma").val();
             var _mesAno = "";
             var _mes = $("#idMes").val();
@@ -510,13 +551,13 @@
             _mesAno = _mes + '/' + _ano;
 
 
-            if (_idTurma > 0 &&  parseInt(_mes) > 0 && parseInt(_ano) > 0 ) {
+            if (_idTurma > 0 && parseInt(_mes) > 0 && parseInt(_ano) > 0) {
                 $.ajax({
                     type: "POST",
                     url: "/Home/VerificarMesAnoLancados",
                     data: { idTurma: _idTurma, mesAno: _mesAno },
                     success: function (data) {
-               
+
                         if (Boolean(data)) {
                             $("#divMensagemData").removeClass("isa_warning hide");
                             $("#divMensagemData").addClass("isa_warning show");
@@ -536,7 +577,7 @@
         });
 
         $("#idAno").change(function () {
-       
+
             var _idTurma = $("#lstTurma").val();
             var _mesAno = "";
             var _mes = $("#idMes").val();
@@ -551,7 +592,7 @@
                     url: "/Home/VerificarMesAnoLancados",
                     data: { idTurma: _idTurma, mesAno: _mesAno },
                     success: function (data) {
-                       
+
                         if (Boolean(data)) {
                             $("#divMensagemData").removeClass("isa_warning hide");
                             $("#divMensagemData").addClass("isa_warning show");
@@ -570,7 +611,7 @@
 
         });
         $("#lstTurma").change(function () {
-      
+
             var _idTurma = $(this).val();
             var _mesAno = "";
             var _mes = $("#idMes").val();
@@ -588,7 +629,7 @@
                     url: "/Home/VerificarMesAnoLancados",
                     data: { idTurma: _idTurma, mesAno: _mesAno },
                     success: function (data) {
-                      
+
                         if (Boolean(data)) {
                             $("#divMensagemData").removeClass("isa_warning hide");
                             $("#divMensagemData").addClass("isa_warning show");

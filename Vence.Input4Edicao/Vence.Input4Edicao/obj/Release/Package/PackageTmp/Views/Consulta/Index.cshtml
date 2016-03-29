@@ -38,18 +38,25 @@
                     <label for="ex2">Item AES</label>
                     <input class="form-control" id="txtItemAES" type="text">
                 </div>
-                <div class="col-xs-3">
-                    <label for="ex3">Mês de Referência</label>
-                    <input class="form-control" id="txtMesReferencia" type="text">
+                <div class="col-xs-6">
+                    @*<label for="ex3">Data de Referência</label>
+                    <select id="dataRef" class="form-control"></select>*@
+                    <label for="ex3">Curso/Turno/Turma</label>
+                    <select class="form-control" id="lstTurma" type="text">
+                        <option value="0">Selecione...</option>
+                    </select>
                 </div>
             </div>
 
             <div class="form-group row">
                 <div class="col-xs-12">
-                    <label for="ex3">Curso/Turno/Turma</label>
+                    @*<label for="ex3">Curso/Turno/Turma</label>
                     <select class="form-control" id="lstTurma" type="text">
                         <option value="0">Selecione...</option>
-                    </select>
+                    </select>*@
+
+                    <label for="ex3">Data de Referência</label>
+                    <select id="dataRef" class="form-control"></select>
                 </div>
             </div>
         </div>
@@ -73,36 +80,66 @@
     </div>
     <script>
         function BuscarTurmas() {
+    
             $("#tblAlunos tbody").html('');
-            if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
-                var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val() };
-                console.log(filtros);
+
+            //if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && $("#txtMesReferencia").val()) {
+            //    var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: $("#txtMesReferencia").val() };
+            if ($("#txtNumeroAES").val() && $("#txtItemAES").val()) {
+                var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val() };
+
                 $.ajax({
                     type: "POST",
                     url: "/Home/BuscarTurmas",
                     data: JSON.stringify(filtros),
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
+                        debugger;
                         var retorno = JSON.parse(data);
                         $("#lstTurma").html("");
                         for (var item in retorno) {
                             $("#lstTurma").append("<option value='" + retorno[item].Id + "'>" + retorno[item].Nome + "</option>")
+
                         }
+
+                       // BuscarDatasReferencia();
                     }
                 });
             }
         }
+        function BuscarDatasReferencia(idTurma) {
+          
+            $.ajax({
+                type: "POST",
+                url: "/Consulta/BuscarDatasReferencia",
+                data: { idTurma: idTurma },
+                //contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    debugger;
+                    var retorno = JSON.parse(data);
+                    $("#dataRef").html("");
+                    for (var item in retorno) {
+                        $("#dataRef").append("<option value='" + retorno[item].value + "'>" + retorno[item].text + "</option>")
+                    }
+                }
+            });
+        }
+
         function PesquisarTurmas() {
-            
+
             $("#txtNumeroAES").focusout(function () {
                 BuscarTurmas();
             });
             $("#txtItemAES").focusout(function () {
+
+                $("#dataRef").html("");
+                $("#dataRef").append("<option value='' >" + "Selecione..." + "</option>")
+
                 BuscarTurmas();
             });
-            $("#txtMesReferencia").focusout(function () {
-                BuscarTurmas();
-            });
+            //$("#txtMesReferencia").focusout(function () {
+            //    BuscarTurmas();
+            //});
         }
         window.onload = function () {
             $("#ModalCalendario").dialog({
@@ -113,7 +150,7 @@
             $("#btnFecharCalendario").click(function () {
                 $("#ModalCalendario").dialog('close');
             });
-            $("#txtMesReferencia").mask("99/9999");
+            //$("#txtMesReferencia").mask("99/9999");
             PesquisarTurmas();
             $("#txtToken").focusout(function () {
                 $.ajax({
@@ -128,12 +165,29 @@
             });
 
             $("#lstTurma").change(function () {
-                console.log($("#lstTurma option:selected").val());
-                if ($("#lstTurma option:selected").val()) {
+                $("#tblAlunos tbody").html("");
+                var idTurma = $(this).val();
+                if (parseInt(idTurma) > 0) {
+                    BuscarDatasReferencia(idTurma);
+                } else {
+
+                    $("#dataRef").html("");
+                    
+                        $("#dataRef").append("<option value='' >" + "Selecione..." + "</option>")
+                  
+                }
+
+            });
+
+            $("#dataRef").change(function () {
+         
+                if ( $("#dataRef option:selected").val() != "") {
+               
                     $.ajax({
                         type: "POST",
                         url: "/Consulta/BuscarAlunos",
-                        data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val(), mesReferencia: $("#txtMesReferencia").val() }),
+                        //data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val(), mesReferencia: $("#txtMesReferencia").val() }),
+                        data: JSON.stringify({ IdTurma: $("#lstTurma option:selected").val(), mesReferencia: $("#dataRef").val() }),
                         contentType: 'application/json; charset=utf-8',
                         success: function (data) {
                             var retorno = JSON.parse(data);
@@ -169,8 +223,16 @@
                             }
                         }
                     });
+                } else {
+                    $("#tblAlunos tbody").html("");
                 }
+                
+
+
+
             });
+
+
             $("#tblAlunos").on("click", "img", function () {
                 $("#tblCalendario tr:first-child").html('<td style="width:35px;"><label class="control-label">Dia:</label></td>');
                 $("#tblCalendario tr:eq(1)").html('<td style="width:35px;"><label class="control-label">Minutos:</label></td>');
@@ -179,7 +241,8 @@
                 $.ajax({
                     type: "POST",
                     url: "/Consulta/DetalheAluno",
-                    data: JSON.stringify({ Matricula: $(this).attr('data-matricula'), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() }),
+                    //data: JSON.stringify({ Matricula: $(this).attr('data-matricula'), MesReferencia: $("#txtMesReferencia").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() }),
+                    data: JSON.stringify({ Matricula: $(this).attr('data-matricula'), MesReferencia: $("#dataRef").val(), IdCursoTurnoTurma: $("#lstTurma option:selected").val() }), //trocar por dropdownlist
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
                         var retorno = JSON.parse(data);
@@ -197,7 +260,7 @@
                 $("#nomeAluno").text($(this).attr('data-aluno'));
                 $("#calAES").text($("#txtNumeroAES").val());
                 $("#calNumeroAES").text($("#txtItemAES").val());
-                $("#calMesRef").text($("#txtMesReferencia").val());
+                $("#calMesRef").text($("#dataRef").val());
                 $("#ModalCalendario").dialog("open");
             });
         }
