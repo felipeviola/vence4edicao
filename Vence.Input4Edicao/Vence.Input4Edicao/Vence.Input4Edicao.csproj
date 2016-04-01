@@ -39,6 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\ExcelLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -113,10 +117,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AlunoController.cs" />
     <Compile Include="Controllers\ConsultaController.cs" />
+    <Compile Include="Controllers\EstagioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ControleEstagioVM.cs" />
+    <Compile Include="Models\VwEstagio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +132,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\calendar.png" />
     <Content Include="Content\checkstyle.css" />
+    <Content Include="Content\estagio.css" />
     <Content Include="Content\external\jquery\jquery.js" />
     <Content Include="Content\glyphicons-halflings_140_BCK.png" />
     <Content Include="Content\images\ui-icons_444444_256x240.png" />
@@ -176,6 +184,7 @@
     <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\estagio.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -215,10 +224,11 @@
     <Content Include="Views\Home\Finalizar.cshtml" />
     <Content Include="Views\Home\Manutencao.cshtml" />
     <Content Include="Views\Home\Help.cshtml" />
+    <Content Include="Views\Estagio\Index.cshtml" />
+    <Content Include="Views\Estagio\_PartialViewEstagios.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
