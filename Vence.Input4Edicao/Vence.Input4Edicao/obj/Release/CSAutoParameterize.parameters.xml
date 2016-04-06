@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="conn-Web.config Connection String" description="conn A Cadeia de Conexão usada em web.config pelo aplicativo para acessar o banco de dados." defaultValue="server=bdsql-prod.cloudapp.net;Database=Vence;User id=admin; password=admin;" tags="SqlConnectionString">
+  <parameter name="conn-Web.config Connection String" description="conn A Cadeia de Conexão usada em web.config pelo aplicativo para acessar o banco de dados." defaultValue="server=bdsql-prod.cloudapp.net;Database=Vence;User id=admin; password=admin; Connection Timeout=18000;" tags="SqlConnectionString">
     <parameterEntry kind="XmlFile" scope="C:\\github\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='conn']/@connectionString" />
   </parameter>
   <parameter name="ConnectionStringSql-Web.config Connection String" description="ConnectionStringSql A Cadeia de Conexão usada em web.config pelo aplicativo para acessar o banco de dados." defaultValue="Data Source=tcp:bdsql-see-homol.cloudapp.net;Initial Catalog=DB_SARA;User ID=desenv;Password=desenv;Trusted_Connection=false;TrustServerCertificate=true;Connection Timeout=18000;" tags="SqlConnectionString">

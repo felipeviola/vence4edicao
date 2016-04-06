@@ -425,14 +425,14 @@ namespace Vence.Input4Edicao.Controllers
 
             return Json(json, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult VerificarCadastro(Formulario formulario)
+        public JsonResult VerificarCadastro(string IdCursoTurnoTurma, string MesReferencia)
         {
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             SqlConnection conn = new SqlConnection(_connectionString);
             StringBuilder sb = new StringBuilder();
             bool cadastrado = false;
 
-            SqlCommand cmdSelect = new SqlCommand(String.Format("select * from Calendario4edicao where idcursoturnoturma = {0} and mesReferencia ='{1}'", formulario.IdCursoTurnoTurma.ToString(), formulario.MesReferencia), conn);
+            SqlCommand cmdSelect = new SqlCommand(String.Format("select top 1 * from Calendario4edicao where idcursoturnoturma = {0} and mesReferencia ='{1}'", IdCursoTurnoTurma, MesReferencia), conn);
             cmdSelect.Connection.Open();
             var reader = cmdSelect.ExecuteReader();
             while (reader.Read())

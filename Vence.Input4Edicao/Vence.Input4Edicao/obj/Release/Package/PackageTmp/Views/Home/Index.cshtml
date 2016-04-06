@@ -209,22 +209,20 @@
     </div>
 </div>
 
-<div id="ModalHome" title="Lembrete" style="display:none;">
-    <h4 style="color:red;">* Regra de formação do RA: 12 caracteres sendo que o número do RA não possui o dígito do RG.</h4>
-    <img id="msg" src="/Content/mensage4edicaoFInal.jpg" />
-
+<div id="ModalHome" title="Totalizadores: Estágio e Carga Horária" style="display:none;">
+    <h5 style="color:green;"> Acesse o link <strong> "Totalizador estágio"</strong> para consultar os estágios já lançados! </h5>
+    <h5 style="color:red;"> Acesse o link <strong>"Totalizador Carga Horária" </strong> para consultar as horas lançadas! </h5>
+    <img id="msg" src="/Content/_totalizadores.jpg" />
 </div>
 <div id="modalMsg" title="Mensagem" style="display:none;">
     <h5>
         Finalizado com sucesso.Aguardando processamento da Prodesp/CIMA.
     </h5>
-
 </div>
 
 <div id="ModalHelp" title="Lembrete" style="display:none;">
     <h4 style="color:red;">* Acesse o menu "Help" para ter acesso aos arquivos de ajuda do sistema.</h4>
     <img id="msg" src="/Content/mensage4edicaoHelp.jpg" />
-
 </div>
 <script>
     var diasLancados = new Array();
@@ -372,6 +370,8 @@
 
         $("#btnSalvar").click(function () {
 
+            debugger;
+
             $.blockUI({
                 message: "Enviando dados...",
                 css: {
@@ -436,20 +436,33 @@
                 if (!$(this).val())
                     valido = false;
             });
+
+            debugger;
+
             if (valido)
                 valido = validation(Formulario);
 
             if (valido) {
 
+          
+
                 $.ajax({
                     type: "POST",
+                    async: true,
                     url: "/Home/VerificarCadastro",
-                    data: JSON.stringify(Formulario),
-                    contentType: 'application/json; charset=utf-8',
+                    data: { IdCursoTurnoTurma: Formulario.IdCursoTurnoTurma, MesReferencia: _mesAno },
+                    //contentType: 'application/json; charset=utf-8',
                     success: function (data) {
+
+                
+
                         if (data) {
-                            var r = confirm("Já foram inserida as frequências desta turma. Deseja substituir as frequências?");
+                            var r = confirm("Já foram inseridas as frequências desta turma. Deseja substituir as frequências?");
+
                             if (r == true) {
+
+
+
                                 $.ajax({
                                     type: "POST",
                                     url: "/Home/Salvar",
@@ -481,7 +494,11 @@
                                         });
                                     }
                                 });
+                            } else {
+                                $.unblockUI();
                             }
+
+                           
                         }
                         else {
                             var r = confirm("Você tem certeza que deseja lançar frequência para esta turma neste mês?");

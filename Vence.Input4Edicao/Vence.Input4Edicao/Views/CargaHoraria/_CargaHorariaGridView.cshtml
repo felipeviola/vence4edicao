@@ -1,0 +1,54 @@
+﻿@model Vence.Input4Edicao.Controllers.CargaHorariaVM
+
+@if (Model != null)
+{
+    <fieldset>
+      
+        <div id="resultado" style="overflow-y: auto; height:440px; overflow:auto; width:1110px">
+            @if (Model.ListaCargaHoraria.Count > 0)
+            {
+                <table id="tabelaDados" class="tabela" width="100%">
+              
+                    <thead>
+                        <tr>
+                  
+                            <td align="center">Numeros AES</td>
+                            <td align="center">Item AES</td>
+                            <td align="center">Matricula</td>
+                            <td align="center">RA</td>
+                            <td align="center">Aluno</td>
+                            <td align="center">Último mês lançado</td>
+                            <td align="center">Carga horária Contratada</td>
+                            <td >Carga horária Lançada</td>
+                            @*<td align="center">Carga horária realizada aluno</td>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ListaCargaHoraria)
+                        {
+                            <tr>
+                                <td align="center">@item.Numero_AES</td>
+                                <td align="center">@item.Item_AES</td>
+                                <td align="center">@item.idMatricula</td>
+                                <td align="center">@item.ra</td>
+                                <td>@item.NomeAluno</td>
+                                <td align="center">@item.ult_mes_lanc</td>
+                                <td>@item.Carga_Hora_Total</td>
+                                <td align="center">@item.CargaRealizadaCurso</td>
+                                @*<td>@item.Carga_Realizada_Aluno</td>*@
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <label id="labelgrid">Não há registros para a pesquisa realizda.</label>
+            }
+        </div>
+    </fieldset>
+}
+
+
+

@@ -89,9 +89,23 @@ namespace Vence.Input4Edicao.Controllers
         {
             DbHelper db = new DbHelper();
 
-            string cmdText = @" select Numero_AES, Item_AES, Mantenedora, Cod_Mantida, Mantida, Diretoria_Ensino, CodCurso, 
-                                       NomCurso, vagas, valorAluno, valor_hora_aula, area, esta.idMatricula, 
-                                       esta.RA, esta.NomeAluno, cargaHoraEstagio, sum(qtd_Horas_Estagio) as Total_Horas_Estagio
+            string cmdText = @" select Numero_AES as AES, 
+                                        Item_AES as [Item Aes], 
+                                        Mantenedora,
+                                        Cod_Mantida as [Codigo Mantida] , 
+                                        Mantida, 
+                                        Diretoria_Ensino as [Diretoria],
+                                        CodCurso as [Codigo Curso], 
+                                       NomCurso as [Nome do Curso], 
+                                        vagas as Vagas, 
+                                        valorAluno as [Valor Aluno], 
+                                        valor_hora_aula as [Valor Hora Aula], 
+                                        area as Aula, 
+                                        --esta.idMatricula, 
+                                       esta.RA,
+                                        esta.NomeAluno as [Nome Aluno], 
+                                        cargaHoraEstagio as [Carga Horaria Contratada], 
+                                        sum(qtd_Horas_Estagio) as [Carga Horaria Realizada]
                                   from vw_estagio esta
                                   join Token      tk on esta.Numero_AES = tk.AES
                                  where tk.Chave = @Chave";
