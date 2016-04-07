@@ -1,0 +1,48 @@
+﻿@model Vence.Input4Edicao.Models.ControleEstagioVM
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts
+{   
+    @Scripts.Render("~/Scripts/estagio.js")
+    @Scripts.Render("~/Scripts/jquery-1.10.2.js")
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.min.js")   
+}
+
+<link href="~/Content/estagio.css" rel="stylesheet" />
+<form id="frmPesquisa">
+    <div id="content">
+        <h1> Base de dados H&P até 31/07/2015</h1>
+        <h3>Totalizador Estágio  </h3>
+        <div class="jumbotron">
+            <div id="filtros">
+                <table>
+                    <tr>
+                        <td>
+                            Chave
+                        </td>
+                        <td style="padding-top:6px;">
+                            @Html.TextBoxFor(model => model.Chave, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            &nbsp; <input type="button" id="btnPesquisa" class="btn" value="Pesquisar" />
+                        </td>
+                    </tr>
+                </table>             
+            </div>
+        </div>
+
+        <p style="padding-left:20px;">          
+            <input type="button" id="btnImprimir" class="btn" style="display:none;" title="Exportar pra Excel" value="Gerar XLS" />
+        </p>
+            <div id="divDisplay"></div>
+            <div id="gvEstagio"></div>
+    </div>
+</form>
+
+
+

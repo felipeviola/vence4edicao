@@ -16,6 +16,7 @@ namespace Vence.Input4Edicao.Controllers
             return View();
         }
 
+      
         public JsonResult BuscarDatasReferencia(int idTurma)
         {
             List<MesesReferencia> lista = new List<MesesReferencia>();
@@ -90,9 +91,9 @@ namespace Vence.Input4Edicao.Controllers
                         group by 
 						 DiaPresenca,a.MesReferencia,CargaHoraria ", Matricula, MesReferencia, IdCursoTurnoTurma);
 
-//            string cmdText = string.Format(@"select distinct  DiaPresenca,a.MesReferencia,CargaHoraria,(select count(*) from Calendario4edicao where MesReferencia = '{1}' and idcursoturnoturma = {2}) as DiasLetivos
-//                                                from Frequencia4Edicao a , Calendario4edicao b
-//                                                where a.DiaPresenca = b.DiaLetivo and a.MesReferencia = b.MesReferencia and idMatricula = '{0}' and a.MesReferencia = '{1}'", Matricula, MesReferencia, IdCursoTurnoTurma);
+            //            string cmdText = string.Format(@"select distinct  DiaPresenca,a.MesReferencia,CargaHoraria,(select count(*) from Calendario4edicao where MesReferencia = '{1}' and idcursoturnoturma = {2}) as DiasLetivos
+            //                                                from Frequencia4Edicao a , Calendario4edicao b
+            //                                                where a.DiaPresenca = b.DiaLetivo and a.MesReferencia = b.MesReferencia and idMatricula = '{0}' and a.MesReferencia = '{1}'", Matricula, MesReferencia, IdCursoTurnoTurma);
 
             SqlCommand cmd = new SqlCommand(cmdText, conn);
             cmd.Connection.Open();

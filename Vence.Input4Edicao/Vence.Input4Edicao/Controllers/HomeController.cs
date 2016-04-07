@@ -81,6 +81,40 @@ namespace Vence.Input4Edicao.Controllers
         {
             return View();
         }
+
+        public JsonResult ObterItemAES(string aes)
+        {
+            try
+            {
+                List<ItemAES> lista = new List<ItemAES>();
+                string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+                SqlConnection conn = new SqlConnection(_connectionString);
+                lista.Add(new ItemAES { Id = "0", Nome = "Selecione..." });
+
+                SqlCommand cmd = new SqlCommand(string.Format(@" select  item_aes as value,'Item - ' +  cast(item_aes as varchar(10))as text from [dbo].[vw_mantida_curso] wmc where numero_aes = '{0}'  GROUP BY Item_AES ", aes), conn);
+                cmd.Connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    lista.Add(new ItemAES
+                    {
+                        Nome = reader["value"].ToString(),
+                        Id = reader["value"].ToString()
+                    });
+                   
+                }
+
+                var jsonSerialiser = new JavaScriptSerializer();
+                var json = jsonSerialiser.Serialize(lista);
+
+                return Json(json, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
+        }
         public JsonResult Salvar(Formulario formulario)
         {
 
@@ -485,4 +519,10 @@ namespace Vence.Input4Edicao.Controllers
         public int Id { get; set; }
         public string Nome { get; set; }
     }
+}
+public class ItemAES 
+{
+    public string Id { get; set; }
+    public string Nome { get; set; }
+
 }
