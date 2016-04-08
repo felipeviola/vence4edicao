@@ -84,13 +84,13 @@ namespace Vence.Input4Edicao.Controllers
 //									   caho.Integralizado, 
 //									   cale.mesReferencia, 
 //									   caho.Duracao_Exec";
-            string sql = @"	with HorasRealizadas as 
+            string sql = @"	  with HorasRealizadas as 
                             (select 
-                               Numero_AES 
-                        ,      Item_AES 
-                        ,      idMatricula 
-                        ,      ra 
-                        ,      NomeAluno 
+                               Numero_AES, nomeCurso
+                        ,      Item_AES
+                        ,      idMatricula
+                        ,      ra
+                        ,      NomeAluno
                         ,      mes_ref
                         ,      Carga_Hora_Total
                         ,      Carga_Mes, idCursoTurnoTurma
@@ -108,15 +108,15 @@ namespace Vence.Input4Edicao.Controllers
                         ,      Carga_Hora_Total
                         ,      Carga_Mes
                         ,      mes_ref
-                        ,      idMatricula, idCursoTurnoTurma )
+                        ,      idMatricula, idCursoTurnoTurma , nomeCurso)
 
-                        select Numero_AES
+                        select Numero_AES, nomeCurso
                         ,      Item_AES
                         ,      idMatricula
                         ,      ra
                         ,      NomeAluno
-                        --,      format(max( cast(concat(substring(mes_ref,1,2),'/01/',substring(mes_ref,4,4)) as date ) ),'MM/yyyy') ult_mes_lanc
-                        ,      Carga_Hora_Total as [Carga Horaria Contratada]
+                        ,      format(max( cast(concat(substring(mes_ref,1,2),'/01/',substring(mes_ref,4,4)) as date ) ),'MM/yyyy') ult_mes_lanc
+                        ,      Carga_Hora_Total
 
 
 
@@ -124,16 +124,16 @@ namespace Vence.Input4Edicao.Controllers
                           from   [dbo].[CursoTurnoTurma] cutu
                           ,      [dbo].[CursoTurnoTurmaCalendario] cutc
                           where  cutu.idCursoTurnoTurma = hora.idCursoTurnoTurma
-                          and    cutu.idCursoTurnoTurma = cutc.idCursoTurnoTurma ) [Carga Horaria Lancada]
+                          and    cutu.idCursoTurnoTurma = cutc.idCursoTurnoTurma ) CargaRealizadaCurso
 
 
-                        --,      sum(Carga_Mes_Realizada) Carga_Realizada_Aluno
+                        ,      sum(Carga_Mes_Realizada) Carga_Realizada_Aluno
 
 
                         from   HorasRealizadas hora
 
                         group  by 
-                               Numero_AES
+                               Numero_AES,nomeCurso
                         ,      Item_AES
                         ,      idMatricula
                         ,      ra
@@ -198,9 +198,9 @@ namespace Vence.Input4Edicao.Controllers
             //									   cale.mesReferencia, 
             //									   caho.Duracao_Exec";
 
-            string sql = @"	with HorasRealizadas as 
+            string sql = @"   with HorasRealizadas as 
                             (select 
-                               Numero_AES
+                               Numero_AES, nomeCurso
                         ,      Item_AES
                         ,      idMatricula
                         ,      ra
@@ -222,9 +222,9 @@ namespace Vence.Input4Edicao.Controllers
                         ,      Carga_Hora_Total
                         ,      Carga_Mes
                         ,      mes_ref
-                        ,      idMatricula, idCursoTurnoTurma )
+                        ,      idMatricula, idCursoTurnoTurma , nomeCurso)
 
-                        select Numero_AES
+                        select Numero_AES, nomeCurso
                         ,      Item_AES
                         ,      idMatricula
                         ,      ra
@@ -247,7 +247,7 @@ namespace Vence.Input4Edicao.Controllers
                         from   HorasRealizadas hora
 
                         group  by 
-                               Numero_AES
+                               Numero_AES,nomeCurso
                         ,      Item_AES
                         ,      idMatricula
                         ,      ra
@@ -271,7 +271,8 @@ namespace Vence.Input4Edicao.Controllers
                         ult_mes_lanc = dr["ult_mes_lanc"].ToString(),
                         Carga_Hora_Total = dr["Carga_Hora_Total"] != DBNull.Value ?  Convert.ToInt32(dr["Carga_Hora_Total"]) : 0,
                         CargaRealizadaCurso =  dr["CargaRealizadaCurso"] != DBNull.Value ? Convert.ToInt32(dr["CargaRealizadaCurso"]) : 0 ,
-                        Carga_Realizada_Aluno =  dr["Carga_Realizada_Aluno"] != DBNull.Value ?  Convert.ToInt32(dr["Carga_Realizada_Aluno"]) : 0
+                        Carga_Realizada_Aluno =  dr["Carga_Realizada_Aluno"] != DBNull.Value ?  Convert.ToInt32(dr["Carga_Realizada_Aluno"]) : 0,
+                        NomeCurso = dr["nomeCurso"].ToString()
 
                     });
                 }
@@ -298,6 +299,7 @@ namespace Vence.Input4Edicao.Controllers
         public int Carga_Hora_Total { get; set; }
         public int CargaRealizadaCurso { get; set; }
         public int Carga_Realizada_Aluno { get; set; }
+        public string NomeCurso { get; set; }
 
         //public int Edicao { get; set; }
 

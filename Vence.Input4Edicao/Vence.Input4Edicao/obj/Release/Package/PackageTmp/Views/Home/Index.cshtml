@@ -104,7 +104,12 @@
         </div>
         <div class="col-xs-2">
             <label for="ex2">Item AES</label>
-            <input class="form-control" id="txtItemAES" type="text">
+
+            @*<input class="form-control" id="txtItemAES" type="text">*@
+            <select class="form-control" id="ddlItemAES">
+                <option value="0">Selecione...</option>
+            </select>
+
         </div>
         <div class="col-xs-2">
             <label for="ex3">CPF</label>
@@ -122,6 +127,8 @@
     </div>
 
 </div>
+
+
 <div class="isa_error hide" id="divMensagemERR">
     <label> Token inválido ou não encontrado!. Tente novamente ou contate o administrador do sistema.</label><br />
 
@@ -278,16 +285,17 @@
 
         _mesAno = _mes + '/' + _ano;
         console.log(_mesAno);
+
         if (_mes == "0" || _ano == "0") {
 
             alert("Mês Ano é obrigatório pra buscar as turmas.");
-            $("#txtItemAES").val('');
+            //$("#txtItemAES").val('');
             return false;
         }
 
-        if ($("#txtNumeroAES").val() && $("#txtItemAES").val() && _mesAno) {
+        if ($("#txtNumeroAES").val() && $("#ddlItemAES").val() && _mesAno) {
 
-            var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: _mesAno };
+            var filtros = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#ddlItemAES").val(), MesReferencia: _mesAno };
             console.log(filtros);
             $.ajax({
                 type: "POST",
@@ -308,7 +316,14 @@
         $("#txtNumeroAES").focusout(function () {
             BuscarTurmas();
         });
-        $("#txtItemAES").focusout(function () {
+
+        //$("#txtItemAES").focusout(function () {
+        //    BuscarTurmas();
+        //});
+
+        $("#ddlItemAES").change(function () {
+            $("#divMensagemData").removeClass("isa_warning show");
+            $("#divMensagemData").addClass("isa_warning hide");
             BuscarTurmas();
         });
 
@@ -318,7 +333,7 @@
 
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
-        $("#txtItemAES").val('');
+        //$("#txtItemAES").val('');
         $("#txtCpfSup").val('');
         var valido = true;
         aplicarMascaras();
@@ -370,7 +385,7 @@
 
         $("#btnSalvar").click(function () {
 
-            debugger;
+ 
 
             $.blockUI({
                 message: "Enviando dados...",
@@ -396,12 +411,12 @@
             if (_mes == "0" || _ano == "0") {
 
                 alert("Mês Ano é obrigatório pra buscar as turmas.");
-                $("#txtItemAES").val('');
+                //$("#txtItemAES").val('');
                 return false;
             }
 
             var existeRaInvalido = false;
-            var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#txtItemAES").val(), MesReferencia: _mesAno, IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
+            var Formulario = { NumeroAES: $("#txtNumeroAES").val(), ItemAES: $("#ddlItemAES").val(), MesReferencia: _mesAno, IdCursoTurnoTurma: $("#lstTurma option:selected").val() };
 
             var i = 0;
             var j = 0;
@@ -594,7 +609,7 @@
         });
 
         $("#idAno").change(function () {
-
+           
             var _idTurma = $("#lstTurma").val();
             var _mesAno = "";
             var _mes = $("#idMes").val();
@@ -604,8 +619,10 @@
 
 
             if (_idTurma > 0 && parseInt(_mes) > 0 && parseInt(_ano) > 0) {
+
                 $.ajax({
                     type: "POST",
+                    dataType: 'json',
                     url: "/Home/VerificarMesAnoLancados",
                     data: { idTurma: _idTurma, mesAno: _mesAno },
                     success: function (data) {
@@ -613,6 +630,7 @@
                         if (Boolean(data)) {
                             $("#divMensagemData").removeClass("isa_warning hide");
                             $("#divMensagemData").addClass("isa_warning show");
+
                         } else {
 
                             $("#divMensagemData").removeClass("isa_warning show");
@@ -626,6 +644,27 @@
                 $("#divMensagemData").addClass("isa_warning hide");
             }
 
+            if (parseInt(_mes) > 0 && parseInt(_ano) > 0) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/ObterItemAES",
+                    data: { aes: $("#txtNumeroAES").val() },
+                    dataType: 'json',
+                   // contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                
+                        var retorno = JSON.parse(data);
+                        $("#ddlItemAES").html("");
+
+                        for (var item in retorno) {
+                            $("#ddlItemAES").append("<option value='" + retorno[item].Id + "'>" + retorno[item].Nome + "</option>");
+                        }
+
+                    }
+                });
+
+            }
         });
         $("#lstTurma").change(function () {
 
@@ -674,25 +713,6 @@
                         var retorno = JSON.parse(data);
                         $("#tblAlunos tbody").html("");
                         $("#diasLetivosHeader thead tr").html("");
-
-                        //var token = $("#txtToken").val();
-                        //var aes = $("#txtNumeroAES").val();
-
-                        //$.ajax({
-                        //    type: "POST",
-                        //    url: "/Home/ValidarLancamentos",
-                        //    data: { token: token, aes: aes },
-                        //    success: function (data) {
-
-                        //        if (Boolean(data)) {
-                        //            $("#btnSalvar").hide();
-
-                        //            $("#divFinalizado").removeClass("isa_success hide");
-                        //            $("#divFinalizado").addClass("isa_success show");
-
-                        //        }
-                        //    }
-                        //});
 
                         for (var item in retorno) {
                             $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA + "' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
