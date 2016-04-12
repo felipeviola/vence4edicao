@@ -1,7 +1,6 @@
 ﻿@model Vence.Input4Edicao.Models.ControleEstagioVM
 
-@{
-    ViewBag.Title = "Index";
+@{    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -12,37 +11,47 @@
     @Scripts.Render("~/Scripts/jquery.validate.min.js")
     @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.min.js")   
 }
+<style>
+    .imgHidde {
+        visibility: hidden;
+    }
 
+    .imgVisible {
+        visibility: visible;
+    }
+</style>
 <link href="~/Content/estagio.css" rel="stylesheet" />
 <form id="frmPesquisa">
     <div id="content">
         <h1> Base de dados H&P até 31/07/2015</h1>
-        <h3>Totalizador Estágio  </h3>
+        <h3>Totalizador Estágio </h3>
         <div class="jumbotron">
-            <div id="filtros">
-                <table>
-                    <tr>
-                        <td>
-                            Chave
-                        </td>
-                        <td style="padding-top:6px;">
-                            @Html.TextBoxFor(model => model.Chave, new { @class = "form-control" })
-                        </td>
-                        <td>
-                            &nbsp; <input type="button" id="btnPesquisa" class="btn" value="Pesquisar" />
-                        </td>
-                    </tr>
-                </table>             
+            <div>                
+                <p style="height:80px">
+                    <span style="float:left; width:150px">
+                        <label>Chave:</label>
+                        @Html.TextBoxFor(model => model.Chave, new { @class = "form-control", @style="width:130px" })
+                    </span>
+                    <span style="float:left; width:200px">
+                        <label>Número AES:</label>
+                        @Html.TextBoxFor(model => model.NumeroAES, new { @class = "form-control", @style = "width:180px" })
+                    </span>
+                    <span style="float:left; width:120px">
+                        <label>Item AES:</label>
+                        @Html.DropDownListFor(model => model.ItemAES, new SelectList(Model.ItemAES), "Selecione...", new { @class = "form-control", @style = "width:120px" })
+                    </span>
+                    <span style="float:left; padding-left:10px; padding-top:3px; width:40px; padding-top:33px">
+                        <img id="ajaxLoading" src="~/Content/ajax-loader.gif" class="imgHidde" />
+                    </span>
+                    <span style="float:left; width:80px; padding-top:33px">
+                        <input type="button" id="btnPesquisa" class="btn" value="Pesquisar" />                        
+                    </span>
+                </p>             
             </div>
         </div>
-
         <p style="padding-left:20px;">          
-            <input type="button" id="btnImprimir" class="btn" style="display:none;" title="Exportar pra Excel" value="Gerar XLS" />
+            <input type="button" id="btnImprimir" class="btn" style="display:none;" title="Exportar para PDF" value="Gerar PDF" />
         </p>
-            <div id="divDisplay"></div>
-            <div id="gvEstagio"></div>
+        <div id="gvEstagio"></div>
     </div>
 </form>
-
-
-

@@ -1,10 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="IIS Web Application Name" description="" value="vence4edicao" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp$" />
-    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\ProjetosGit\\Provisorio\\vence4edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\ProjetosGit\\Provisorio\\vence4edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp$" />
   </parameter>
-  <parameter name="conn-Web.config Connection String" description="" value="server=bdsql-prod.cloudapp.net;Database=Vence;User id=admin; password=admin;" tags="">
-    <parameterEntry kind="XmlFile" scope="C:\\Vence4Edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='conn']/@connectionString" />
+  <parameter name="conn-Web.config Connection String" description="" value="server=bdsql-prod.cloudapp.net;Database=Vence;User id=admin; password=admin; Connection Timeout=18000;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\ProjetosGit\\Provisorio\\vence4edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='conn']/@connectionString" />
+  </parameter>
+  <parameter name="ConnectionStringSql-Web.config Connection String" description="" value="Data Source=tcp:bdsql-see-homol.cloudapp.net;Initial Catalog=DB_SARA;User ID=desenv;Password=desenv;Trusted_Connection=false;TrustServerCertificate=true;Connection Timeout=18000;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\ProjetosGit\\Provisorio\\vence4edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ConnectionStringSql']/@connectionString" />
+  </parameter>
+  <parameter name="ConnectionStringSqlVence-Web.config Connection String" description="" value="Data Source=tcp:bdsql-prod.cloudapp.net;Initial Catalog=VENCE;User ID=admin;Password=admin;Trusted_Connection=false;TrustServerCertificate=true;Connection Timeout=18000;" tags="">
+    <parameterEntry kind="XmlFile" scope="C:\\ProjetosGit\\Provisorio\\vence4edicao\\Vence\.Input4Edicao\\Vence\.Input4Edicao\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='ConnectionStringSqlVence']/@connectionString" />
   </parameter>
 </parameters>
