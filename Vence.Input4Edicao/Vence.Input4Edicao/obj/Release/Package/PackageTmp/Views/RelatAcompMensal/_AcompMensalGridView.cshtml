@@ -1,0 +1,49 @@
+﻿@model Vence.Input4Edicao.Models.RelatAcompMensalVM
+
+@if (Model != null)
+{
+    <fieldset>
+        <div id="resultado" style="overflow-y: auto; height:340px">
+            @if (Model.ListaAcompanhamentos.Count > 0)
+            {
+                <table id="tabelaDados" class="tabela" width="100%">
+                    <thead>
+                        <tr>
+                            <td width="170px" align="center">Numero AES</td>
+                            <td width="80px" align="center">Item AES</td>
+                            <td width="120px" align="center">Qtd. Alunos</td>
+                            <td width="60px" align="center">Mês Referência</td>
+                            <td width="170px" align="center">Operações</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ListaAcompanhamentos)
+                        {
+                            <tr>
+                                <td align="center">@item.NumeroAES</td>
+                                <td align="center">@item.ItemAES</td>
+                                <td align="center">@item.QtdAlunos</td>
+                                <td align="center">@item.MesReferencia</td>
+                                <td align="center">
+                                    <nav>
+                                        @Html.ActionLink("Gerar PDF", "GerarRelatorio", "RelatAcompMensal", new
+                                            {
+                                                @numeroAES = @item.NumeroAES,
+                                                @itemAES = @item.ItemAES,
+                                                @mesReferencia = @item.MesReferencia
+                                            },
+                                            new { @class = "btn btn-success btn-xs", onclick = "return true;", title = "Gerar PDF", id = "btnPrintAcomp" })
+                                    </nav>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <label id="labelgrid">Não há registros para a pesquisa realizda.</label>
+            }
+        </div>
+    </fieldset>
+}
