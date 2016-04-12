@@ -74,3 +74,5 @@ C:\github\Vence.Input4Edicao\Vence.Input4Edicao\bin\Antlr3.Runtime.pdb
 C:\github\Vence.Input4Edicao\Vence.Input4Edicao\bin\Newtonsoft.Json.xml
 C:\github\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.dll
 C:\github\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.pdb
+C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache
+C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.dll
