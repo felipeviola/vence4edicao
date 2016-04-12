@@ -194,7 +194,9 @@
     <Content Include="Content\Arquivos\PlanodeContingência.pptx" />
     <Content Include="Content\Arquivos\EvidênciaModelo.doc" />
     <Content Include="Content\Arquivos\Tutorial.pptx" />
+    <None Include="Properties\PublishProfiles\vence4edicao - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\cargahoraria.js" />

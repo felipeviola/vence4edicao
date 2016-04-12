@@ -100,3 +100,4 @@ C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\bin
 C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\bin\Newtonsoft.Json.xml
 C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.dll
 C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.pdb
+C:\ProjetosGit\Provisorio\vence4edicao\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache
