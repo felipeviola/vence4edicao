@@ -40,8 +40,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ExcelLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Users\808256\OneDrive\JasperReports\ExcelLibrary.dll</HintPath>
+      <HintPath>..\packages\ExcelLibrary.1.2011.7.31\lib\ExcelLibrary.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -194,10 +194,8 @@
     <Content Include="Content\Arquivos\PlanodeContingência.pptx" />
     <Content Include="Content\Arquivos\EvidênciaModelo.doc" />
     <Content Include="Content\Arquivos\Tutorial.pptx" />
-    <None Include="Properties\PublishProfiles\vence4edicao - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\vence4edicap.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\cargahoraria.js" />
     <Content Include="Scripts\estagio.js" />
