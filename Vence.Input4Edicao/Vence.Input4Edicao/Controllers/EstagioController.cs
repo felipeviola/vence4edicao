@@ -7,6 +7,7 @@ using Vence.Input4Edicao.Models;
 using System.IO;
 using System.ComponentModel;
 using System.Reflection;
+using Vence.Input4Edicao.Models;
 
 
 namespace Vence.Input4Edicao.Controllers
@@ -15,13 +16,109 @@ namespace Vence.Input4Edicao.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            ControleEstagioVM model = new ControleEstagioVM();
+            model.ItemAES = new List<int>();
+
+            return View("Index", model);
         }
+
+        public FileResult GerarRelatorio(string numeroAES, int itemAES)
+        {
+            try
+            {
+                Report relatorio = new Report();
+                var parametros = new List<ReportParameter>();
+                parametros.Add(new ReportParameter { Name = "Numero_AES", Value = numeroAES });
+                parametros.Add(new ReportParameter { Name = "Item_AES", Value = itemAES.ToString() });
+                byte[] file = relatorio.GetReportFile("RelatorioAcompanhamentoEstagio", "/Vence", ReportFormat.PDF, parametros);
+                return File(file, ReportFormat.PDF.GetEnumDescription(), "RelatorioAcompanhamentoEstagio.pdf");
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public FileResult GerarArquivosExcel(string chave)
+        {
+            DataSet ds = this.ObterDataSetEstagio(chave);
+            MemoryStream stream = new MemoryStream();
+            ExcelLibrary.DataSetHelper.CreateWorkbook(stream, ds);
+            byte[] file = stream.ToArray();
+            return File(file, ReportFormat.XLS.GetEnumDescription(), "RelatAcompEstagio.xls");
+        }
+
+        public JsonResult PesquisarNumeroAESPorChave(string chave)
+        {
+            var listaAES = this.ObterNumeroAESPorChave(chave);
+            return Json(listaAES, JsonRequestBehavior.AllowGet);
+        }
+
+        public PartialViewResult PesquisarEstagios(string numeroAES, int itemAES)
+        {
+            var model = new ControleEstagioVM();
+            model.ListaEstagios = ObterListaEstagio(numeroAES, itemAES);
+            return PartialView("_PartialViewEstagios", model);
+        }
+
         public PartialViewResult PesquisarEstagiosPorToken(string chave)
         {
             var model = new ControleEstagioVM();
             model.ListaEstagios = ObterListaEstagioPorToken(chave);
             return PartialView("_PartialViewEstagios", model);
+        }
+
+        public DataSet ObterDataSetEstagio(string chave)
+        {
+            DbHelper db = new DbHelper();
+            db.AddParameter(new System.Data.SqlClient.SqlParameter("@Chave", chave));
+
+            string cmdText = @" select Numero_AES, Item_AES, Mantenedora, Cod_Mantida, Mantida, Diretoria_Ensino, CodCurso, 
+                                       NomCurso, vagas, valorAluno, valor_hora_aula, area, esta.idMatricula, 
+                                       esta.RA, esta.NomeAluno, cargaHoraEstagio, sum(qtd_Horas_Estagio) as Total_Horas_Estagio
+                                  from vw_estagio esta
+                                  join Token      tk on esta.Numero_AES = tk.AES
+                                 where tk.Chave = @Chave
+                              group by Numero_AES, Item_AES, Mantenedora, Cod_Mantida, Mantida, Diretoria_Ensino, CodCurso, NomCurso, 
+                                       vagas, valorAluno, valor_hora_aula, area, idMatricula, RA, NomeAluno, cargaHoraEstagio";
+
+            DataSet ds = db.GetDataSet(cmdText);
+            db.CloseDbConnection();
+            return ds;
+        }
+
+        public List<DadosAES> ObterNumeroAESPorChave(string chave)
+        {
+            List<DadosAES> listaAES = new List<DadosAES>();
+
+            DbHelper db = new DbHelper();
+
+            string cmdText = @"select esta.Numero_AES, esta.Item_AES
+                                 from vw_estagio esta
+                                 join Token tk on esta.Numero_AES = tk.AES
+                                where tk.Chave = @Chave	
+                             group by esta.Numero_AES, esta.Item_AES";
+
+            db.AddParameter(new System.Data.SqlClient.SqlParameter("@Chave", chave));
+
+            SqlDataReader dr = db.GetDataReader(cmdText);
+
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    listaAES.Add(new DadosAES
+                    {
+                        NumeroAES = dr["Numero_AES"].ToString(),
+                        ItemAES = Convert.ToInt32(dr["Item_AES"])
+                    });
+
+                }
+            }
+
+            db.CloseDbConnection();
+
+            return listaAES;
         }
 
         public List<VwEstagio> ObterListaEstagioPorToken(string chave)
@@ -70,184 +167,68 @@ namespace Vence.Input4Edicao.Controllers
                 }
             }
 
-            Session["dr"] = dr;
-
             db.CloseDbConnection();
 
             return estagios;
         }
 
-        public FileResult GerarArquivosExcel(string chave)
+        public List<VwEstagio> ObterListaEstagio(string numeroAES, int itemAES)
         {
-            DataSet ds = this.ObterDataSetEstagio(chave);
-            MemoryStream stream = new MemoryStream();
-            ExcelLibrary.DataSetHelper.CreateWorkbook(stream, ds);
-            byte[] file = stream.ToArray();
-            return File(file, ReportFormat.XLS.GetEnumDescription(), "RelatAcompEstagio.xls");
-        }
-        public DataSet ObterDataSetEstagio(string chave)
-        {
+            var estagios = new List<VwEstagio>();
             DbHelper db = new DbHelper();
 
-            string cmdText = @" select Numero_AES as AES, 
-                                        Item_AES as [Item Aes], 
-                                        Mantenedora,
-                                        Cod_Mantida as [Codigo Mantida] , 
-                                        Mantida, 
-                                        Diretoria_Ensino as [Diretoria],
-                                        CodCurso as [Codigo Curso], 
-                                       NomCurso as [Nome do Curso], 
-                                        vagas as Vagas, 
-                                        valorAluno as [Valor Aluno], 
-                                        valor_hora_aula as [Valor Hora Aula], 
-                                        area as Aula, 
-                                        --esta.idMatricula, 
-                                       esta.RA,
-                                        esta.NomeAluno as [Nome Aluno], 
-                                        cargaHoraEstagio as [Carga Horaria Contratada], 
-                                        sum(qtd_Horas_Estagio) as [Carga Horaria Realizada]
+            string cmdText = @" select Numero_AES, Item_AES, Mantenedora, Cod_Mantida, Mantida, Diretoria_Ensino, CodCurso, 
+                                       NomCurso, vagas, valorAluno, valor_hora_aula, area, esta.idMatricula, 
+                                       esta.RA, esta.NomeAluno, cargaHoraEstagio, sum(qtd_Horas_Estagio) as Total_Horas_Estagio
                                   from vw_estagio esta
-                                  join Token      tk on esta.Numero_AES = tk.AES
-                                 where tk.Chave = @Chave";
+                                 where 1=1";
 
-            db.AddParameter(new System.Data.SqlClient.SqlParameter("@Chave", chave));
+            if (!string.IsNullOrEmpty(numeroAES))
+            {
+                cmdText += " and Numero_AES = @numeroAES";
+                db.AddParameter(new System.Data.SqlClient.SqlParameter("@numeroAES", numeroAES));
+            }
+            if (itemAES > -1)
+            {
+                cmdText += " and Item_AES = @itemAES";
+                db.AddParameter(new System.Data.SqlClient.SqlParameter("@itemAES", itemAES));
+            }
 
             cmdText += @" group by Numero_AES, Item_AES, Mantenedora, Cod_Mantida, Mantida, Diretoria_Ensino, CodCurso, NomCurso, 
                                    vagas, valorAluno, valor_hora_aula, area, idMatricula, RA, NomeAluno, cargaHoraEstagio";
 
-            DataSet ds = db.GetDataSet(cmdText);
+            SqlDataReader dr = db.GetDataReader(cmdText);
+
+            if (dr.HasRows)
+            {
+                while (dr.Read())
+                {
+                    estagios.Add(new VwEstagio
+                    {
+                        NumeroAES = dr["Numero_AES"].ToString(),
+                        ItemAES = Convert.ToInt32(dr["Item_AES"]),
+                        NomeMantenedora = dr["Mantenedora"].ToString(),
+                        IdMantida = Convert.ToInt32(dr["Cod_Mantida"]),
+                        NomeMantida = dr["Mantida"].ToString(),
+                        NomeDiretoria = dr["Diretoria_Ensino"].ToString(),
+                        IdCurso = Convert.ToInt32(dr["CodCurso"]),
+                        NomeCurso = dr["NomCurso"].ToString(),
+                        NumeroVagas = Convert.ToInt32(dr["vagas"]),
+                        ValorAluno = Convert.ToDecimal(dr["valorAluno"]),
+                        ValorHoraAula = Convert.ToDecimal(dr["valor_hora_aula"]),
+                        Area = dr["area"].ToString(),
+                        IdMatricula = Convert.ToInt32(dr["idMatricula"]),
+                        NumeroRA = dr["RA"].ToString(),
+                        NomeAluno = dr["NomeAluno"].ToString(),
+                        CargaHorariaEstagio = Convert.ToInt32(dr["cargaHoraEstagio"]),
+                        TotalHoraEstagio = Convert.ToInt32(dr["Total_Horas_Estagio"])
+                    });
+                }
+            }
+
             db.CloseDbConnection();
-            return ds;
-        } 
-    }
-    public enum ReportFormat
-    {
-        [Description("application/pdf")]
-        PDF = 1,
 
-        [Description("application/xls")]
-        XLS = 2,
-
-        [Description("application/rtf")]
-        RTF = 3,
-
-        [Description("application/pdf")]
-        HTML = 4,
-
-        [Description("application/csv")]
-        CSV = 5,
-
-        [Description("application/xml")]
-        XML = 6,
-
-        [Description("application/jrprint")]
-        JRPRINT = 7
-    }
-    public static class ExtensionMethod
-    {
-        public static string GetEnumDescription(this Enum value)
-        {
-            FieldInfo field = value.GetType().GetField(value.ToString());
-
-            DescriptionAttribute attribute
-                    = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
-                        as DescriptionAttribute;
-
-            return attribute == null ? value.ToString() : attribute.Description;
+            return estagios;
         }
     }
-    public class DbHelper
-    {
-        private string _strConn = "";
-        private SqlConnection _dbConn;
-        private List<SqlParameter> _parameters;
-
-        public DbHelper()
-        {
-            this._strConn = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
-            this._dbConn = new SqlConnection();
-            this._parameters = new List<SqlParameter>();
-        }
-
-        public void ClearParameters()
-        {
-            this._parameters.Clear();
-        }
-
-        public void AddParameter(SqlParameter parameter)
-        {
-            this._parameters.Add(parameter);
-        }
-
-        private void OpenDbConnection()
-        {
-            if (this._dbConn.State == ConnectionState.Closed)
-            {
-                this._dbConn.ConnectionString = this._strConn;
-                this._dbConn.Open();
-            }
-        }
-
-        public void CloseDbConnection()
-        {
-            if (this._dbConn.State == ConnectionState.Open)
-                this._dbConn.Close();
-        }
-
-        public DataSet GetDataSet(string cmdText)
-        {
-            DataSet ds = new DataSet();
-
-            try
-            {
-                this.OpenDbConnection();
-                SqlCommand cmd = new SqlCommand(cmdText, this._dbConn);
-                if (this._parameters.Count > 0)
-                {
-                    foreach (var parameter in this._parameters)
-                        cmd.Parameters.Add(parameter);
-                }
-                SqlDataAdapter ad = new SqlDataAdapter(cmd);
-                ad.Fill(ds);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //this.CloseDbConnection();
-            }
-
-            return ds;
-        }
-
-        public SqlDataReader GetDataReader(string cmdText)
-        {
-            SqlDataReader dr;
-
-            try
-            {
-                this.OpenDbConnection();
-                SqlCommand cmd = new SqlCommand(cmdText, this._dbConn);
-                if (this._parameters.Count > 0)
-                {
-                    foreach (var parameter in this._parameters)
-                        cmd.Parameters.Add(parameter);
-                }
-                dr = cmd.ExecuteReader();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //this.CloseDbConnection();
-            }
-
-            return dr;
-        }
-    }
-
 }

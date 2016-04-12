@@ -41,7 +41,7 @@
   <ItemGroup>
     <Reference Include="ExcelLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ExcelLibrary.dll</HintPath>
+      <HintPath>..\..\..\..\..\Users\808256\OneDrive\JasperReports\ExcelLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -120,12 +120,20 @@
     <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\EstagioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RelatAcompMensalController.cs" />
+    <Compile Include="DbHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CargaHorariaVM.cs" />
     <Compile Include="Models\ControleEstagioVM.cs" />
+    <Compile Include="Models\DadosAES.cs" />
+    <Compile Include="Models\RelatAcompMensalVM.cs" />
+    <Compile Include="Models\VwAcompCargaHoraria.cs" />
+    <Compile Include="Models\VwAcompMensal.cs" />
     <Compile Include="Models\VwEstagio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\ajax-loader.gif" />
@@ -158,6 +166,7 @@
     <Content Include="Content\mensagensbootstrap.css" />
     <Content Include="Content\passo_check.png" />
     <Content Include="Content\ppt.jpg" />
+    <Content Include="Content\relatAcompMensal.css" />
     <Content Include="Content\totalizadores.jpg" />
     <Content Include="Content\Videos\scripts\config_xml.js" />
     <Content Include="Content\Videos\scripts\techsmith-smart-player.min.js" />
@@ -200,6 +209,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\mask.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\relatAcompMensal.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -233,6 +243,8 @@
     <Content Include="Views\Estagio\_PartialViewEstagios.cshtml" />
     <Content Include="Views\CargaHoraria\Index.cshtml" />
     <Content Include="Views\CargaHoraria\_CargaHorariaGridView.cshtml" />
+    <Content Include="Views\RelatAcompMensal\Index.cshtml" />
+    <Content Include="Views\RelatAcompMensal\_AcompMensalGridView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

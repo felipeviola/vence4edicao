@@ -1,4 +1,4 @@
-﻿@model Vence.Input4Edicao.Controllers.CargaHorariaVM
+﻿@model Vence.Input4Edicao.Models.CargaHorariaVM
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -27,29 +27,19 @@
         <h1> Base de dados H&P até 31/07/2015</h1>
         <h3>Totalizador Carga Horária</h3>
         <div class="jumbotron">
-
-           
-           
-            <div id="filtros">
-
-                <table>
-                    <tr>
-                        <td>
-                            Chave
-                        </td>
-                        <td style="padding-top:6px;">
-                            @Html.TextBoxFor(model => model.Chave, new { @class = "form-control" })
-
-                        </td>
-                        <td>
-                            &nbsp; <input type="button" id="btnPesquisa" class="btn" value="Pesquisar" />
-                            <img id="ajaxLoading" src="~/Content/ajax-loader.gif" class="imgHidde" />
-
-                        </td>
-                    </tr>
-
-                </table>
-
+            <div>
+                <p style="height:80px">
+                    <span style="float:left; width:180px">
+                        <label>Chave:</label>
+                        @Html.TextBoxFor(model => model.Chave, new { @class = "form-control" })
+                    </span>
+                    <span style="float:left; padding-left:5px; padding-top:3px; width:20px; padding-top:33px">
+                        <img id="ajaxLoading" src="~/Content/ajax-loader.gif" class="imgHidde" />
+                    </span>
+                    <span style="float:left; padding-left:20px; width:50px; padding-top:33px">
+                        <input type="button" id="btnPesquisa" class="btn" value="Pesquisar" />                        
+                    </span>
+                </p>
             </div>
         </div>
         <p style="padding-left:20px;">
@@ -58,3 +48,4 @@
         <div id="gvCargaHoraria"></div>
     </div>
 </form>
+

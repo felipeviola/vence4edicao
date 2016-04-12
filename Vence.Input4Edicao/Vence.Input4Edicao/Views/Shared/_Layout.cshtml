@@ -9,8 +9,8 @@
     @Styles.Render("~/Content/jquery-ui.theme.css")
     @Scripts.Render("~/bundles/modernizr")
     <style>
-        li a{
-            color:white;
+        li a {
+            color: white;
         }
     </style>
 </head>
@@ -18,26 +18,26 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <label style="color:white;font-size:large;text-align:center; vertical-align:central;">Plano de contingência para liberação de pagamento da 3ª e 4ª edições do programa VENCE (Encerramento em 12/04/2016).</label>
-           
+
         </div>
         <ul class="list-inline">
             <li>@Html.ActionLink("Cadastro", "Index", "Home")</li>
             <li>@Html.ActionLink("Consulta", "Index", "Consulta")</li>
             <li>@Html.ActionLink("Totalizador Estágio", "Index", "Estagio")</li>
             <li>@Html.ActionLink("Totalizador Carga Horária", "Index", "CargaHoraria")</li>
+            <li>@Html.ActionLink("Acompanhamento de Frequência", "Index", "RelatAcompMensal")</li>
             <li>@Html.ActionLink("Finalizar AES", "Finalizar", "Home")</li>
-          
+
             <li>
                 <a href="Content/Videos/VideoAulaCadastro.html" target="_blank">Tutorial</a>
             </li>
             <li>@Html.ActionLink("Help", "Help", "Home")</li>
         </ul>
-       
+
     </div>
     <div class="container">
         @RenderBody()
     </div>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/scripts/mask.js")
     @Scripts.Render("~/Content/jquery-ui.min.js")

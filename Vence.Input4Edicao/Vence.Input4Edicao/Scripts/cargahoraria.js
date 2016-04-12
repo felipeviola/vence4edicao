@@ -41,6 +41,16 @@
 
     mensageWarning: function (message) {
         alert(message);
+    },
+
+    showAjaxLoader: function () {
+        $("#ajaxLoading").removeClass("imgHidde");
+        $("#ajaxLoading").addClass("imgVisible");
+    },
+
+    hideAjaxLoader: function () {
+        $("#ajaxLoading").removeClass("imgVisible");
+        $("#ajaxLoading").addClass("imgHidde");
     }
 }
 
@@ -64,6 +74,12 @@ var eventos = {
         });
     },
 
+    gerarRelatorio: function (e) {
+        var chave = global.params.$Chave.val();
+        var url = window.location.href.split('?', 1) + "/GerarRelatorio?chave=" + chave;
+        window.location = url;
+    },
+
     gerarArquivoExcel: function () {
         var chave = global.params.$Chave.val();
         var url = window.location.href.split('?', 1) + "/GerarArquivosExcel?chave=" + chave;
@@ -74,8 +90,7 @@ var eventos = {
 
         var chave = global.params.$Chave.val();
 
-        $("#ajaxLoading").removeClass("imgHidde");
-        $("#ajaxLoading").addClass("imgVisible");
+        global.showAjaxLoader();
 
         $.ajax({
             type: 'GET',
@@ -96,16 +111,12 @@ var eventos = {
                 } else {
                     document.getElementById('btnImprimir').style.display = 'none';
                 }
-
-                $("#ajaxLoading").removeClass("imgVisible");
-                $("#ajaxLoading").addClass("imgHidde");
-
+                global.hideAjaxLoader();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $(document).ajaxStop(function () {
                     global.mensageError('Ocorreu um erro durante o processo.');
-                    $("#ajaxLoading").removeClass("imgVisible");
-                    $("#ajaxLoading").addClass("imgHidde");
+                    global.hideAjaxLoader();
                 });
             }
         });

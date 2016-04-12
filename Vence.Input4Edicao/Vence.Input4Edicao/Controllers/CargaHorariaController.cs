@@ -6,12 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Vence.Input4Edicao.Models;
 
 namespace Vence.Input4Edicao.Controllers
 {
     public class CargaHorariaController : Controller
-    {
-        // GET: CargaHoraria
+    {        
         public ActionResult Index()
         {
             return View();
@@ -26,6 +26,22 @@ namespace Vence.Input4Edicao.Controllers
             return File(file, ReportFormat.XLS.GetEnumDescription(), "ConsultaCargaHoraria.xls");
         }
 
+        public FileResult GerarRelatorio(string chave)
+        {
+            try
+            {
+                Report relatorio = new Report();
+                var parametros = new List<ReportParameter>();
+                parametros.Add(new ReportParameter { Name = "Chave", Value = chave.ToString() });
+                byte[] file = relatorio.GetReportFile("CargaHorariaVence", "/Vence", ReportFormat.XLS, parametros);
+                return File(file, ReportFormat.XLS.GetEnumDescription(), "CargaHorariaVence.xls");
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public PartialViewResult PesquisarCargaHoraria(string chave)
         {
             var model = new CargaHorariaVM();
@@ -38,52 +54,6 @@ namespace Vence.Input4Edicao.Controllers
             DbHelper db = new DbHelper();
             db.AddParameter(new System.Data.SqlClient.SqlParameter("@Chave", chave));
 
-//            string cmdText = @" select caho.edicao, 
-//                                       caho.Numero_AES, 
-//	                                   caho.Item_AES, 
-//	                                   caho.Cod_Mantenedora, 
-//	                                   caho.Mantenedora, 
-//	                                   caho.Cod_Mantida, 
-//	                                   caho.Mantida, 
-//	                                   caho.Data_Inicio_Aula, 
-//	                                   caho.CodCurso, 
-//	                                   caho.Curso, 
-//	                                   caho.Carga_Hora_Total, 
-//	                                   caho.Duracao, 
-//	                                   caho.Tot_Carga_Hora_Exec,
-//	                                   caho.Duracao_Exec,
-//	                                   caho.Carga_Hora_Total - caho.Tot_Carga_Hora_Exec as Saldo,
-//	                                   caho.Qtd_Tuma,  
-//	                                   caho.Ultimo_Mes_Frequencia, 
-//	                                   caho.Integralizado, 
-//	                                   count(1) diasLetivos, 
-//	                                   sum( cast(cargaHoraria as int)/60) cargaHoraria, 
-//	                                   cale.mesReferencia
-//                                  from vw_acomp_carga_horaria caho,      
-//                                       Calendario4edicao      cale,
-//									   Token                    tk
-//                                 where caho.idCursoTurnoTurma = cale.idCursoTurnoTurma
-//								   and tk.AES = caho.Numero_AES  
-//                                   and cale.staPLCV IS NULL
-//								   and tk.Chave = @Chave 
-//		  					  group by caho.edicao, 
-//									   caho.Numero_AES, 
-//									   caho.Item_AES, 
-//									   caho.Cod_Mantenedora, 
-//									   caho.Mantenedora, 
-//									   caho.Cod_Mantida, 
-//									   caho.Mantida, 
-//									   caho.Data_Inicio_Aula, 
-//									   caho.CodCurso, 
-//									   caho.Curso, 
-//									   caho.Carga_Hora_Total, 
-//									   caho.Duracao, 
-//									   caho.Tot_Carga_Hora_Exec, 
-//									   caho.Qtd_Tuma, 
-//									   caho.Ultimo_Mes_Frequencia, 
-//									   caho.Integralizado, 
-//									   cale.mesReferencia, 
-//									   caho.Duracao_Exec";
             string sql = @"	  with HorasRealizadas as 
                             (select 
                                Numero_AES, nomeCurso
@@ -150,54 +120,7 @@ namespace Vence.Input4Edicao.Controllers
             var lista = new List<VwAcompCargaHoraria>();
             DbHelper db = new DbHelper();
             db.AddParameter(new System.Data.SqlClient.SqlParameter("@Chave", chave));
-
-            //            string cmdText = @" select caho.edicao, 
-            //                                       caho.Numero_AES, 
-            //	                                   caho.Item_AES, 
-            //	                                   caho.Cod_Mantenedora, 
-            //	                                   caho.Mantenedora, 
-            //	                                   caho.Cod_Mantida, 
-            //	                                   caho.Mantida, 
-            //	                                   caho.Data_Inicio_Aula, 
-            //	                                   caho.CodCurso, 
-            //	                                   caho.Curso, 
-            //	                                   caho.Carga_Hora_Total, 
-            //	                                   caho.Duracao, 
-            //	                                   caho.Tot_Carga_Hora_Exec,
-            //	                                   caho.Duracao_Exec,
-            //	                                   caho.Carga_Hora_Total - caho.Tot_Carga_Hora_Exec as Saldo,
-            //	                                   caho.Qtd_Tuma,  
-            //	                                   caho.Ultimo_Mes_Frequencia, 
-            //	                                   caho.Integralizado, 
-            //	                                   count(1) diasLetivos, 
-            //	                                   sum( cast(cargaHoraria as int)/60) cargaHoraria, 
-            //	                                   cale.mesReferencia
-            //                                  from vw_acomp_carga_horaria caho,      
-            //                                       Calendario4edicao      cale,
-            //									   Token                    tk
-            //                                 where caho.idCursoTurnoTurma = cale.idCursoTurnoTurma
-            //								   and tk.AES = caho.Numero_AES  
-            //                                   and cale.staPLCV IS NULL
-            //								   and tk.Chave = @Chave 
-            //		  					  group by caho.edicao, 
-            //									   caho.Numero_AES, 
-            //									   caho.Item_AES, 
-            //									   caho.Cod_Mantenedora, 
-            //									   caho.Mantenedora, 
-            //									   caho.Cod_Mantida, 
-            //									   caho.Mantida, 
-            //									   caho.Data_Inicio_Aula, 
-            //									   caho.CodCurso, 
-            //									   caho.Curso, 
-            //									   caho.Carga_Hora_Total, 
-            //									   caho.Duracao, 
-            //									   caho.Tot_Carga_Hora_Exec, 
-            //									   caho.Qtd_Tuma, 
-            //									   caho.Ultimo_Mes_Frequencia, 
-            //									   caho.Integralizado, 
-            //									   cale.mesReferencia, 
-            //									   caho.Duracao_Exec";
-
+            
             string sql = @"   with HorasRealizadas as 
                             (select 
                                Numero_AES, nomeCurso
@@ -282,76 +205,5 @@ namespace Vence.Input4Edicao.Controllers
 
             return lista;
         }
-
-
-
-    }
-
-
-    public class VwAcompCargaHoraria
-    {
-        public string Numero_AES { get; set; }
-        public string Item_AES { get; set; }
-        public int idMatricula { get; set; }
-        public string ra { get; set; }
-        public string NomeAluno { get; set; }
-        public string ult_mes_lanc { get; set; }
-        public int Carga_Hora_Total { get; set; }
-        public int CargaRealizadaCurso { get; set; }
-        public int Carga_Realizada_Aluno { get; set; }
-        public string NomeCurso { get; set; }
-
-        //public int Edicao { get; set; }
-
-        //public string NumeroAES { get; set; }
-
-        //public int ItemAES { get; set; }
-
-        //public int IdMantenedora { get; set; }
-
-        //public string NomeMantenedora { get; set; }
-
-        //public int IdMantida { get; set; }
-
-        //public string NomeMantida { get; set; }
-
-        //public string DataInicioAula { get; set; }
-
-        //public int IdCurso { get; set; }
-
-        //public string NomeCurso { get; set; }
-
-        //public int TotalCargaHorario { get; set; }
-
-        //public int Saldo { get; set; }
-
-        //public int Duracao { get; set; }
-
-        //public int TotalCargaHorarioExecutada { get; set; }
-
-        //public int QtdTurma { get; set; }
-
-        //public int DuracaoExecutada { get; set; }
-
-        //public string UltimoMesFrequencia { get; set; }
-
-        //public string Integralizado { get; set; }
-
-        //public int NumeroDiasLetivos { get; set; }
-
-        //public int CargaHorario { get; set; }
-
-        //public string MesReferencia { get; set; }
-    }
-
-    public class CargaHorariaVM
-    {
-        public string NumeroAES { get; set; }
-
-        public int ItemAES { get; set; }
-
-        public string Chave { get; set; }
-
-        public List<VwAcompCargaHoraria> ListaCargaHoraria { get; set; }
-    }
+    }    
 }
