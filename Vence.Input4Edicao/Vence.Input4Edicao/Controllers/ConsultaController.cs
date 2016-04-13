@@ -84,8 +84,8 @@ namespace Vence.Input4Edicao.Controllers
             string cmdText = string.Format(@" select   DiaPresenca,a.MesReferencia,CargaHoraria,(select count(*) from Calendario4edicao where MesReferencia = '{1}' and idcursoturnoturma = {2}) as DiasLetivos
                         from Frequencia4Edicao a left join Calendario4edicao b on a.idcursoturnoturma = b.IdCursoTurnoTurma
                         where a.idcursoturnoturma = b.IdCursoTurnoTurma
-						-- where a.DiaPresenca = b.DiaLetivo 
-						--and a.MesReferencia = b.MesReferencia 
+					    and a.DiaPresenca = b.DiaLetivo 
+						and a.MesReferencia = b.MesReferencia 
 						and idMatricula =  {0} 
 						and a.MesReferencia = '{1}'
                         group by 
