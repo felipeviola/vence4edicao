@@ -70,8 +70,8 @@ namespace Vence.Input4Edicao.Controllers
         }
         public ActionResult Index()
         {
-            return View();
-            // return  RedirectToAction("Manutencao", "Home");
+            //return View();
+            return  RedirectToAction("Manutencao", "Home");
         }
         public ActionResult Manutencao()
         {
