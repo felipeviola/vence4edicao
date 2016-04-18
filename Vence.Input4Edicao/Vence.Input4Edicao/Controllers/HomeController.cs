@@ -34,7 +34,23 @@ namespace Vence.Input4Edicao.Controllers
         {
             return View();
         }
+        public JsonResult ValidarRA(string ra)
+        {
+            bool _result = true;
+            try
+            {
 
+             _result=   ValidarRaAlunoGDAE(ra);
+
+
+             return Json(_result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(_result, JsonRequestBehavior.AllowGet);
+            }
+
+        }
         public void DownloadPPT()
         {
             System.IO.FileInfo file = new System.IO.FileInfo(HttpContext.Server.MapPath("~/Content/Arquivos/Tutorial.pptx"));
@@ -70,8 +86,8 @@ namespace Vence.Input4Edicao.Controllers
         }
         public ActionResult Index()
         {
-            //return View();
-            return  RedirectToAction("Manutencao", "Home");
+            return View();
+            //return  RedirectToAction("Manutencao", "Home");
         }
         public ActionResult Manutencao()
         {

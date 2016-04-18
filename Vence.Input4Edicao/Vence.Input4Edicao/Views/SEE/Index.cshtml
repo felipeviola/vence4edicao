@@ -1,0 +1,104 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .hide {
+        display:none;
+    }
+
+    .show {
+       display:block;
+    }
+</style>
+<link href="~/Content/estagio.css" rel="stylesheet" />
+
+
+
+<form id="frmPesquisa">
+    <div id="content">
+    
+        <div class="jumbotron">
+            <h2>Espaço reservado a SEE</h2>
+
+
+            <div>
+                <p style="height:80px">
+                    <span style="float:left; width:180px">
+                        <label>Chave:</label>
+                        <input type="text" id="txtToken" class="form-control" />
+                    </span>
+
+
+                </p>
+            </div>
+        </div>
+
+    </div>
+</form>
+<div id="divLiberarAcoes" class="hide">
+    <span style="float:left; width:180px">
+        <label>Chave da Diretoria:</label>  <input type="text" id="txtChave" class="form-control" />
+    </span>
+    <span style="float:left; padding-left:20px; width:50px; padding-top:25px">
+        <input type="button" id="btnEnviar" class="btn" value="Alterar Status" />
+    </span>
+</div>
+
+<script>
+
+    window.onload = function () {
+        $("#txtToken").blur(function () {
+
+            var token = $("#txtToken").val();
+
+            if (token != "") {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SEE/ValidarToken",
+                    data: { token: token },
+                    success: function (data) {
+
+                        if (Boolean(data)) {
+
+                            $("#divLiberarAcoes").removeClass("hide");
+                            $("#divLiberarAcoes").addClass("show");
+                        }
+                    }
+                });
+
+
+            }
+
+        });
+
+
+        $("#btnEnviar").click(function () {
+
+            var token = $("#txtToken").val();
+            var _chave = $("#txtChave").val();
+
+            if (token != "" && _chave != "") {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SEE/Update",
+                    data: { token: token, chave: _chave },
+                    success: function (data) {
+
+                        if (Boolean(data)) {
+
+
+                        }
+                    }
+                });
+
+
+            }
+
+        });
+    }
+
+
+</script>

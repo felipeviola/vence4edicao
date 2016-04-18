@@ -121,6 +121,7 @@
     <Compile Include="Controllers\EstagioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RelatAcompMensalController.cs" />
+    <Compile Include="Controllers\SEEController.cs" />
     <Compile Include="DbHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -194,8 +195,8 @@
     <Content Include="Content\Arquivos\PlanodeContingência.pptx" />
     <Content Include="Content\Arquivos\EvidênciaModelo.doc" />
     <Content Include="Content\Arquivos\Tutorial.pptx" />
-    <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\projetovence - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\projetovence - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\cargahoraria.js" />
     <Content Include="Scripts\estagio.js" />
@@ -245,6 +246,7 @@
     <Content Include="Views\CargaHoraria\_CargaHorariaGridView.cshtml" />
     <Content Include="Views\RelatAcompMensal\Index.cshtml" />
     <Content Include="Views\RelatAcompMensal\_AcompMensalGridView.cshtml" />
+    <Content Include="Views\SEE\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
