@@ -143,9 +143,9 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\calendar.png" />
     <Content Include="Content\checkstyle.css" />
-    <Content Include="Content\estagio.css" />
     <Content Include="Content\external\jquery\jquery.js" />
     <Content Include="Content\glyphicons-halflings_140_BCK.png" />
+    <Content Include="Content\images\pdf.png" />
     <Content Include="Content\images\ui-icons_444444_256x240.png" />
     <Content Include="Content\images\ui-icons_555555_256x240.png" />
     <Content Include="Content\images\ui-icons_777620_256x240.png" />
@@ -167,7 +167,7 @@
     <Content Include="Content\mensagensbootstrap.css" />
     <Content Include="Content\passo_check.png" />
     <Content Include="Content\ppt.jpg" />
-    <Content Include="Content\relatAcompMensal.css" />
+    <Content Include="Content\relatorios.css" />
     <Content Include="Content\totalizadores.jpg" />
     <Content Include="Content\Videos\scripts\config_xml.js" />
     <Content Include="Content\Videos\scripts\techsmith-smart-player.min.js" />

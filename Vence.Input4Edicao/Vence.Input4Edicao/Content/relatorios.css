@@ -106,6 +106,13 @@ legend {
     padding-left:35%;
 }
 
+input[type="checkbox"] {
+   border: 1px solid #999999; 
+   border-radius: 5px; 
+   padding: 8px;
+   line-height: 14px !important;
+}
+
 input.text { 
     border: 1px solid #999999; 
     border-radius: 5px; 
@@ -154,14 +161,23 @@ label.error {
     font-size: 12px; 
 }
 
-#spin {
-		background: #333;
-		color: white;
-		float: left;
-		width: 200px;
-		height: 200px;
-		margin: 0 20px 20px 0;
-		-webkit-border-radius: 10px;
-		-moz-border-radius: 10px;
-		border-radius: 10px;
+#diretoriaInfo {
+    color: #fff;
+    background-color: #2f7ab0;
+    height:40px;
+    padding-top:10px;
+    padding-left:50px;
+}
+
+#diretoriaInfo .titulo {
+    font-weight:bold;
+}
+
+#diretoriaInfo .nomeDE {
+    padding-left:5px;
+}
+
+.iconePdf {
+    background: url('../Content/images/pdf.png') no-repeat center;
+    display: block;
 }

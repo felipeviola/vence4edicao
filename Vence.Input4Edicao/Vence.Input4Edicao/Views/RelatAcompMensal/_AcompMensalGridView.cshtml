@@ -25,14 +25,14 @@
                                 <td align="center">@item.QtdAlunos</td>
                                 <td align="center">@item.MesReferencia</td>
                                 <td align="center">
-                                    <nav>
-                                        @Html.ActionLink("Gerar PDF", "GerarRelatorio", "RelatAcompMensal", new
+                                    <nav style="width:25px">
+                                        @Html.ActionLink(".", "GerarRelatorio", "RelatAcompMensal", new
                                             {
                                                 @numeroAES = @item.NumeroAES,
                                                 @itemAES = @item.ItemAES,
                                                 @mesReferencia = @item.MesReferencia
                                             },
-                                            new { @class = "btn btn-success btn-xs", onclick = "return true;", title = "Gerar PDF", id = "btnPrintAcomp" })
+                                            new { @class = "iconePdf", onclick = "return true;", title = "Relatório de Acompanhamento de Frequência", id = "btnPrintAcomp" })
                                     </nav>
                                 </td>
                             </tr>

@@ -30,7 +30,7 @@ namespace Vence.Input4Edicao.Controllers
                 var parametros = new List<ReportParameter>();
                 parametros.Add(new ReportParameter { Name = "Numero_AES", Value = numeroAES });
                 parametros.Add(new ReportParameter { Name = "Item_AES", Value = itemAES.ToString() });
-                byte[] file = relatorio.GetReportFile("RelatorioAcompanhamentoEstagio", "/Vence", ReportFormat.PDF, parametros);
+                byte[] file = relatorio.GetReportFile("RelatorioAcompanhamentoEstagio", "/Vence/Estagio", ReportFormat.PDF, parametros);
                 return File(file, ReportFormat.PDF.GetEnumDescription(), "RelatorioAcompanhamentoEstagio.pdf");
             }
             catch (Exception e)

@@ -31,7 +31,7 @@ namespace Vence.Input4Edicao.Controllers
                 parametros.Add(new ReportParameter { Name = "CodMantida", Value = "0" });
 
                 Report relatorio = new Report();
-                byte[] file = relatorio.GetReportFile("RelatAcompMensal", "/Vence", ReportFormat.PDF, parametros);
+                byte[] file = relatorio.GetReportFile("RelatAcompMensal", "/Vence/Frequencia", ReportFormat.PDF, parametros);
                 return File(file, ReportFormat.PDF.GetEnumDescription(), "RelatAcompMensal.pdf");
             }
             catch (Exception e)
