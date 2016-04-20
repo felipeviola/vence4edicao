@@ -47,7 +47,7 @@ namespace Vence
             // Obtém os dados de configuração para acesso ao JasperServer.
             this._urlServer = System.Configuration.ConfigurationSettings.AppSettings["JasperServerUrl"];
             this._userId = System.Configuration.ConfigurationSettings.AppSettings["JasperServerUserId"];
-            this._userPassword = System.Configuration.ConfigurationSettings.AppSettings["JasperServerUserPwd"];            
+            this._userPassword = System.Configuration.ConfigurationSettings.AppSettings["JasperServerUserPwd"];
             this._edition = (JasperServerEdition)Enum.Parse(typeof(JasperServerEdition), System.Configuration.ConfigurationSettings.AppSettings["JasperServerEdition"], true);
             if (this._edition == JasperServerEdition.Enterprise)
                 this._urlServer += "-pro";
@@ -62,7 +62,7 @@ namespace Vence
             // Define os parâmetros de autêticação no jasperserver.
             var authenticationParams = new NameValueCollection();
             authenticationParams.Add("j_username", this._userId);
-            authenticationParams.Add("j_password", this._userPassword);            
+            authenticationParams.Add("j_password", this._userPassword);
 
             // Realiza a autênticação via post rest_v1.
             this._client.UploadValues(this._urlServer + "/rest/login", "POST", authenticationParams);
@@ -88,14 +88,23 @@ namespace Vence
 
         public byte[] GetReportFile(string reportName, string reportFoldersPath, ReportFormat reportFormat, List<ReportParameter> parameters)
         {
+            byte[] file = null;
+
             try
             {
                 reportName += "." + reportFormat.ToString().ToLower();
                 var report = String.Format("rest_v2/reports/reports{0}/{1}", reportFoldersPath, reportName);
 
                 // Recupera o arquivo no formato byte array.
-                var urlParams = this.GetUrlParameters(parameters);
-                var file = this._client.DownloadData(String.Format("{0}/{1}?{2}", this._urlServer, report, urlParams));
+                if (parameters.Count > 0)
+                {
+                    var urlParams = this.GetUrlParameters(parameters);
+                    file = this._client.DownloadData(String.Format("{0}/{1}?{2}", this._urlServer, report, urlParams));
+                }
+                else
+                {
+                    file = this._client.DownloadData(String.Format("{0}/{1}", this._urlServer, report));
+                }
 
                 return file;
             }
@@ -103,7 +112,7 @@ namespace Vence
             {
                 throw ex;
             }
-        }       
+        }
 
         #endregion
     }
@@ -150,7 +159,7 @@ namespace Vence
     #endregion
 
     public static class ExtensionMethod
-    {       
+    {
         public static string GetEnumDescription(this Enum value)
         {
             FieldInfo field = value.GetType().GetField(value.ToString());

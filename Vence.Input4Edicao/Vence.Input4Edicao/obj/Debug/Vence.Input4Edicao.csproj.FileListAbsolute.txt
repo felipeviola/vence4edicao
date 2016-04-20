@@ -152,6 +152,6 @@ C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\bin\System.Web.WebPages.Razor.xml
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\bin\Antlr3.Runtime.pdb
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\bin\Newtonsoft.Json.xml
-C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.dll
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.pdb
+C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache

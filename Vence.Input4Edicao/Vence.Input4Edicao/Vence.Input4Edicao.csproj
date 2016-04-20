@@ -121,6 +121,7 @@
     <Compile Include="Controllers\EstagioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RelatAcompMensalController.cs" />
+    <Compile Include="Controllers\RelatParcelaFinalController.cs" />
     <Compile Include="Controllers\SEEController.cs" />
     <Compile Include="DbHelper.cs" />
     <Compile Include="Global.asax.cs">
@@ -130,6 +131,7 @@
     <Compile Include="Models\ControleEstagioVM.cs" />
     <Compile Include="Models\DadosAES.cs" />
     <Compile Include="Models\RelatAcompMensalVM.cs" />
+    <Compile Include="Models\RelatParcelaFinalVM.cs" />
     <Compile Include="Models\VwAcompCargaHoraria.cs" />
     <Compile Include="Models\VwAcompMensal.cs" />
     <Compile Include="Models\VwEstagio.cs" />
@@ -211,6 +213,7 @@
     <Content Include="Scripts\mask.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\relatAcompMensal.js" />
+    <Content Include="Scripts\relatParFinal.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -247,6 +250,8 @@
     <Content Include="Views\RelatAcompMensal\Index.cshtml" />
     <Content Include="Views\RelatAcompMensal\_AcompMensalGridView.cshtml" />
     <Content Include="Views\SEE\Index.cshtml" />
+    <Content Include="Views\RelatParcelaFinal\Index.cshtml" />
+    <Content Include="Views\RelatParcelaFinal\_PesquisaAESGridView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

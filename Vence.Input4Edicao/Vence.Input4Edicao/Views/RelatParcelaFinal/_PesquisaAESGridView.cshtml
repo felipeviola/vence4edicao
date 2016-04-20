@@ -1,0 +1,95 @@
+﻿@model Vence.Input4Edicao.Models.RelatParcelaFinalVM
+
+@if (Model != null)
+{
+    if (Model.ListaAES.Count > 0)
+    {
+        <p>
+            <div id="diretoriaInfo">
+                <span class="titulo">Diretoria de Ensino:</span><span class="nomeDE">@Model.ListaAES[0].Diretoria</span>
+            </div>
+        </p>
+    }
+    <div style="overflow-y: auto; height:340px; overflow:auto; width:100%">        
+        @if (Model.ListaAES.Count > 0)
+        {            
+            <table id="tabelaDados" class="tabela" width="100%">
+                <thead>
+                    <tr>
+                        <td width="350px">Escola</td>
+                        <td width="80px" align="center">Numeros AES</td>
+                        <td width="80px" align="center">Item AES</td>
+                        <td width="100px" align="center">Mês de Referência</td>
+                        <td width="100px" align="center">Parcela Final ?</td>
+                        <td width="130px" align="center">Relatório</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ListaAES)
+                    {
+                        <tr>
+                            <td>@item.Mantida</td>
+                            <td align="center">@item.NumeroAES</td>
+                            <td align="center">@item.ItemAES</td>
+                            <td align="center">@item.MesReferencia</td>
+                            <td align="center">@item.EhParcelaFinal</td>
+                            <td align="center">
+                                <nav style="padding-left:35px">
+                                    @if (@item.TipoParcela == "F")
+                                    {
+                                        <span id="relat1" style="float:left; width:30px;">
+                                            @Html.ActionLink(".", "GerarRelatorio", "RelatParcelaFinal", new
+                                                {
+                                                    @nomeRelatorio = "RelatorioFisicoFinaceiroParcelaFinal",
+                                                    @numeroAES = @item.NumeroAES,
+                                                    @itemAES = @item.ItemAES
+                                                },
+                                                new { @class = "iconePdf", onclick = "return true;", title = "Relatório Físico Financeiro (Parcela Final)", id = "btnPrintAcomp1" })
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span id="relat2" style="float:left; width:30px;">
+                                            @Html.ActionLink(".", "GerarRelatorio", "RelatParcelaFinal", new
+                                                {
+                                                    @nomeRelatorio = "RelatorioFisicoFinaceiroParcelaMensal",
+                                                    @numeroAES = @item.NumeroAES,
+                                                    @itemAES = @item.ItemAES,
+                                                    @mesRef = @item.MesReferencia
+                                                },
+                                                new { @class = "iconePdf", onclick = "return true;", title = "Relatório Físico Financeiro da Parcela (Mensal)", id = "btnPrintAcomp2" })
+                                        </span>
+                                        <span id="relat3" style="float:left; width:30px;">
+                                            @Html.ActionLink(".", "GerarRelatorio", "RelatParcelaFinal", new
+                                                {
+                                                    @nomeRelatorio = "SumarioFisicoFinanceirodaParcela",
+                                                    @numeroAES = @item.NumeroAES,
+                                                    @itemAES = @item.ItemAES,
+                                                    @mesRef = @item.MesReferencia
+                                                },
+                                                new { @class = "iconePdf", onclick = "return true;", title = "Sumário Físico Financeiro da Parcela", id = "btnPrintAcomp2" })
+                                        </span>
+                                        <span id="relat4" style="float:left; width:30px;">
+                                            @Html.ActionLink(".", "GerarRelatorio", "RelatParcelaFinal", new
+                                                {
+                                                    @nomeRelatorio = "RelatorioAcompFreqDiariaAlunos",
+                                                    @numeroAES = @item.NumeroAES,
+                                                    @itemAES = @item.ItemAES,
+                                                    @mesRef = @item.MesReferencia
+                                                },
+                                                new { @class = "iconePdf", onclick = "return true;", title = "Relatório de Acompanhamento de Frequência Diária de Alunos - Parcela Final", id = "btnPrintAcomp2" })
+                                        </span>
+                                    }
+                                </nav>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <label id="labelgrid">Não há registros para a pesquisa realizda.</label>
+        }
+    </div>
+}
