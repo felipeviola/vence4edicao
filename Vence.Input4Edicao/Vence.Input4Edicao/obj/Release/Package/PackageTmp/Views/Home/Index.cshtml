@@ -58,6 +58,10 @@
     .hide {
         display: none;
     }
+
+    .txtRa {
+         background-color: #FFBABA;
+    }
 </style>
 
 
@@ -168,7 +172,11 @@
         </tbody>
     </table>
 
-
+    <div class="isa_error hide" id="divMensagemRa">
+    <strong> RA inválido ou não encontrado!</strong>
+     <br />
+        <div id="divDigitos" style="color:red;"></div>
+    </div>
 
     <div id="divMessage" class="ui-widget" style="display:none">
         <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
@@ -317,9 +325,7 @@
             BuscarTurmas();
         });
 
-        //$("#txtItemAES").focusout(function () {
-        //    BuscarTurmas();
-        //});
+
 
         $("#ddlItemAES").change(function () {
             $("#divMensagemData").removeClass("isa_warning show");
@@ -330,6 +336,53 @@
     }
 
     window.onload = function () {
+
+        $("#divMensagemRa").removeClass("isa_warning show");
+        $("#divMensagemRa").addClass("isa_warning hide");
+
+        
+        $("#tblAlunos").on("blur", "input[id='txtRa']", function () {
+
+            _ra = $(this).val();
+
+            if (_ra != "") {
+                if (_ra.length != 12) {
+
+                    $("#divDigitos").html('*O RA deve conter 12 digitos.');
+        
+                } else {
+                    $("#divDigitos").html('');
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/ValidarRA",
+                    data: { ra: _ra },
+
+                    success: function (data) {
+                        if (!Boolean(data)) {
+
+                            $("#divMensagemRa").removeClass("isa_warning hide");
+                            $("#divMensagemRa").addClass("isa_warning show");
+                           
+            
+                        }
+                        else {
+                            $("#divMensagemRa").removeClass("isa_warning show");
+                            $("#divMensagemRa").addClass("isa_warning hide");
+                           
+                        }
+                    }
+                });
+            }
+            else {
+                $("#divMensagemRa").removeClass("isa_warning show");
+                $("#divMensagemRa").addClass("isa_warning hide");
+               
+            }
+        });
+
+
 
         $("#txtToken").val('');
         $("#txtNumeroAES").val('');
@@ -384,8 +437,6 @@
         });
 
         $("#btnSalvar").click(function () {
-
- 
 
             $.blockUI({
                 message: "Enviando dados...",
@@ -452,14 +503,14 @@
                     valido = false;
             });
 
-            debugger;
+    
 
             if (valido)
                 valido = validation(Formulario);
 
             if (valido) {
 
-          
+
 
                 $.ajax({
                     type: "POST",
@@ -469,7 +520,7 @@
                     //contentType: 'application/json; charset=utf-8',
                     success: function (data) {
 
-                
+
 
                         if (data) {
                             var r = confirm("Já foram inseridas as frequências desta turma. Deseja substituir as frequências?");
@@ -513,7 +564,7 @@
                                 $.unblockUI();
                             }
 
-                           
+
                         }
                         else {
                             var r = confirm("Você tem certeza que deseja lançar frequência para esta turma neste mês?");
@@ -609,7 +660,7 @@
         });
 
         $("#idAno").change(function () {
-           
+
             var _idTurma = $("#lstTurma").val();
             var _mesAno = "";
             var _mes = $("#idMes").val();
@@ -651,9 +702,9 @@
                     url: "/Home/ObterItemAES",
                     data: { aes: $("#txtNumeroAES").val() },
                     dataType: 'json',
-                   // contentType: 'application/json; charset=utf-8',
+                    // contentType: 'application/json; charset=utf-8',
                     success: function (data) {
-                
+
                         var retorno = JSON.parse(data);
                         $("#ddlItemAES").html("");
 
@@ -715,13 +766,14 @@
                         $("#diasLetivosHeader thead tr").html("");
 
                         for (var item in retorno) {
-                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input data-type='RA' type='text' class='form-control' value='" + retorno[item].RA + "' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
+                            $("#tblAlunos tbody").append("<tr><td data-matricula='" + retorno[item].Matricula + "' data-inscricao='" + retorno[item].Inscricao + "'>" + retorno[item].Nome + "</td><td></td><td><input data-type='Hora' data-tipo='Estagio' type='text' class='form-control' /></td><td><input id='txtRa' data-type='RA' type='text' class='form-control' value='" + retorno[item].RA + "' /></td><td><input data-type='aprovado' type='checkbox' class='form-control' /></td><td><input data-type='ignorado' type='checkbox' class='form-control' /></td></tr>");
                         }
                         $('input[data-tipo]').mask('999:99');
                     }
                 });
             }
         });
+
 
         $("#txtToken").focusout(function () {
             $.ajax({
@@ -748,14 +800,47 @@
                             url: "/Home/ValidarLancamentos",
                             data: { token: token, aes: aes },
                             success: function (data) {
+                                debugger;
+                                //if (Boolean(data)) {
+                                //    $("#btnSalvar").attr('disabled', 'disabled');
+                                //    $("#idMes").attr('disabled', 'disabled');                  
+                                //    $("#idAno").attr('disabled', 'disabled');
+                                //    $("#ddlItemAES").attr('disabled', 'disabled');
+                                //    $("#txtCpfSup").attr('disabled', 'disabled');
+                                //    $("#lstTurma").attr('disabled', 'disabled');
+                                //    $("#addDataLetiva").attr('disabled', 'disabled');
+                                //    $("#addHoraLetiva").attr('disabled', 'disabled');
+                                //    $("#btnAddDiaLetivo").attr('disabled', 'disabled');
+                                //    $("#btnLimparDiaLetivo").attr('disabled', 'disabled');
 
-                                if (Boolean(data)) {
-                                    $("#btnSalvar").hide();
 
+                                //    $("#divFinalizado").removeClass("isa_success hide");
+                                //    $("#divFinalizado").addClass("isa_success show");
+
+                                //}
+
+                                //B-Bloqueado
+                                //D-Liberado Digitação
+                                //C-Liberado Correção
+                               
+                                if (data == "B") {
+                                    $("#btnSalvar").attr('disabled', 'disabled');
+                                    $("#idMes").attr('disabled', 'disabled');
+                                    $("#idAno").attr('disabled', 'disabled');
+                                    $("#ddlItemAES").attr('disabled', 'disabled');
+                                    $("#txtCpfSup").attr('disabled', 'disabled');
+                                    $("#lstTurma").attr('disabled', 'disabled');
+                                    $("#addDataLetiva").attr('disabled', 'disabled');
+                                    $("#addHoraLetiva").attr('disabled', 'disabled');
+                                    $("#btnAddDiaLetivo").attr('disabled', 'disabled');
+                                    $("#btnLimparDiaLetivo").attr('disabled', 'disabled');
                                     $("#divFinalizado").removeClass("isa_success hide");
                                     $("#divFinalizado").addClass("isa_success show");
+                                } else if (data == "C") {
 
+                                    //Habilitar link para pagina de inconsistencia.
                                 }
+                                  
                             }
                         });
 

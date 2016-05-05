@@ -2,6 +2,7 @@
 
     init: function () {
         this.config();
+        this.limparCampos();
         eventos.onClick();
         eventos.onBlur();
         global.formValidation();
@@ -19,6 +20,15 @@
         this.params.$btnPesquisa = $("#btnPesquisa");
         this.params.$ItemAES = $("#ItemAES");
         this.params.$frmPesquisa = $("#frmPesquisa");
+    },
+
+    limparCampos: function () {
+        global.params.$NumeroAES.val('');
+        this.limparItemAES();
+    },
+
+    limparItemAES: function () {
+        global.params.$ItemAES.empty().append($("<option></option>").attr("value", "").text("Selecione..."));
     },
 
     formValidation: function () {
@@ -81,7 +91,7 @@ var eventos = {
             data: { numeroAES: numeroAES },
             success: function (data) {
                 if (data != undefined && data.length > 0) {
-                    global.params.$ItemAES.empty().append($("<option></option>").attr("value", "0").text("Selecione..."));
+                    global.limparItemAES();
                     for (var i = 0; i < data.length; i++) {
                         global.params.$ItemAES.append($("<option></option>").attr("value", data[i].ItemAES).text(data[i].ItemAES));
                     }

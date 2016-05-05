@@ -1,0 +1,223 @@
+﻿
+@model Vence.Input4Edicao.Controllers.Inconsistencia
+
+@if (Model != null)
+{
+    <fieldset class="fieldset">
+
+
+            @*<input type="hidden" id="idInconAluno" value="@Model.idConsist" />
+            <input type="hidden" id="IdConItemAluno" value="@Model.IdConsistItem" />
+            <input type="hidden" id="nomeAlunoGDAE" value="@Model.NomeAlunoGDAE" />*@
+            
+
+        <input type="hidden" id="hdfidInconAluno" value="@Model.idConsist" />
+        <input type="hidden" id="hdfIdConItemAluno" value="@Model.IdConsistItem" />
+        <input type="hidden" id="hdfnomeAlunoGDAE" value="@Model.NomeAlunoGDAE" />
+
+            <br />
+            <p class="modal_nomecampo">
+                <label>Inconsistência:</label>
+                <strong style="color:red">
+                    @Html.DisplayTextFor(_ => _.ERConsist)
+                </strong>
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Nome Aluno Vence:</label>
+
+                <span style="color:orangered">   @Html.DisplayTextFor(_ => _.NomeAlunoVence) </span>
+
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Aluno GDAE:</label>
+                <span style="color:green">     @Html.DisplayTextFor(_ => _.NomeAlunoGDAE) </span>
+               
+            </p>
+
+
+            <p class="modal_nomecampo">
+                <label>RA GDAE:</label>
+                @Html.DisplayTextFor(_ => _.RAGDAE)
+            </p>
+
+            <fieldset class="fieldset">
+                <legend>Correção</legend>
+                <p class="modal_nomecampo"><label>Nome do Aluno:</label></p>
+                <p class="modal_campomaior">
+                    <input type="text" id="_nomeAlunotxt" style="width:600px" />
+
+                </p>
+
+                <input type="button" id="btnNomeAluno" value="Salvar" class="btn" />
+            </fieldset>
+     
+        
+    </fieldset>
+    <div id="msg" title="Mensagem" style="display:none">
+        <div id="divMsg"></div>
+    </div>
+}
+
+
+<script>
+
+    $("#btnNomeAluno").click(function () {
+
+        debugger;
+        var _numeroAes = $("#txtNumeroAES").val();
+        var _token = $("#txtToken").val();
+        var _nomeAluno = "";
+        var _nomeAlunoGDAE = "";
+        var _idInconsistente = 0;
+        var _idInconsistenteItem = 0;
+
+        $("#divMsg").html('');
+ 
+        _idInconsistente = $("#hdfidInconAluno").val();
+         _idInconsistenteItem = $("#hdfIdConItemAluno").val();
+         _nomeAluno = $("#_nomeAlunotxt").val();
+         _nomeAlunoGDAE = $("#hdfnomeAlunoGDAE").val();
+
+         if (_nomeAluno == "") {
+
+            $("#divMsg").html('Informe o nome do aluno.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+            return false;
+        }
+        if (_numeroAes == "" || _token == "" || parseInt(_idInconsistente) == 0 || parseInt(_idInconsistenteItem == 0)) {
+
+
+            $("#divMsg").html('Houve um erro durante o processo.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+
+        } else {
+
+            //VALIDAR DATA
+
+            $.ajax({
+                type: "POST",
+                url: "/Inconsistencia/ValidarNome",
+                data: { nomeAtual: _nomeAluno, nomeGDAE: $("#hdfnomeAlunoGDAE").val() },
+                success: function (data) {
+                    if (Boolean(data)) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Inconsistencia/AtualizarNomeAluno",
+                            data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, nomeAluno: $("#hdfnomeAlunoGDAE").val(), idInconsistenteItem: _idInconsistenteItem },
+                            success: function (data) {
+                                if (Boolean(data)) {
+                                    $("#dadosInconsistentes").html(data);
+
+
+                                    $("#btnNomeAluno").attr('disabled', 'disabled');
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Atualizado com sucesso!');
+
+
+
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+
+                                }
+                                else {
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Não foi possível atualizar os dados.');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+                                }
+                            }
+                        });
+
+                    }
+                    else {
+                        $("#divMsg").html('');
+                        $("#divMsg").html('Nome não confere.Informe o nome correto!');
+                        $("#msg").dialog({
+
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+
+                            ],
+                            width: 'auto',
+                            modal: true
+                        });
+
+                    }
+
+                }
+            });
+
+        }
+
+
+    });
+
+</script>

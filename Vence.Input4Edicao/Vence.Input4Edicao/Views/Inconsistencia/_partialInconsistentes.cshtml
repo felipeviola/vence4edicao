@@ -1,0 +1,256 @@
+﻿@model Vence.Input4Edicao.Controllers.InconsistenciaViewModel
+
+@if (Model != null)
+{
+
+    <div id="resultado" style="overflow-y: auto; height:440px; overflow:auto; width:1110px">
+
+        @if (Model.ListarInconsistencias.Count > 0)
+        {
+
+            <div>
+                <strong>   Diretoria de Ensino: @Model.Diretoria_Ensino </strong>
+            </div>
+            <br />
+            <table id="tabelaDados" class="table" width="100%" style="font-size:12px;">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Mantida</th>
+                        @*<th>RA GDAE </th>*@
+                        @*<td align="center"> RG Aluno GDAE</td>
+                            <td align="center"> RG Aluno Vence</td>*@
+                        <th>Nome Aluno</th>
+                        @*<td align="center">Nome Aluno Vence</td>
+                            <td align="center">Nome Mãe GDAE</td>
+                            <td align="center">Nome Mãe Vence</td>
+                            <td align="center">Data Nascimento GDAE</td>
+                            <td align="center">Data Nascimento Vence</td>
+                            <td align="center">Curso</td>*@
+                        <th>Inconsistência</th>
+                        <th align="center">Corrigir</th>
+                        <th align="center">Ignorar</th>
+               
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ListarInconsistencias)
+                    {
+                        <tr>
+                            <td>@item.Mantida </td>
+                            @*<td>@item.RAGDAE </td>*@
+                            @*<td>@item.RGAlunoGDAE </td>
+                                <td>@item.RGAlunoVence </td>*@
+                            <td>@item.NomeAlunoGDAE </td>
+                            @*<td>@item.NomeAlunoVence  </td>
+                                <td>@item.NomeMaeGDAE  </td>
+                                <td>@item.NomeMaeVence  </td>
+                                <td>@item.DataNascimentoGDAE </td>
+                                <td>@item.DataNascimentoVence </td>
+                                <td>@item.NomeCurso </td>*@
+                            <td><span style="color:red;"> @item.ERConsist </span> </td>
+                            <td align="center">
+                                <img id="imgCorrigir" title="Corrigir Inconsistência" style="cursor:pointer;" dataerro="@item.ERCod" dataincon="@item.idConsist" datainconItem="@item.IdConsistItem" src="~/Content/glyphicons-halflings_140_BCK.png" />
+                            </td>
+                            <td align="center">
+                                <input type="checkbox" style="width:23px; height:23px;" dataincon="@item.idConsist" datainconitem="@item.IdConsistItem" id="chkIgnorar" />
+                            </td>
+                        
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+            <label id="labelgrid">Não há registros para a pesquisa realizda.</label>
+        }
+
+    </div>
+    <div id="modalIgnorar" style="display:none" title="Ignor Aluno">
+        <br />
+        <strong>
+            Você tem certeza que deseja ignorar este aluno no cálculo da parcela?
+        </strong>
+        <br /><br />
+        <p>
+            <strong> Ignorar Aluno:  </strong>Todas as inconsistências serão ignoradas e este aluno não será computado na geração de parcela.
+            <br />
+            <span style="color:orangered; font-size:12px;"> * Caso ignore o registro por engano, entre em contato com a Coordenação Vence</span>
+            <br /> <br />
+            <strong> Sair: </strong> Você deverá corrigir a inconsistência do mesmo.
+        </p>
+        <br />
+        <span style="color:red; font-size:14px;">
+            Importante: A não correção implica na continuidade do processo de pagamento.
+        </span>
+    </div>
+    <div id="modalCorrigir" style="display:none" title="Correção">
+        @*<div id="divCorrecao"></div>*@ 
+    </div>
+
+    <div id="modalMSG" style="display:none" title="Mensagem">
+           <strong>Ação realizada com sucesso!</strong>
+    </div>
+}
+
+        <script>
+
+            var _idInconsistencia = 0;
+            var _idErroCod = 0;
+
+            $("#tabelaDados").on("click", "input[id='chkIgnorar']", function () {
+
+             
+                var _status = $(this).is(':checked');
+
+                _idInconsistencia = $(this).attr("dataIncon");
+              
+
+                if (_status) {
+
+                    showModalMsg();
+
+                } else {
+                    $(this).dialog("close");
+
+                }
+
+            });
+
+
+
+            $("#tabelaDados").on("click", "img[id='imgCorrigir']", function () {
+
+                $("#modalCorrigir").html('');
+
+                var _numeroAes = $("#txtNumeroAES").val();
+                _idInconsistencia = $(this).attr("dataIncon");
+                _idErroCod = $(this).attr("dataerro");
+                _idInconsistenciaItem = $(this).attr("datainconitem");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Inconsistencia/Corrigir",
+                    data: { idInconsistente: _idInconsistencia, numeroAes: _numeroAes, idErroCod: _idErroCod, idInconsistenciaItem: _idInconsistenciaItem },
+                    success: function (data) {
+               
+                        $("#modalCorrigir").html(data);
+                       
+                        debugger;
+                        $("#modalCorrigir").dialog({
+
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+
+                                      $(this).empty();
+                                      $(this).dialog("close");
+
+
+                                      $.ajax({
+                                          type: "POST",
+                                          url: "/Inconsistencia/ObterInconsistentes",
+                                          data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                                          contentType: 'application/json; charset=utf-8',
+                                          success: function (data) {
+
+                                              $("#dadosInconsistentes").html(data);
+
+                                          },
+                                          error: function (jqXHR, textStatus, errorThrown) {
+                                              $(document).ajaxStop(function () {
+
+                                              });
+                                          }
+                                      });
+
+
+                               
+                                  }
+                              }
+
+                            ],
+                            width: 'auto',
+                            height:'auto',
+                            modal: true
+                        });
+
+
+                    }
+                });
+
+
+
+
+
+            });
+
+            function showModalMsg() {
+
+                $("#modalIgnorar").dialog({
+
+                    dialogClass: "no-close",
+                    buttons: [
+                     
+                       {
+                           text: "Ignorar Aluno",
+                           click: function () {
+
+                               ignorarAluno(this);
+                           }
+                       },
+                        {
+                            text: "Sair",
+                            click: function () {
+                                $(this).dialog("close");
+
+                                $('#tabelaDados tbody tr td input[type="checkbox"]').each(function () {
+                                    $(this).prop('checked', false);
+                                });
+                            }
+                        }
+                    ],
+                    width: 'auto',
+                    modal: true
+                });
+            }
+
+            function ignorarAluno(modal) {
+
+                var _numeroAes = $("#txtNumeroAES").val();
+                var _token = $("#txtToken").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Inconsistencia/IgnorarAluno",
+                    data: { idInconsistente: _idInconsistencia, numeroAes: _numeroAes, token: _token },
+                    success: function (data) {
+
+                        $("#dadosInconsistentes").html(data);
+                        $(modal).dialog("close");
+
+                        $("#modalMSG").dialog({
+
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+
+                            ],
+                            width: 'auto',
+                            modal: true
+                        });
+
+                    }
+                });
+            }
+
+        </script>

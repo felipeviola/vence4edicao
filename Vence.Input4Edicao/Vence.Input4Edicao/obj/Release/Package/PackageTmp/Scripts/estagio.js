@@ -100,8 +100,11 @@ var eventos = {
     },
 
     pesquisarNumeroAESPorChave: function (chave) {
+        
         if (chave == '')
             return;        
+
+        global.showAjaxLoader();
 
         $.ajax({
             type: 'GET',
@@ -116,11 +119,13 @@ var eventos = {
                     for (var i = 0; i < data.length; i++) {
                         global.params.$ItemAES.append($("<option></option>").attr("value", data[i].ItemAES).text(data[i].ItemAES));
                     }
-                }               
+                }
+                global.hideAjaxLoader();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $(document).ajaxStop(function () {
                     global.mensageError('Ocorreu um erro durante o processo.');
+                    global.hideAjaxLoader();
                 });
             }
         });

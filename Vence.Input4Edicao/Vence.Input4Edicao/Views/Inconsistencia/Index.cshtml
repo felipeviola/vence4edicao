@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <h3>Correção de Registros Inconsistentes</h3>
+    <div class="jumbotron">
+       
+        <div id="FiltrosTurma" class="form-group row">
+            <div class="col-xs-2">
+                <label for="ex3">Chave</label>
+                <input class="form-control" id="txtToken" type="text">
+            </div>
+            <div class="col-xs-2">
+                <label for="ex1">Número AES</label>
+                <input class="form-control" id="txtNumeroAES" type="text" disabled="disabled">
+            </div>
+
+        </div>
+
+
+    </div>
+    <div id="dadosInconsistentes"> </div>
+</div>
+
+
+
+<script>
+
+
+    window.onload = function () {
+
+        $("#txtToken").focusout(function () {
+            $("#dadosInconsistentes").html('');
+            $.ajax({
+                type: "POST",
+                url: "/Home/Token",
+                data: JSON.stringify({ token: $("#txtToken").val() }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $("#txtNumeroAES").val(data);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Inconsistencia/ObterInconsistentes",
+                        data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+
+                            $("#dadosInconsistentes").html(data);
+
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $(document).ajaxStop(function () {
+
+                            });
+                        }
+                    });
+
+
+                }
+            });
+        });
+
+    }
+
+</script>

@@ -17,11 +17,12 @@
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <label style="color:white;font-size:large;text-align:center; vertical-align:central;">Plano de contingência para liberação de pagamento da 3ª e 4ª edições do programa VENCE (Encerramento em 13/04/2016).</label>
+            <label style="color:white;font-size:large;text-align:center; vertical-align:central;">Plano de contingência para liberação de pagamento da 3ª e 4ª edições do programa VENCE.</label>
 
         </div>
         <ul class="list-inline">
             <li>@Html.ActionLink("Cadastro", "Index", "Home")</li>
+            <li>@Html.ActionLink("Inconsistência", "Index", "Inconsistencia")</li>
             <li>@Html.ActionLink("Consulta", "Index", "Consulta")</li>
             <li>@Html.ActionLink("Totalizador Estágio", "Index", "Estagio")</li>
             <li>@Html.ActionLink("Totalizador Carga Horária", "Index", "CargaHoraria")</li>
@@ -33,7 +34,7 @@
                 <a href="Content/Videos/VideoAulaCadastro.html" target="_blank">Tutorial</a>
             </li>
             <li>@Html.ActionLink("Help", "Help", "Home")</li>
-            <li style="float:right; padding-right:30px;">@Html.ActionLink("SEE", "Index", "SEE")</li>
+            @*<li style="float:right; padding-right:30px;">@Html.ActionLink("SEE", "Index", "SEE")</li>*@
         </ul>
 
     </div>

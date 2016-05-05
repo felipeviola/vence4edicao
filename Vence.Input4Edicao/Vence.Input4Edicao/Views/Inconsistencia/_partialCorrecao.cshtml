@@ -1,0 +1,890 @@
+﻿@model Vence.Input4Edicao.Controllers.Inconsistencia
+
+@if (Model != null)
+{
+    <fieldset class="fieldset">
+
+
+
+
+        @if (Vence.Input4Edicao.Controllers.TipoInconsistencia.DataNascimentoNaoConfere == Model.TipoInconsistencia)
+        {
+            <input type="hidden" id="idInconData" value="@Model.idConsist" />
+            <input type="hidden" id="IdConItemData" value="@Model.IdConsistItem" />
+
+            <br />
+            <p class="modal_nomecampo">
+                <label>Inconsistência:</label>
+                <strong style="color:red">
+                    @Html.DisplayTextFor(_ => _.ERConsist)
+                </strong>
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Data nascimento Vence:</label>
+
+                <span style="color:orangered">   @Html.DisplayTextFor(_ => _.DataNascimentoVence) </span>
+
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Data nascimento GDAE:</label>
+                <span style="color:green">     @Html.DisplayTextFor(_ => _.DataNascimentoGDAE) </span>
+                <input type="hidden" id="dtNascimentoGDAE" value="@Model.DataNascimentoGDAE" />
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Aluno GDAE:</label>
+                <span>     @Html.DisplayTextFor(_ => _.NomeAlunoGDAE) </span>
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>RA GDAE:</label>
+                @Html.DisplayTextFor(_ => _.RAGDAE)
+            </p>
+
+            <fieldset class="fieldset">
+                <legend>Correção</legend>
+                <p class="modal_nomecampo"><label>Data de Nascimento:</label></p>
+                <p class="modal_campomaior">
+                    <input type="datetime" id="txtDataNascimento" style="width:90px" />
+
+                </p>
+
+                <input type="button" id="btnDtNascimento" value="Salvar" class="btn" />
+            </fieldset>
+        }
+        else if (Vence.Input4Edicao.Controllers.TipoInconsistencia.EstagioUltrapassaTotal == Model.TipoInconsistencia)
+        {
+            <input type="hidden" id="idInconEstagio" value="@Model.idConsist" />
+            <input type="hidden" id="IdConItemEstagio" value="@Model.IdConsistItem" />
+
+            <input type="hidden" id="hdfEstagioContratado" value="@Model.TotalEstagioContratado" />
+            <input type="hidden" id="hdfEstagioLancadoHP" value="@Model.TotalEstagioHP" />
+            <input type="hidden" id="hdfEstagioLancadoVence" value="@Model.TotalEstagioVENCE" />
+            <input type="hidden" id="hdfRa" value="@Model.RAGDAE" />
+
+
+            <br />
+            <p class="modal_nomecampo">
+                <label>Inconsistência:</label>
+                <strong style="color:red">
+                    @Html.DisplayTextFor(_ => _.ERConsist)
+                </strong>
+            </p>
+
+
+            <p class="modal_nomecampo">
+                <label>Carga Horária Lançada:</label>
+
+                <strong style="color:orangered">   @Html.DisplayTextFor(_ => _.TotalEstagioLancado) </strong>
+
+
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Carga Horária Contratada:</label>
+                <strong style="color:darkgreen">     @Html.DisplayTextFor(_ => _.TotalEstagioContratado) </strong>
+
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Carga Horária Lançada H&P:</label>
+                <strong>     @Html.DisplayTextFor(_ => _.TotalEstagioHP) </strong>
+
+            </p>
+            <p class="modal_nomecampo">
+                <label>Carga Horária Lançada VENCE(plano de contingência):</label>
+                <strong>     @Html.DisplayTextFor(_ => _.TotalEstagioVENCE) </strong>
+
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Aluno GDAE:</label>
+                <span>     @Html.DisplayTextFor(_ => _.NomeAlunoGDAE) </span>
+            </p>
+
+
+            <p class="modal_nomecampo">
+                <label>RA GDAE:</label>
+                @Html.DisplayTextFor(_ => _.RAGDAE)
+            </p>
+
+            <fieldset class="fieldset">
+
+                <p>
+                    <strong style="color:orangered">
+                        Como proceder com o preechimento:
+                    </strong>
+                    <br />
+                    <span>
+                        * O Total de horas lançadas no sistema HP e no sistema (Vence Contigência 3ª e 4ª edição) deve ser igual ao total de horas contratadas.
+                    </span>
+                    <br />
+                    <span>
+                        * Se você informou os valores no sistema (Vence Contigência 3ª e 4ª edição) que já havia lançado no sistema HP, informe zero para normalizar.
+                    </span>
+                    <br />
+                    <span>
+                        * Se você não lançou os valores no sistema HP e no (Vence Contigência 3ª e 4ª edição), informe o total de horas de estágio para o aluno.
+                    </span>
+                    <br />
+                    <span>
+                        * Se você não lançou "todos" os valores no sistema HP e no (Vence Contigência 3ª e 4ª edição), complete o total de horas para o aluno.
+                    </span>
+                </p>
+
+
+                <p class="modal_nomecampo"><label>Informe o total de horas para normalizar o estágio:</label></p>
+                <p class="modal_campomaior">
+                    <input type="number" id="txtQtdeEstagio" style="width:80px; height:32px;" />
+                    <input type="button" id="btnEstagio" value="Normalizar Estágio" class="btn" />
+                </p>
+
+                <strong style="color:orangered">
+                    * Se o seu caso não se enquadra nas opções apresentadas, entre em contato com a coordenação vence.
+                </strong>
+            </fieldset>
+
+        }
+        else if (Vence.Input4Edicao.Controllers.TipoInconsistencia.NomeAlunoNaoConfere == Model.TipoInconsistencia)
+        {
+            <input type="hidden" id="idInconAluno" value="@Model.idConsist" />
+            <input type="hidden" id="IdConItemAluno" value="@Model.IdConsistItem" />
+            <br />
+            <p class="modal_nomecampo">
+                <label>Inconsistência:</label>
+                <strong style="color:red">
+                    @Html.DisplayTextFor(_ => _.ERConsist)
+                </strong>
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Nome Aluno Vence:</label>
+
+                <span style="color:orangered">   @Html.DisplayTextFor(_ => _.NomeAlunoVence) </span>
+
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Aluno GDAE:</label>
+                <span style="color:green">     @Html.DisplayTextFor(_ => _.NomeAlunoGDAE) </span>
+                <input type="hidden" id="nomeAlunoGDAE" value="@Model.NomeAlunoGDAE" />
+            </p>
+
+
+            <p class="modal_nomecampo">
+                <label>RA GDAE:</label>
+                @Html.DisplayTextFor(_ => _.RAGDAE)
+            </p>
+
+            <fieldset class="fieldset">
+                <legend>Correção</legend>
+                <p class="modal_nomecampo"><label>Nome do Aluno:</label></p>
+                <p class="modal_campomaior">
+                    <input type="text" id="txtNomeAluno" style="width:600px" />
+
+                </p>
+
+                <input type="button" id="btnNomeAluno" value="Salvar" class="btn" />
+            </fieldset>
+
+        }
+        else if (Vence.Input4Edicao.Controllers.TipoInconsistencia.NomeMaeNaoConfere == Model.TipoInconsistencia)
+        {
+
+            <input type="hidden" id="idInconMae" value="@Model.idConsist" />
+            <input type="hidden" id="IdConItemMae" value="@Model.IdConsistItem" />
+
+            <br />
+            <p class="modal_nomecampo">
+                <label>Inconsistência:</label>
+                <strong style="color:red">
+                    @Html.DisplayTextFor(_ => _.ERConsist)
+                </strong>
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Nome Mãe Vence:</label>
+
+                <span style="color:orangered">  @Html.DisplayTextFor(_ => _.NomeMaeVence) </span>
+
+            </p>
+            <p class="modal_nomecampo">
+                <label>Nome Mãe GDAE:</label>
+
+                <span style="color:green">    @Html.DisplayTextFor(_ => _.NomeMaeGDAE) </span>
+                <input type="hidden" id="nomeMaeGDAE" value="@Model.NomeMaeGDAE" />
+            </p>
+
+            <p class="modal_nomecampo">
+                <label>Aluno GDAE:</label>
+                @Html.DisplayTextFor(_ => _.NomeAlunoGDAE)
+            </p>
+
+
+            <p class="modal_nomecampo">
+                <label>RA GDAE:</label>
+                @Html.DisplayTextFor(_ => _.RAGDAE)
+            </p>
+
+            <fieldset class="fieldset">
+                <legend>Correção</legend>
+                <p class="modal_nomecampo"><label>Nome da Mãe:</label></p>
+                <p class="modal_campomaior">
+                    <input type="text" id="txtNomeMae" style="width:600px" />
+
+                </p>
+
+                <input type="button" id="btnNomeMae" value="Salvar" class="btn" />
+            </fieldset>
+
+        }
+    </fieldset>
+    <div id="msg" title="Mensagem" style="display:none">
+        <div id="divMsg"></div>
+    </div>
+    <div id="divsucesso" title="Mensagem" style="display:none"></div>
+
+}
+
+
+<script>
+
+    var _raGDAE ="";
+    var _numeroAes = "";
+    var _token = "";
+    var _idInconsistente = 0;
+    var _idInconsistenteItem =  0;
+    var _totalEstagioInformado =  0;
+    var _totalEstagioContratado = 0;
+    var _totalEstagioLancadoVence =  0;
+    var _totalEstagioLancadoHP = 0;
+    var _totalFinalEstagioLancar =  0;
+    var _totalHpVence = 0;
+    var _totalGeral = 0;
+
+
+
+    $("#btnDtNascimento").click(function () {
+
+        $("#divMsg").html('');
+        var _numeroAes = $("#txtNumeroAES").val();
+        var _token = $("#txtToken").val();
+        var _idInconsistente = $("#idInconData").val();
+        var _idInconsistenteItem = $("#IdConItemData").val();
+
+
+        var dataNascimento = $("#txtDataNascimento").val();
+        var _dataOk = $("#dtNascimentoGDAE").val();
+
+        if (dataNascimento == "") {
+
+            $("#divMsg").html('Informe a data de nascimento.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+            return false;
+        }
+        if (_numeroAes == "" || _token == "" || parseInt(_idInconsistente) == 0 || parseInt(_idInconsistenteItem) == 0) {
+
+
+            $("#divMsg").html('Houve um erro durante o processo.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+
+        } else {
+
+            //VALIDAR DATA
+
+            $.ajax({
+                type: "POST",
+                url: "/Inconsistencia/ValidarData",
+                data: { dataOk: _dataOk, dataAtual: dataNascimento },
+                success: function (data) {
+                    if (Boolean(data)) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Inconsistencia/AtualizarDataNascimento",
+                            data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, dataNascimento: dataNascimento, idInconsistenteItem: _idInconsistenteItem },
+                            success: function (data) {
+                                if (Boolean(data)) {
+                                    $("#dadosInconsistentes").html(data);
+
+
+                                    $("#btnDtNascimento").attr('disabled', 'disabled');
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Atualizado com sucesso!');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+
+                                }
+                                else {
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Não foi possível atualizar os dados.');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+                                }
+                            }
+                        });
+
+                    }
+                    else {
+                        $("#divMsg").html('');
+                        $("#divMsg").html('Data não confere.Informe a data correta!');
+                        $("#msg").dialog({
+
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+
+                            ],
+                            width: 'auto',
+                            modal: true
+                        });
+
+                    }
+
+                }
+            });
+
+        }
+
+
+    });
+
+    $("#btnNomeAluno").click(function () {
+
+        debugger;
+        var nomeAluno = "";
+        var _nomeAlunoGDAE = "";
+
+
+        $("#divMsg").html('');
+        var _numeroAes = $("#txtNumeroAES").val();
+        var _token = $("#txtToken").val();
+        var _idInconsistente = $("#idInconAluno").val();
+        var _idInconsistenteItem = $("#IdConItemAluno").val();
+        nomeAluno = $("#txtNomeAluno").val();
+        _nomeAlunoGDAE = $("#nomeAlunoGDAE").val();
+
+        $("#idInconAluno").attr('value', '');
+        $("#IdConItemAluno").attr('value', '');
+
+        if (nomeAluno == "") {
+
+            $("#divMsg").html('Informe o nome do aluno.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+            return false;
+        }
+        if (_numeroAes == "" || _token == "" || parseInt(_idInconsistente) == 0 || parseInt(_idInconsistenteItem == 0)) {
+
+
+            $("#divMsg").html('Houve um erro durante o processo.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+
+        } else {
+
+            //VALIDAR DATA
+
+            $.ajax({
+                type: "POST",
+                url: "/Inconsistencia/ValidarNome",
+                data: { nomeAtual: nomeAluno, nomeGDAE: _nomeAlunoGDAE },
+                success: function (data) {
+                    if (Boolean(data)) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Inconsistencia/AtualizarNomeAluno",
+                            data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, nomeAluno: _nomeAlunoGDAE, idInconsistenteItem: _idInconsistenteItem },
+                            success: function (data) {
+                                if (Boolean(data)) {
+                                    $("#dadosInconsistentes").html(data);
+
+
+                                    $("#btnNomeAluno").attr('disabled', 'disabled');
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Atualizado com sucesso!');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+
+                                }
+                                else {
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Não foi possível atualizar os dados.');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+                                }
+                            }
+                        });
+
+                    }
+                    else {
+                        $("#divMsg").html('');
+                        $("#divMsg").html('Nome não confere.Informe o nome correto!');
+                        $("#msg").dialog({
+
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+
+                            ],
+                            width: 'auto',
+                            modal: true
+                        });
+
+                    }
+
+                }
+            });
+
+        }
+
+
+    });
+
+    $("#btnNomeMae").click(function () {
+        var _nomeMae = "";
+        var _nomeMaeGDAE = "";
+
+
+        $("#divMsg").html('');
+        var _numeroAes = $("#txtNumeroAES").val();
+        var _token = $("#txtToken").val();
+        var _idInconsistente = $("#idInconMae").val();
+        var _idInconsistenteItem = $("#IdConItemMae").val();
+        _nomeMae = $("#txtNomeMae").val();
+        _nomeMaeGDAE = $("#nomeMaeGDAE").val();
+
+
+        if (_nomeMae == "") {
+
+            $("#divMsg").html('Informe o nome da mãe.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+            return false;
+        }
+        if (_numeroAes == "" || _token == "" || parseInt(_idInconsistente) == 0 || parseInt(_idInconsistenteItem) == 0) {
+
+
+            $("#divMsg").html('Houve um erro durante o processo.');
+            $("#msg").dialog({
+
+                dialogClass: "no-close",
+                buttons: [
+                  {
+                      text: "Fechar",
+                      click: function () {
+                          $(this).dialog("close");
+                      }
+                  }
+
+                ],
+                width: 'auto',
+                modal: true
+            });
+
+
+        } else {
+
+            //VALIDAR DATA
+
+            $.ajax({
+                type: "POST",
+                url: "/Inconsistencia/ValidarNome",
+                data: { nomeAtual: _nomeMae, nomeGDAE: _nomeMaeGDAE },
+                success: function (data) {
+                    if (Boolean(data)) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Inconsistencia/AtualizarNomeMae",
+                            data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, nomeMae: _nomeMaeGDAE, idInconsistenteItem: _idInconsistenteItem },
+                            success: function (data) {
+                                if (Boolean(data)) {
+                                    $("#dadosInconsistentes").html(data);
+
+
+                                    $("#btnNomeMae").attr('disabled', 'disabled');
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Atualizado com sucesso!');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+
+                                }
+                                else {
+                                    $("#divMsg").html('');
+                                    $("#divMsg").html('Não foi possível atualizar os dados.');
+                                    $("#msg").dialog({
+
+                                        dialogClass: "no-close",
+                                        buttons: [
+                                          {
+                                              text: "Fechar",
+                                              click: function () {
+                                                  $(this).dialog("close");
+                                              }
+                                          }
+
+                                        ],
+                                        width: 'auto',
+                                        modal: true
+                                    });
+
+                                }
+                            }
+                        });
+
+                    }
+                    else {
+                        $("#divMsg").html('');
+                        $("#divMsg").html('Nome não confere.Informe o nome correto!');
+                        $("#msg").dialog({
+
+                            dialogClass: "no-close",
+                            buttons: [
+                              {
+                                  text: "Fechar",
+                                  click: function () {
+                                      $(this).dialog("close");
+                                  }
+                              }
+
+                            ],
+                            width: 'auto',
+                            modal: true
+                        });
+
+                    }
+
+                }
+            });
+
+        }
+
+
+    });
+
+    $("#btnEstagio").click(function () {
+
+        debugger;
+
+        $("#divMsg").html('');
+         _raGDAE = $("#hdfRa").val();
+         _numeroAes = $("#txtNumeroAES").val();
+         _token = $("#txtToken").val();
+         _idInconsistente = $("#idInconEstagio").val();
+         _idInconsistenteItem = $("#IdConItemEstagio").val();
+         _totalEstagioInformado = $("#txtQtdeEstagio").val();
+         _totalEstagioContratado = $("#hdfEstagioContratado").val();
+         _totalEstagioLancadoVence = $("#hdfEstagioLancadoVence").val();
+         _totalEstagioLancadoHP = $("#hdfEstagioLancadoHP").val();
+         _totalFinalEstagioLancar = 0;
+         _totalHpVence = 0;
+
+
+        _totalEstagioInformado = parseInt(_totalEstagioInformado);
+        _totalEstagioContratado = parseInt(_totalEstagioContratado);
+        _totalEstagioLancadoVence = parseInt(_totalEstagioLancadoVence);
+        _totalEstagioLancadoHP = parseInt(_totalEstagioLancadoHP);
+
+        _totalHpVence = (_totalEstagioLancadoVence + _totalEstagioLancadoHP);
+
+        _totalGeral = (_totalHpVence + _totalEstagioInformado);
+
+
+        if ((parseInt(_totalHpVence) / 2) == _totalEstagioContratado) {
+
+            if (_totalEstagioInformado > 0) {
+
+                $("#divMsg").html('<br/><p><strong style="color:orangered"> Verificamos que você duplicou os lançamentos de estágio e lançou um valor maior que zero para normalizar.</strong></p><br/> <strong> Clique em Continuar e o seu valor informado será ignorado(será 0 e o estágio estará normalizado).</strong><br/><br/> <strong> Clique em Fechar pra cancelar esta operação.</strong><br/><br/> <strong style="color:orangered"> Ainda está em dúvida? Fale com a coordenação vence.</strong>');
+
+                $("#msg").dialog({
+
+                    dialogClass: "no-close",
+                    buttons: [
+                        {
+                            text: "Continuar",
+                            click: function () {
+                             
+                                _totalEstagioInformado = 0;
+                                atualizarVence();
+                              
+                                $("#msg").dialog("close");
+                                $("#txtQtdeEstagio").attr('val', '0');
+                            }
+                        },
+                      {
+                          text: "Fechar",
+                          click: function () {
+                              $(this).dialog("close");
+                          }
+                      }
+
+
+                    ],
+                    width: 'auto',
+                    modal: true
+                });
+            } else {
+              
+                _totalEstagioInformado = 0;
+                atualizarVence();
+
+            }
+
+
+        } else {
+            if (_totalGeral > _totalEstagioContratado) {
+
+                $("#divMsg").html('<br/><p><strong style="color:orangered"> O total que você lançou é maior que o valor contratado.</strong> <strong> Lembrando que o valor que você já lançou na H&P e no Vence(Contigência) são somados ao que você informou agora.</strong></p> ');
+                $("#msg").dialog({
+
+                    dialogClass: "no-close",
+                    buttons: [
+                      {
+                          text: "Fechar",
+                          click: function () {
+
+                              $(this).dialog("close");
+                          }
+                      }
+
+                    ],
+                    width: 'auto',
+                    modal: true
+                });
+
+            }
+            else {
+              
+                _totalEstagioInformado = _totalGeral;
+                atualizarVence();
+
+            }
+
+
+        }
+
+
+    });
+
+    function atualizarVence() {
+
+        $.ajax({
+            type: "POST",
+            url: "/Inconsistencia/AtualizarEstagio",
+            data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, totalEstagio: _totalEstagioInformado, idInconsistenteItem: _idInconsistenteItem, raGDAE: _raGDAE },
+            success: function (data) {
+                if (Boolean(data)) {
+   
+
+                    $("#divsucesso").html('');
+                    $("#btnEstagio").attr('disabled', 'disabled');
+                
+                    $("#divsucesso").html('Atualizado com sucesso!');
+                    $("#divsucesso").dialog({
+
+                        dialogClass: "no-close",
+                        buttons: [
+                          {
+                              text: "Fechar",
+                              click: function () {
+
+                                  $(this).dialog("close");
+                              }
+                          }
+
+                        ],
+                        width: 'auto',
+                        modal: true
+                    });
+
+
+                } else {
+
+                    $("#divsucesso").html('');
+                    $("#divsucesso").html('Ocorreu um erro durante o envio dos dados!');
+                    $("#divsucesso").dialog({
+
+                        dialogClass: "no-close",
+                        buttons: [
+                          {
+                              text: "Fechar",
+                              click: function () {
+
+                                  $(this).dialog("close");
+                              }
+                          }
+
+                        ],
+                        width: 'auto',
+                        modal: true
+                    });
+                }
+
+
+            }
+        });
+
+
+    }
+
+
+</script>

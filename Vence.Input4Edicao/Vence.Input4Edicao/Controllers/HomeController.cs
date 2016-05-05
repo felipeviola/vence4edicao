@@ -16,8 +16,9 @@ namespace Vence.Input4Edicao.Controllers
         {
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
             string retorno = string.Empty;
+            DateTime dtFinalizado = new DateTime();
             SqlConnection conn = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand(@"select AES
+            SqlCommand cmd = new SqlCommand(@"select AES, DataFinalizado
                                                 from   token 
                                                 where  chave = '" + formulario.Token + "'", conn);
             cmd.Connection.Open();
@@ -25,7 +26,9 @@ namespace Vence.Input4Edicao.Controllers
             while (reader.Read())
             {
                 retorno = reader["AES"].ToString();
+                dtFinalizado = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
             }
+
             conn.Close();
             return Json(retorno, JsonRequestBehavior.AllowGet);
         }
@@ -222,46 +225,48 @@ namespace Vence.Input4Edicao.Controllers
 
         }
 
+        //public JsonResult ValidarLancamentos(string token, string aes)
+        //{
+        //    //DateTime? dt = null;
+        //    //string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+
+        //    //var conn = new SqlConnection(_connectionString);
+        //    //var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}' and AES = '{1}'  ", token, aes), conn);
+        //    //cmd.Connection.Open();
+        //    //var reader = cmd.ExecuteReader();
+        //    //while (reader.Read())
+        //    //{
+        //    //    dt = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
+        //    //}
+
+        //    if (ValidarAESFinalizada(token))
+        //        return Json(true, JsonRequestBehavior.AllowGet);
+        //    else
+        //        return Json(false, JsonRequestBehavior.AllowGet);
+        //}
+
+
         public JsonResult ValidarLancamentos(string token, string aes)
         {
-            //DateTime? dt = null;
-            //string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
-
-            //var conn = new SqlConnection(_connectionString);
-            //var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}' and AES = '{1}'  ", token, aes), conn);
-            //cmd.Connection.Open();
-            //var reader = cmd.ExecuteReader();
-            //while (reader.Read())
-            //{
-            //    dt = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
-            //}
-
-            if (ValidarAESFinalizada(token))
-                return Json(true, JsonRequestBehavior.AllowGet);
-            else
-                return Json(false, JsonRequestBehavior.AllowGet);
-        }
-
-
-        public bool ValidarAESFinalizada(string token)
-        {
             DateTime? dt = null;
+            string status = string.Empty;
             string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
 
             var conn = new SqlConnection(_connectionString);
-            var cmd = new SqlCommand(string.Format(@" select DataFinalizado from [dbo].[Token] where Chave= '{0}'  ", token), conn);
+            var cmd = new SqlCommand(string.Format(@" select DataFinalizado, StaDigitacao from [dbo].[Token] where Chave= '{0}'  ", token), conn);
             cmd.Connection.Open();
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 dt = reader["DataFinalizado"] != DBNull.Value ? Convert.ToDateTime(reader["DataFinalizado"]) : DateTime.MinValue;
+                status = reader["StaDigitacao"].ToString();
             }
             conn.Close();
-            if (dt.HasValue && dt.Value != DateTime.MinValue)
-                return true;
-            else
-                return false;
-
+            //if (dt.HasValue && dt.Value != DateTime.MinValue)
+            //    return true;
+            //else
+            //    return false;
+            return  Json(status, JsonRequestBehavior.AllowGet);
         }
 
         private bool ValidarTokenAcesso(string token)

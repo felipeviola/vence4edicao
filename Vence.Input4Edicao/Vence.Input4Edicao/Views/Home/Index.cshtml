@@ -503,7 +503,7 @@
                     valido = false;
             });
 
-            debugger;
+    
 
             if (valido)
                 valido = validation(Formulario);
@@ -800,14 +800,47 @@
                             url: "/Home/ValidarLancamentos",
                             data: { token: token, aes: aes },
                             success: function (data) {
+                             
+                                //if (Boolean(data)) {
+                                //    $("#btnSalvar").attr('disabled', 'disabled');
+                                //    $("#idMes").attr('disabled', 'disabled');                  
+                                //    $("#idAno").attr('disabled', 'disabled');
+                                //    $("#ddlItemAES").attr('disabled', 'disabled');
+                                //    $("#txtCpfSup").attr('disabled', 'disabled');
+                                //    $("#lstTurma").attr('disabled', 'disabled');
+                                //    $("#addDataLetiva").attr('disabled', 'disabled');
+                                //    $("#addHoraLetiva").attr('disabled', 'disabled');
+                                //    $("#btnAddDiaLetivo").attr('disabled', 'disabled');
+                                //    $("#btnLimparDiaLetivo").attr('disabled', 'disabled');
 
-                                if (Boolean(data)) {
-                                    $("#btnSalvar").hide();
 
+                                //    $("#divFinalizado").removeClass("isa_success hide");
+                                //    $("#divFinalizado").addClass("isa_success show");
+
+                                //}
+
+                                //B-Bloqueado
+                                //D-Liberado Digitação
+                                //C-Liberado Correção
+                               
+                                if (data == "B") {
+                                    $("#btnSalvar").attr('disabled', 'disabled');
+                                    $("#idMes").attr('disabled', 'disabled');
+                                    $("#idAno").attr('disabled', 'disabled');
+                                    $("#ddlItemAES").attr('disabled', 'disabled');
+                                    $("#txtCpfSup").attr('disabled', 'disabled');
+                                    $("#lstTurma").attr('disabled', 'disabled');
+                                    $("#addDataLetiva").attr('disabled', 'disabled');
+                                    $("#addHoraLetiva").attr('disabled', 'disabled');
+                                    $("#btnAddDiaLetivo").attr('disabled', 'disabled');
+                                    $("#btnLimparDiaLetivo").attr('disabled', 'disabled');
                                     $("#divFinalizado").removeClass("isa_success hide");
                                     $("#divFinalizado").addClass("isa_success show");
+                                } else if (data == "C") {
 
+                                    //Habilitar link para pagina de inconsistencia.
                                 }
+                                  
                             }
                         });
 

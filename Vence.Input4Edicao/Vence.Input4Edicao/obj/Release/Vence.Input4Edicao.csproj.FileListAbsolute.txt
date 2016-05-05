@@ -81,7 +81,6 @@ C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\Vence.Input4Edicao.dll
 C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\Vence.Input4Edicao.dll
 C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\Vence.Input4Edicao.pdb
 C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\Antlr3.Runtime.dll
-C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\ExcelLibrary.dll
 C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\Microsoft.Web.Infrastructure.dll
 C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\Newtonsoft.Json.dll
 C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\bin\System.Web.Helpers.dll

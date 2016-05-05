@@ -120,6 +120,7 @@
     <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\EstagioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InconsistenciaController.cs" />
     <Compile Include="Controllers\RelatAcompMensalController.cs" />
     <Compile Include="Controllers\RelatParcelaFinalController.cs" />
     <Compile Include="Controllers\SEEController.cs" />
@@ -167,6 +168,7 @@
     <Content Include="Content\mensage4edicaoHelp.jpg" />
     <Content Include="Content\mensagemvence4edicao.jpg" />
     <Content Include="Content\mensagensbootstrap.css" />
+    <Content Include="Content\passo_atencao.png" />
     <Content Include="Content\passo_check.png" />
     <Content Include="Content\ppt.jpg" />
     <Content Include="Content\relatorios.css" />
@@ -197,8 +199,8 @@
     <Content Include="Content\Arquivos\PlanodeContingência.pptx" />
     <Content Include="Content\Arquivos\EvidênciaModelo.doc" />
     <Content Include="Content\Arquivos\Tutorial.pptx" />
-    <None Include="Properties\PublishProfiles\projetovence - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\projetovence - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\vence4edicao - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\vence4edicao - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\cargahoraria.js" />
     <Content Include="Scripts\estagio.js" />
@@ -252,6 +254,10 @@
     <Content Include="Views\SEE\Index.cshtml" />
     <Content Include="Views\RelatParcelaFinal\Index.cshtml" />
     <Content Include="Views\RelatParcelaFinal\_PesquisaAESGridView.cshtml" />
+    <Content Include="Views\Inconsistencia\Index.cshtml" />
+    <Content Include="Views\Inconsistencia\_partialInconsistentes.cshtml" />
+    <Content Include="Views\Inconsistencia\_partialCorrecao.cshtml" />
+    <Content Include="Views\Inconsistencia\_partialCorrecaoAluno.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
