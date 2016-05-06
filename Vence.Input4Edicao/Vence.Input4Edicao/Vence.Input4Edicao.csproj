@@ -258,6 +258,7 @@
     <Content Include="Views\Inconsistencia\_partialInconsistentes.cshtml" />
     <Content Include="Views\Inconsistencia\_partialCorrecao.cshtml" />
     <Content Include="Views\Inconsistencia\_partialCorrecaoAluno.cshtml" />
+    <Content Include="Views\Inconsistencia\_partialErro.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

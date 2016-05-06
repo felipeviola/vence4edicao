@@ -95,6 +95,9 @@
     <div id="modalMSG" style="display:none" title="Mensagem">
            <strong>Ação realizada com sucesso!</strong>
     </div>
+    <div id="modalErro" style="display:none" title="Mensagem">
+        <strong>Ocorreu um erro durante o processo!</strong>
+    </div>
 }
 
         <script>
@@ -122,7 +125,6 @@
             });
 
 
-
             $("#tabelaDados").on("click", "img[id='imgCorrigir']", function () {
 
                 $("#modalCorrigir").html('');
@@ -139,8 +141,7 @@
                     success: function (data) {
                
                         $("#modalCorrigir").html(data);
-                       
-                        debugger;
+
                         $("#modalCorrigir").dialog({
 
                             buttons: [
@@ -184,10 +185,6 @@
                     }
                 });
 
-
-
-
-
             });
 
             function showModalMsg() {
@@ -230,24 +227,69 @@
                     data: { idInconsistente: _idInconsistencia, numeroAes: _numeroAes, token: _token },
                     success: function (data) {
 
-                        $("#dadosInconsistentes").html(data);
-                        $(modal).dialog("close");
+                        if (Boolean(data)) {
 
-                        $("#modalMSG").dialog({
+                            $.ajax({
+                                type: "POST",
+                                url: "/Inconsistencia/ObterInconsistentes",
+                                data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                                contentType: 'application/json; charset=utf-8',
+                                success: function (data) {
 
-                            dialogClass: "no-close",
-                            buttons: [
-                              {
-                                  text: "Fechar",
-                                  click: function () {
-                                      $(this).dialog("close");
+                                    $("#dadosInconsistentes").html(data);
+
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    $(document).ajaxStop(function () {
+
+                                    });
+                                }
+                            });
+
+                            $(modal).dialog("close");
+
+                            $("#modalMSG").dialog({
+
+                                dialogClass: "no-close",
+                                buttons: [
+                                  {
+                                      text: "Fechar",
+                                      click: function () {
+                                          $(this).dialog("close");
+
+                        
+                                      }
                                   }
-                              }
 
-                            ],
-                            width: 'auto',
-                            modal: true
-                        });
+                                ],
+                                width: 'auto',
+                                modal: true
+                            });
+
+                        } else {
+
+                            $("#modalErro").dialog({
+
+                                dialogClass: "no-close",
+                                buttons: [
+                                  {
+                                      text: "Fechar",
+                                      click: function () {
+                                          $(this).dialog("close");
+                                      }
+                                  }
+
+                                ],
+                                width: 'auto',
+                                modal: true
+                            });
+                            
+
+                        }
+
+                     
+
+       
 
                     }
                 });

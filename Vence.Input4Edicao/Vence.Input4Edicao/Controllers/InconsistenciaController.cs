@@ -13,6 +13,7 @@ namespace Vence.Input4Edicao.Controllers
 
         public ActionResult Index()
         {
+            
             return View();
         }
 
@@ -26,6 +27,8 @@ namespace Vence.Input4Edicao.Controllers
 
         public PartialViewResult Corrigir(int idInconsistente = 0, string numeroAes = "", int idErroCod = 0, int idInconsistenciaItem = 0)
         {
+
+            string _log = string.Format("idInconsistente:{0},  numeroAes:{1} ,  idErroCod:{2},idInconsistenciaItem: {3}", idInconsistente, numeroAes, idErroCod, idInconsistenciaItem);
             Inconsistencia _inconsistencia = new Inconsistencia();
             try
             {
@@ -82,15 +85,16 @@ namespace Vence.Input4Edicao.Controllers
 
                 return PartialView("_partialCorrecao", _inconsistencia);
 
+               
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return PartialView("_partialCorrecao");
+                SalvarLog(string.Format("Exception: {0}, detalhes: {1}", ex.ToString(),_log));
+                return PartialView("_partialErro");
             }
 
 
         }
-
 
         private TipoInconsistencia GetEnum(int codigo)
         {
@@ -116,8 +120,9 @@ namespace Vence.Input4Edicao.Controllers
             }
         }
 
-        public PartialViewResult IgnorarAluno(int idInconsistente = 0, string numeroAes = "", string token = "")
+        public JsonResult IgnorarAluno(int idInconsistente = 0, string numeroAes = "", string token = "")
         {
+            string _log = string.Format("idInconsistente:{0},  numeroAes:{1} ,  token:{2}", idInconsistente, numeroAes, token);
             try
             {
                 if (idInconsistente != 0 && numeroAes != "" && token != "")
@@ -152,21 +157,30 @@ namespace Vence.Input4Edicao.Controllers
                     cmd.ExecuteNonQuery();
                     cmd.Connection.Close();
                 }
+                else {
 
+                    return Json(false, JsonRequestBehavior.AllowGet);
 
-                InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
+                }
 
-                return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
+                return Json(true, JsonRequestBehavior.AllowGet);
+
+                //InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
+
+                //return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return PartialView("_partialInconsistentes");
+                SalvarLog(string.Format("Exception: {0}, detalhes: {1}", ex.ToString(), _log));
+                //return PartialView("_partialInconsistentes");
+                return Json(false, JsonRequestBehavior.AllowGet);
             }
 
         }
 
-        public PartialViewResult AtualizarDataNascimento(int idInconsistente = 0, string numeroAes = "", string token = "", string dataNascimento = "", int idInconsistenteItem = 0)
+        public JsonResult AtualizarDataNascimento(int idInconsistente = 0, string numeroAes = "", string token = "", string dataNascimento = "", int idInconsistenteItem = 0)
         {
+            string _log = string.Format("idInconsistente:{0},  numeroAes:{1} ,  token:{2},idInconsistenciaItem: {3}, dtNascimento: {4}", idInconsistente, numeroAes, token, idInconsistenteItem, dataNascimento);
             try
             {
                 DateTime dtValida = ValidarData(dataNascimento);
@@ -208,21 +222,27 @@ namespace Vence.Input4Edicao.Controllers
                     cmd.ExecuteNonQuery();
                     cmd.Connection.Close();
                 }
+                else
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                return Json(true, JsonRequestBehavior.AllowGet);
+                //InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
 
-
-                InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
-
-                return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
+                //return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
             }
-            catch (Exception)
+            catch (Exception ex )
             {
-                return PartialView("_partialInconsistentes");
+                SalvarLog(string.Format("Exception: {0}, detalhes: {1}", ex.ToString(), _log));
+                return Json(false, JsonRequestBehavior.AllowGet);
+                //return PartialView("_partialInconsistentes");
             }
 
         }
 
-        public PartialViewResult AtualizarNomeAluno(int idInconsistente = 0, string numeroAes = "", string token = "", string nomeAluno = "", int idInconsistenteItem = 0)
+        public JsonResult AtualizarNomeAluno(int idInconsistente = 0, string numeroAes = "", string token = "", string nomeAluno = "", int idInconsistenteItem = 0)
         {
+            string _log = string.Format("idInconsistente:{0},  numeroAes:{1} ,  token:{2},idInconsistenciaItem: {3}, nomeAluno: {4}", idInconsistente, numeroAes, token, idInconsistenteItem, nomeAluno);
             try
             {
 
@@ -260,15 +280,21 @@ namespace Vence.Input4Edicao.Controllers
                     cmd.ExecuteNonQuery();
                     cmd.Connection.Close();
                 }
+                else {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                
 
+                return Json(true, JsonRequestBehavior.AllowGet);
+                //InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
 
-                InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
-
-                return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
+                //return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return PartialView("_partialInconsistentes");
+                SalvarLog(string.Format("Exception: {0}, detalhes: {1}", ex.ToString(), _log));
+                return Json(false, JsonRequestBehavior.AllowGet);
+                //return PartialView("_partialInconsistentes");
             }
 
         }
@@ -280,6 +306,7 @@ namespace Vence.Input4Edicao.Controllers
 
             return Json((nmAtual.ToUpper().Trim() == nmGDAE.ToUpper().Trim()), JsonRequestBehavior.AllowGet);
         }
+
         public static string removerAcentos(string texto)
         {
             string comAcentos = "ÄÅÁÂÀÃäáâàãÉÊËÈéêëèÍÎÏÌíîïìÖÓÔÒÕöóôòõÜÚÛüúûùÇç";
@@ -292,8 +319,10 @@ namespace Vence.Input4Edicao.Controllers
             return texto;
         }
 
-        public PartialViewResult AtualizarNomeMae(int idInconsistente = 0, string numeroAes = "", string token = "", string nomeMae = "", int idInconsistenteItem = 0)
+        public JsonResult AtualizarNomeMae(int idInconsistente = 0, string numeroAes = "", string token = "", string nomeMae = "", int idInconsistenteItem = 0)
         {
+
+            string _log = string.Format("idInconsistente:{0},  numeroAes:{1} ,  token:{2},idInconsistenciaItem: {3}, nomeMae: {4}", idInconsistente, numeroAes, token, idInconsistenteItem, nomeMae);
             try
             {
 
@@ -331,21 +360,27 @@ namespace Vence.Input4Edicao.Controllers
                     cmd.ExecuteNonQuery();
                     cmd.Connection.Close();
                 }
+                else
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                return Json(true, JsonRequestBehavior.AllowGet);
+                //InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
 
-
-                InconsistenciaViewModel _inconsistenciaViewModel = ListarInconsistentes(numeroAes);
-
-                return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
+                //return PartialView("_partialInconsistentes", _inconsistenciaViewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return PartialView("_partialInconsistentes");
+                SalvarLog(string.Format("Exception: {0}, detalhes: {1}", ex.ToString(), _log));
+                return Json(false, JsonRequestBehavior.AllowGet);
+                //return PartialView("_partialInconsistentes");
             }
 
         }
 
         public JsonResult AtualizarEstagio(int idInconsistente = 0, string numeroAes = "", string token = "", int totalEstagio = 0, int idInconsistenteItem = 0, string raGDAE = "")
         {
+            string _log = string.Format("idInconsistente:{0},  numeroAes:{1} ,  token:{2},idInconsistenciaItem: {3}, totalEstagio: {4}", idInconsistente, numeroAes, token, idInconsistenteItem, totalEstagio);
             try
             {
                 bool _atualizouVence = false;
@@ -402,8 +437,9 @@ namespace Vence.Input4Edicao.Controllers
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                SalvarLog(string.Format("Exception: {0}, detalhes: {1}", ex.ToString(), _log));
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
 
@@ -467,6 +503,7 @@ namespace Vence.Input4Edicao.Controllers
 
         public PartialViewResult ObterInconsistentes(string numeroAES = "")
         {
+            string _log = string.Format("numeroAes:{0} ", numeroAES);
 
             try
             {
@@ -476,7 +513,7 @@ namespace Vence.Input4Edicao.Controllers
             }
             catch (Exception)
             {
-                return PartialView("_partialInconsistentes");
+                return PartialView("_partialErro");
             }
 
         }
@@ -525,7 +562,7 @@ namespace Vence.Input4Edicao.Controllers
 					and     cons.numeroAES                   = toke.AES
 					and     cons.numeroAES                   = mant.numero_aes
 					and     cons.itemAES                     = mant.Item_aes
-					and     toke.AES                         = '15/25106/13'
+					and     toke.AES                         = '{0}'
 					and     erro.idConsistItem not in  ( select idConsistItem from Aluno4EdicaoConsistCorrecao )  
 
 					group by 
@@ -592,7 +629,36 @@ namespace Vence.Input4Edicao.Controllers
             return _inconsistenciaViewModel;
         }
 
+        private void SalvarLog(string log) 
+        {
+            try
+            {
+                string _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["conn"].ConnectionString;
+                SqlConnection conn = new SqlConnection(_connectionString);
+                string sql = string.Format(@" INSERT INTO [dbo].[Aluno4EdicaoConsistCorrecaoLog]
+                                           ([LogCorrecao]
+                                           ,[Data])
+                                     VALUES
+                                           (
+		                                    '{0}'
+                                           ,GETDATE()
+		                                   ) ", log);
 
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+            }
+            catch (Exception)
+            {
+                
+         
+            }
+           
+        
+        }
 
     }
 
@@ -656,4 +722,6 @@ namespace Vence.Input4Edicao.Controllers
         public List<Inconsistencia> ListarInconsistencias { get; set; }
 
     }
+
+
 }

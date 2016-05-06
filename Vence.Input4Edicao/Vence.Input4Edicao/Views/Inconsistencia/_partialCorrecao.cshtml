@@ -337,7 +337,24 @@
                             data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, dataNascimento: dataNascimento, idInconsistenteItem: _idInconsistenteItem },
                             success: function (data) {
                                 if (Boolean(data)) {
-                                    $("#dadosInconsistentes").html(data);
+                                   
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/Inconsistencia/ObterInconsistentes",
+                                        data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+
+                                            $("#dadosInconsistentes").html(data);
+
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $(document).ajaxStop(function () {
+
+                                            });
+                                        }
+                                    });
 
 
                                     $("#btnDtNascimento").attr('disabled', 'disabled');
@@ -430,8 +447,8 @@
         nomeAluno = $("#txtNomeAluno").val();
         _nomeAlunoGDAE = $("#nomeAlunoGDAE").val();
 
-        $("#idInconAluno").attr('value', '');
-        $("#IdConItemAluno").attr('value', '');
+        //$("#idInconAluno").attr('value', '');
+        //$("#IdConItemAluno").attr('value', '');
 
         if (nomeAluno == "") {
 
@@ -492,7 +509,24 @@
                             data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, nomeAluno: _nomeAlunoGDAE, idInconsistenteItem: _idInconsistenteItem },
                             success: function (data) {
                                 if (Boolean(data)) {
-                                    $("#dadosInconsistentes").html(data);
+                                  
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/Inconsistencia/ObterInconsistentes",
+                                        data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+
+                                            $("#dadosInconsistentes").html(data);
+
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $(document).ajaxStop(function () {
+
+                                            });
+                                        }
+                                    });
 
 
                                     $("#btnNomeAluno").attr('disabled', 'disabled');
@@ -574,6 +608,7 @@
         var _nomeMae = "";
         var _nomeMaeGDAE = "";
 
+   
 
         $("#divMsg").html('');
         var _numeroAes = $("#txtNumeroAES").val();
@@ -628,7 +663,6 @@
 
         } else {
 
-            //VALIDAR DATA
 
             $.ajax({
                 type: "POST",
@@ -643,7 +677,24 @@
                             data: { idInconsistente: _idInconsistente, numeroAes: _numeroAes, token: _token, nomeMae: _nomeMaeGDAE, idInconsistenteItem: _idInconsistenteItem },
                             success: function (data) {
                                 if (Boolean(data)) {
-                                    $("#dadosInconsistentes").html(data);
+
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/Inconsistencia/ObterInconsistentes",
+                                        data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+
+                                            $("#dadosInconsistentes").html(data);
+
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $(document).ajaxStop(function () {
+
+                                            });
+                                        }
+                                    });
 
 
                                     $("#btnNomeMae").attr('disabled', 'disabled');
@@ -793,7 +844,7 @@
         } else {
             if (_totalGeral > _totalEstagioContratado) {
 
-                $("#divMsg").html('<br/><p><strong style="color:orangered"> O total que você lançou é maior que o valor contratado.</strong> <strong> Lembrando que o valor que você já lançou na H&P e no Vence(Contigência) são somados ao que você informou agora.</strong></p> ');
+                $("#divMsg").html('<br/><p><strong style="color:orangered"> O total que você lançou é maior que o valor contratado.</strong><br/> <strong> Lembrando que o valor que você já lançou na H&P e no Vence(Contigência) são somados ao que você informou agora.</strong></p> ');
                 $("#msg").dialog({
 
                     dialogClass: "no-close",
@@ -834,6 +885,23 @@
             success: function (data) {
                 if (Boolean(data)) {
    
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Inconsistencia/ObterInconsistentes",
+                        data: JSON.stringify({ numeroAES: $("#txtNumeroAES").val() }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+
+                            $("#dadosInconsistentes").html(data);
+
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            $(document).ajaxStop(function () {
+
+                            });
+                        }
+                    });
 
                     $("#divsucesso").html('');
                     $("#btnEstagio").attr('disabled', 'disabled');

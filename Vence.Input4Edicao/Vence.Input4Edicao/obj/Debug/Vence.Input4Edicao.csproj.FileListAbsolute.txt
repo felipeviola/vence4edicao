@@ -153,4 +153,3 @@ C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.dll
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.pdb
 C:\ProjetosGit\Provisorio\vence4edicao_V2\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache
-C:\github\vence\Vence.Input4Edicao\Vence.Input4Edicao\obj\Debug\Vence.Input4Edicao.csprojResolveAssemblyReference.cache
